@@ -24,9 +24,9 @@ internal import Combine
 
 enum GameState {
     case idle
-    case playingRandom
-    case playingUser
-    case checking
+    case listening     // user listens to random pattern
+    case recreating    // user recreates pattern
+    case checking      // check button pressed, logic compares patterns
     case result
 }
 
@@ -41,8 +41,8 @@ class GameLogic: ObservableObject {
     
     let engine = RhythmEngine()
     
-    @Published var isPlayingUser: Bool = false
-    @Published var revealPattern: Bool = false
+//    @Published var isPlayingUser: Bool = false
+//    @Published var revealPattern: Bool = false
     
     @Published var currentExpectedHits: [DrumParts] = []
     @Published var lastCheckResult: CheckResult? = nil
@@ -56,14 +56,14 @@ class GameLogic: ObservableObject {
     private var tapTimes: [Date] = [] // for registerTap()
     
     
-    var currentPattern: DrumPattern
+//    var currentPattern: DrumPattern
     
     init() {
         let pattern = PatternFactory.generateRandomPattern()
         // self: refers to the current INSTANCE of a class, structure, or enumeration
         self.randomPattern = pattern
         self.userPattern = DrumPattern.empty(bpm: pattern.bpm)
-        self.currentPattern = pattern
+//        self.currentPattern = pattern
         
         // $: binds data. Used with property wrappers (like @State, @Binding, @ObservedObject, etc.) to access their projected value, which is typically a Binding. This creates a two-way connection to the underlying data, allowing views to both read and write the value.
         engine.$stepPulse
@@ -82,26 +82,23 @@ class GameLogic: ObservableObject {
         let pattern = PatternFactory.generateRandomPattern()
         randomPattern = pattern
         userPattern = DrumPattern.empty(bpm: pattern.bpm)
-        currentPattern = pattern
+//        currentPattern = pattern
         
-        engine.load(pattern: currentPattern)
-        engine.currentStep = -1
+//        engine.load(pattern: currentPattern)
         
         print("newGame() GameLogic")
     }
     
     // for randomPattern play button
-    func playRandomPattern() {
-        gameState = .playingRandom
-        
-        syncPatternToEngine(randomPattern)
-        engine.start(bpm: randomPattern.bpm)
-        isPlayingUser = false
-        
-        engine.currentStep = -1
-        
-        print("playRandomPattern() GameLogic")
-    }
+//    func playRandomPattern() {
+//        gameState = .listening
+//        
+//        syncPatternToEngine(randomPattern)
+//        engine.start(bpm: randomPattern.bpm)
+////        isPlayingUser = false
+//        
+//        print("playRandomPattern() GameLogic")
+//    }
     
     // ------------ METRONOME ------------
     
@@ -154,7 +151,8 @@ class GameLogic: ObservableObject {
         let clamped = min(max(tappedBPM, RhythmConfig.minBPM), RhythmConfig.maxBPM)
         userPattern.bpm = clamped
         
-        if isPlayingUser {
+//        if isPlayingUser {
+        if gameState == .recreating {
             engine.start(bpm: clamped)
         }
         
@@ -163,8 +161,8 @@ class GameLogic: ObservableObject {
     
     // ------------ USER WORKSPACE ------------
     func toggleUserBeat(part: DrumParts, index: Int) {
-        if gameState != .playingUser {
-            gameState = .playingUser
+        if gameState != .recreating {
+            gameState = .recreating
         }
         
         switch part {
@@ -211,19 +209,17 @@ class GameLogic: ObservableObject {
     }
     
     // for userPattern play button
-    func playUserPattern() {
-        syncPatternToEngine(userPattern)
-        engine.start(bpm: userPattern.bpm)
-        isPlayingUser = true
-        
-        engine.currentStep = -1
-        
-        print("playUserPattern() GameLogic")
-    }
+//    func playUserPattern() {
+//        syncPatternToEngine(userPattern)
+//        engine.start(bpm: userPattern.bpm)
+////        isPlayingUser = true
+//        
+//        print("playUserPattern() GameLogic")
+//    }
     
     func pausePlayback() {
         engine.stop()
-        isPlayingUser = false
+//        isPlayingUser = false
         
         print("pausePlayback() GameLogic")
     }
@@ -231,7 +227,7 @@ class GameLogic: ObservableObject {
     func handleStepTick(step: Int) {
         
         // pattern maybe isPlayingUser. If it is: pattern = userPattern, if not: pattern = randomPattern
-        let pattern = isPlayingUser ? userPattern : randomPattern
+        let pattern = gameState == .listening ? userPattern : randomPattern
         
         if pattern.hiHat[step].isActive {
             // play hiHat
@@ -263,7 +259,7 @@ class GameLogic: ObservableObject {
     
     // at this moment in time, which drums should exists????? what??
     private func expectedParts(at step: Int) -> [DrumParts] {
-        let pattern = isPlayingUser ? userPattern : randomPattern
+        let pattern = gameState == .listening ? userPattern : randomPattern
         var parts: [DrumParts] = []
         
         if pattern.hiHat[step].isActive { parts.append(.hiHat) }
@@ -296,6 +292,29 @@ class GameLogic: ObservableObject {
             kickCorrect: kickCorrect,
             isCorrect: isCorrect
         )
+        gameState = .result
     }
- 
+// ---------------  GAME STATE FUNCTIONS ---------------
+    // Workspace button disabled
+    func startListening() {
+        gameState = .listening
+        syncPatternToEngine(randomPattern)
+        engine.start(bpm: randomPattern.bpm)
+    }
+    
+    // Workspace editable
+    func startRecreating() {
+        gameState = .recreating
+        syncPatternToEngine(userPattern)
+    }
+    
+    func startChecking() {
+        gameState = .checking
+        checkUserPattern()
+    }
+    
+    func nextRound() {
+        newGame()
+        gameState = .idle
+    }
 }

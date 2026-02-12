@@ -27,7 +27,10 @@ struct DrumRowView: View {
     
     let part: DrumParts
     let beats: [BeatSlot]
-    let isEditable: Bool
+    
+    private var isEditable: Bool {
+        game.gameState == .recreating
+    }
     
     private var trackIndex: Int {
         switch part {
@@ -41,9 +44,12 @@ struct DrumRowView: View {
 //        Text("count: \(beats.count)")
         HStack(spacing: 10) {
             ForEach(0..<beats.count, id: \.self) { index in
+                let isActive = beats[index].isActive
+                let isCurrent = index == game.engine.currentStep
+                
                 BeatButtonView(
-                    isActive: beats[index].isActive,
-                    isCurrentStep: index == game.engine.currentStep,
+                    isActive: isActive,
+                    isCurrentStep: isCurrent,
                     action: {
                         if isEditable {
                             game.toggleUserBeat(part: part, index: index)
@@ -60,7 +66,6 @@ struct DrumRowView: View {
     DrumRowView(
         part: .hiHat,
         beats: game.randomPattern.hiHat,
-        isEditable: false
     )
-        .environmentObject(GameLogic())
+        .environmentObject(game)
 }

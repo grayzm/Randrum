@@ -13,10 +13,10 @@ struct RandomControlPanelView: View {
     var body: some View {
         HStack {
             Button {
-                if game.isPlayingUser {
+                if game.gameState == .listening {
                     game.pausePlayback()
                 } else {
-                    game.playUserPattern()
+                    game.startListening()
                 }
             } label: {
                 RoundedRectangle(cornerRadius: 10)
@@ -28,7 +28,7 @@ struct RandomControlPanelView: View {
                     .overlay(Image(systemName: "play.fill"))
                 }
             Button {
-                game.playRandomPattern()
+                game.startListening()
             } label: {
                 RoundedRectangle(cornerRadius: 10)
                     .frame(width: 150, height: 50)

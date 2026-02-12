@@ -39,17 +39,14 @@ struct WorkspaceView: View {
             DrumRowView(
                 part: .hiHat,
                 beats: game.userPattern.hiHat,
-                isEditable: true
             )
             DrumRowView(
                 part: .snare,
                 beats: game.userPattern.snare,
-                isEditable: true
             )
             DrumRowView(
                 part: .kick,
                 beats: game.userPattern.kick,
-                isEditable: true
             )
         }
     }

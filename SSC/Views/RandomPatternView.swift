@@ -27,17 +27,14 @@ struct RandomPatternView: View {
             DrumRowView(
                 part: .hiHat,
                 beats: game.randomPattern.hiHat,
-                isEditable: false
             )
             DrumRowView(
                 part: .snare,
                 beats: game.randomPattern.snare,
-                isEditable: false
             )
             DrumRowView(
                 part: .kick,
                 beats: game.randomPattern.kick,
-                isEditable: false
             )
         }
     }

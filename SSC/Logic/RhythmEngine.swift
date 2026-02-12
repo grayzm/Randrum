@@ -54,6 +54,13 @@ class RhythmEngine: ObservableObject {
         print("start (\(bpm) BPM) RhythmEngine")
     }
     
+    func stop() {
+        timer?.invalidate()
+        timer = nil
+        
+        print("stop() RhythmEngine")
+    }
+    
     func load(pattern: DrumPattern) {
         tracks[0].steps = pattern.hiHat.map { BeatSlot(isActive: $0.isActive) }
         tracks[1].steps = pattern.snare.map { BeatSlot(isActive: $0.isActive) }
@@ -93,13 +100,6 @@ class RhythmEngine: ObservableObject {
         tracks[trackIndex].steps[stepIndex].isActive.toggle()
         
         print("toggle, track: \(trackIndex), step: \(stepIndex) RhythmEngine")
-    }
-    
-    func stop() {
-        timer?.invalidate()
-        timer = nil
-        
-        print("stop() RhythmEngine")
     }
     
     func generateRandomBPM() -> Double {

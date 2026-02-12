@@ -34,10 +34,10 @@ struct WorkspaceControlPanelView: View {
                     .overlay(Image(systemName: "metronome.fill"))
             }
             Button {
-                if game.isPlayingUser {
+                if game.gameState == .recreating {
                     game.pausePlayback()
                 } else {
-                    game.playUserPattern()
+                    game.startRecreating()
                 }
             } label: {
                 RoundedRectangle(cornerRadius: 10)
@@ -49,7 +49,7 @@ struct WorkspaceControlPanelView: View {
                     .overlay(Image(systemName: "play.fill"))
                 }
             Button {
-                game.checkUserPattern()
+                game.startChecking()
             } label: {
                 RoundedRectangle(cornerRadius: 10)
                     .frame(width: 100, height: 50)
@@ -57,7 +57,10 @@ struct WorkspaceControlPanelView: View {
                     .font(.largeTitle)
                     .padding()
                     .shadow(radius: 10)
-                    .overlay(Text("Check"))
+                    .overlay(
+                        Image(systemName:
+                                game.gameState == .recreating ? "pause.fill" : "checkmark.fill")
+                    )
             }
         }
     }
