@@ -12,28 +12,27 @@ import SwiftUI
 
 struct ContentView: View {
     @EnvironmentObject var game: GameLogic
+    
     var body: some View {
         VStack(spacing: 30) {
-            Text("Hello, world!")
+            Text("Randrum")
                 .font(.largeTitle.bold())
-            Rectangle()
-                .fill(Color.buttonDefault)
-                .frame(height: 240)
             HStack(spacing: 30) {
-                Rectangle()
-                    .fill(Color.buttonDefault)
-                    .frame(width: 900)
+                RandomPatternView()
+                    .frame(width: 1000, height: 250)
+
                 VStack(spacing: 30) {
-                    Rectangle()
-                        .fill(Color.buttonDefault)
-                    Rectangle()
-                        .fill(Color.buttonDefault)
-                    Rectangle()
-                        .fill(Color.buttonDefault)
-                    Rectangle()
-                        .fill(Color.buttonDefault)
+                    ForEach(0..<3) { _ in
+                        Circle()
+                            .fill(Color.buttonDefault)
+                            .frame(height: 70)
+                    }
                 }
             }
+            WorkspaceControlPanelView()
+                .frame(height: 100)
+                WorkspaceView()
+                    .frame(height: 280)
         }
         .padding()
     }

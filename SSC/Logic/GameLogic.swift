@@ -22,6 +22,14 @@
 import Foundation
 internal import Combine
 
+enum GameState {
+    case idle
+    case playingRandom
+    case playingUser
+    case checking
+    case result
+}
+
 // ObservableObjects: Your data model class conforms to the ObservableObject protocol, signaling to SwiftUI that it can be watched for changes.
 // class: a class is a blueprint for creating objects and is used to manage shared, mutable state. Unlike struct, it supports inheritence.
 class GameLogic: ObservableObject {
@@ -37,6 +45,10 @@ class GameLogic: ObservableObject {
     @Published var revealPattern: Bool = false
     
     @Published var currentExpectedHits: [DrumParts] = []
+    @Published var lastCheckResult: CheckResult? = nil
+    
+    @Published var gameState: GameState = .idle
+    @Published var currentStep: Int = 0
     
     // private var: applies the concept of access control, limiting the visibility and modification of a variable to the scope of its immediate declaration. When paired with SwiftUI property wrappers, private ensures proper data flow and prevents conflicts with SwiftUI's storage management.
     private var cancellables = Set<AnyCancellable>()
@@ -80,6 +92,8 @@ class GameLogic: ObservableObject {
     
     // for randomPattern play button
     func playRandomPattern() {
+        gameState = .playingRandom
+        
         syncPatternToEngine(randomPattern)
         engine.start(bpm: randomPattern.bpm)
         isPlayingUser = false
@@ -149,6 +163,9 @@ class GameLogic: ObservableObject {
     
     // ------------ USER WORKSPACE ------------
     func toggleUserBeat(part: DrumParts, index: Int) {
+        if gameState != .playingUser {
+            gameState = .playingUser
+        }
         
         switch part {
         case .hiHat:
@@ -256,7 +273,9 @@ class GameLogic: ObservableObject {
         return parts
     }
     
-    func checkUserPattern() -> CheckResult {
+    func checkUserPattern() {
+        gameState = .checking
+        
         // BPM check (with tolerance)
         let bpmTolerance: Double = 2
         // abs:  is a global function that returns the absolute value of a given number. It converts negative numbers into positive numbers, while positive numbers and zero remain unchanged.
@@ -270,7 +289,7 @@ class GameLogic: ObservableObject {
         
         print("checkUserPattern() GameLogic")
         
-        return CheckResult(
+        lastCheckResult = CheckResult(
             bpmCorrect: bpmCorrect,
             hiHatCorrect: hiHatCorrect,
             snareCorrect: snareCorrect,

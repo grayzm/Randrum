@@ -21,6 +21,7 @@ import SwiftUI
 
 struct RandomPatternView: View {
     @EnvironmentObject var game: GameLogic
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 30) {
             DrumRowView(
@@ -39,7 +40,6 @@ struct RandomPatternView: View {
                 isEditable: false
             )
         }
-        .frame(height: 280)
     }
 }
 

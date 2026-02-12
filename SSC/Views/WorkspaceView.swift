@@ -33,6 +33,7 @@ import SwiftUI
 
 struct WorkspaceView: View {
     @EnvironmentObject var game: GameLogic
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 30) {
             DrumRowView(
@@ -51,7 +52,6 @@ struct WorkspaceView: View {
                 isEditable: true
             )
         }
-        .frame(height: 280)
     }
 }
 
