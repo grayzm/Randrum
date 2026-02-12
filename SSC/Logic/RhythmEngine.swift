@@ -50,12 +50,16 @@ class RhythmEngine: ObservableObject {
             repeats: true
         )
         RunLoop.current.add(timer!, forMode: .common)
+        
+        print("start (\(bpm) BPM) RhythmEngine")
     }
     
     func load(pattern: DrumPattern) {
         tracks[0].steps = pattern.hiHat.map { BeatSlot(isActive: $0.isActive) }
         tracks[1].steps = pattern.snare.map { BeatSlot(isActive: $0.isActive) }
         tracks[2].steps = pattern.kick.map { BeatSlot(isActive: $0.isActive) }
+        
+        print("load (\(pattern)) RhythmEngine")
     }
     
     @objc private func tick() {
@@ -63,6 +67,8 @@ class RhythmEngine: ObservableObject {
         currentStep = (currentStep + 1) % totalSteps
         stepPulse.toggle()
 //        triggerSounds()
+        
+        print("tick, step: \(currentStep) RhythmEngine")
     }
     
     // REMOVED because GameLogic handles it already
@@ -85,11 +91,15 @@ class RhythmEngine: ObservableObject {
         else { return }
         
         tracks[trackIndex].steps[stepIndex].isActive.toggle()
+        
+        print("toggle, track: \(trackIndex), step: \(stepIndex) RhythmEngine")
     }
     
     func stop() {
         timer?.invalidate()
         timer = nil
+        
+        print("stop() RhythmEngine")
     }
     
     func generateRandomBPM() -> Double {

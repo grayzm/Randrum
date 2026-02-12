@@ -36,11 +36,13 @@ class GameLogic: ObservableObject {
     @Published var isPlayingUser: Bool = false
     @Published var revealPattern: Bool = false
     
+    @Published var currentExpectedHits: [DrumParts] = []
+    
     // private var: applies the concept of access control, limiting the visibility and modification of a variable to the scope of its immediate declaration. When paired with SwiftUI property wrappers, private ensures proper data flow and prevents conflicts with SwiftUI's storage management.
     private var cancellables = Set<AnyCancellable>()
     // add storage for taps
     private var tapTimes: [Date] = [] // for registerTap()
-
+    
     
     var currentPattern: DrumPattern
     
@@ -52,12 +54,15 @@ class GameLogic: ObservableObject {
         self.currentPattern = pattern
         
         // $: binds data. Used with property wrappers (like @State, @Binding, @ObservedObject, etc.) to access their projected value, which is typically a Binding. This creates a two-way connection to the underlying data, allowing views to both read and write the value.
-        engine.$currentStep
+        engine.$stepPulse
         // sink: creates a subscriber???? and immediately requests unlimited value.
             .sink { [weak self] step in
-                self?.handleStepTick(step: step)
+                guard let self else { return }
+                self.handleStepTick(step: self.engine.currentStep)
             } // &: allows a function to modify the original value of a variable, rather than just working on a local copy of the value.
             .store(in: &cancellables) // retain the subscription
+        
+        print("init GameLogic")
     }
     
     
@@ -68,6 +73,9 @@ class GameLogic: ObservableObject {
         currentPattern = pattern
         
         engine.load(pattern: currentPattern)
+        engine.currentStep = -1
+        
+        print("newGame() GameLogic")
     }
     
     // for randomPattern play button
@@ -75,6 +83,10 @@ class GameLogic: ObservableObject {
         syncPatternToEngine(randomPattern)
         engine.start(bpm: randomPattern.bpm)
         isPlayingUser = false
+        
+        engine.currentStep = -1
+        
+        print("playRandomPattern() GameLogic")
     }
     
     // ------------ METRONOME ------------
@@ -92,6 +104,8 @@ class GameLogic: ObservableObject {
         if let bpm = calculateBPM() {
             updateUserBPM(from: bpm)
         }
+        
+        print("registerTap() GameLogic")
     }
     
     func calculateBPM() -> Double? {
@@ -117,6 +131,8 @@ class GameLogic: ObservableObject {
         // BPM = 60 seconds per beat
         let bpm = 60.0 / averageInterval
         
+        print("calculateBPM() GameLogic")
+        
         return bpm
     }
     
@@ -127,11 +143,13 @@ class GameLogic: ObservableObject {
         if isPlayingUser {
             engine.start(bpm: clamped)
         }
+        
+        print("updateUserBPM() GameLogic")
     }
     
     // ------------ USER WORKSPACE ------------
     func toggleUserBeat(part: DrumParts, index: Int) {
-                
+        
         switch part {
         case .hiHat:
             userPattern.hiHat[index].isActive.toggle()
@@ -141,6 +159,17 @@ class GameLogic: ObservableObject {
             userPattern.kick[index].isActive.toggle()
         }
         syncPatternToEngine(userPattern)
+        
+        print("toggleUserBeat(\(part), \(index)) GameLogic")
+        
+        let currentStep = engine.currentStep
+        let expected = expectedParts(at: currentStep)
+        
+        if expected.contains(part) {
+            print("Correct timing")
+        } else {
+            print("Off timing")
+        }
     }
     
     func deleteRow(_ part: DrumParts) {
@@ -152,12 +181,16 @@ class GameLogic: ObservableObject {
         case .kick:
             userPattern.kick = Array(repeating: BeatSlot(), count: 16)
         }
+        
+        print("deleteRow(\(part)) GameLogic")
     }
     
     private func syncPatternToEngine(_ pattern: DrumPattern) {
         engine.tracks[0].steps = pattern.hiHat.map { BeatSlot(isActive: $0.isActive) }
         engine.tracks[1].steps = pattern.snare.map { BeatSlot(isActive: $0.isActive) }
         engine.tracks[2].steps = pattern.kick.map { BeatSlot(isActive: $0.isActive) }
+        
+        print("syncPatternToEngine() GameLogic")
     }
     
     // for userPattern play button
@@ -165,11 +198,17 @@ class GameLogic: ObservableObject {
         syncPatternToEngine(userPattern)
         engine.start(bpm: userPattern.bpm)
         isPlayingUser = true
+        
+        engine.currentStep = -1
+        
+        print("playUserPattern() GameLogic")
     }
     
     func pausePlayback() {
         engine.stop()
         isPlayingUser = false
+        
+        print("pausePlayback() GameLogic")
     }
     
     func handleStepTick(step: Int) {
@@ -192,6 +231,8 @@ class GameLogic: ObservableObject {
             AudioManager.shared.play(.kick)
             print("Kick")
         }
+        
+        print("handleStepTick(\(step)) GameLogic")
     }
     
     // ------------ CHECKING ------------
@@ -201,6 +242,18 @@ class GameLogic: ObservableObject {
         var snareCorrect: Bool
         var kickCorrect: Bool
         var isCorrect: Bool
+    }
+    
+    // at this moment in time, which drums should exists????? what??
+    private func expectedParts(at step: Int) -> [DrumParts] {
+        let pattern = isPlayingUser ? userPattern : randomPattern
+        var parts: [DrumParts] = []
+        
+        if pattern.hiHat[step].isActive { parts.append(.hiHat) }
+        if pattern.snare[step].isActive { parts.append(.snare) }
+        if pattern.kick[step].isActive { parts.append(.kick) }
+        
+        return parts
     }
     
     func checkUserPattern() -> CheckResult {
@@ -214,6 +267,8 @@ class GameLogic: ObservableObject {
         let kickCorrect = userPattern.kick == randomPattern.kick
         
         let isCorrect = bpmCorrect && hiHatCorrect && snareCorrect && kickCorrect
+        
+        print("checkUserPattern() GameLogic")
         
         return CheckResult(
             bpmCorrect: bpmCorrect,

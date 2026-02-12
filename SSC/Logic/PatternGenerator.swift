@@ -91,6 +91,9 @@ func generateHiHat(part: HiHatPattern) -> [BeatSlot] {
             slots[i].isActive = chance(0.9)
         }
     }
+    
+    print("generateHiHat() PatternGenerator")
+    
     return slots
 }
 
@@ -125,6 +128,9 @@ func generateSnare(part: SnarePattern) -> [BeatSlot] {
             slots[i].isActive = chance(weight)
         }
     }
+    
+    print("generateSnare() PatternGenerator")
+    
     return slots
 }
 
@@ -159,6 +165,9 @@ func generateKick(part: KickPattern) -> [BeatSlot] {
             slots[i].isActive = chance(weight)
         }
     }
+    
+    print("generateKick() PatternGenerator")
+    
     return slots
 }
 
@@ -183,6 +192,9 @@ func ensureAtLeastOneIsOn(
         let randomIndex = Int.random(in: 0..<slots.count)
         slots[randomIndex].isActive = true
     }
+    
+    print("ensureAtLeastOneIsOn() PatternGenerator")
+    
     return slots
 }
 
@@ -199,4 +211,6 @@ func grooveBalance(
             }
         }
     }
+    
+    print("grooveBalance() PatternGenerator")
 }
