@@ -25,4 +25,12 @@ struct DrumPattern {
             bpm: bpm
         )
     }
+    
+    func steps(for part: DrumParts) -> [BeatSlot] {
+        switch part {
+        case .hiHat: return hiHat
+        case .snare: return snare
+        case .kick: return kick
+        }
+    }
 }

@@ -73,24 +73,9 @@ class RhythmEngine: ObservableObject {
         let totalSteps = 16
         currentStep = (currentStep + 1) % totalSteps
         stepPulse.toggle()
-//        triggerSounds()
         
         print("tick, step: \(currentStep) RhythmEngine")
     }
-    
-    // REMOVED because GameLogic handles it already
-//    func triggerSounds() {
-//        for track in tracks {
-//            if track.steps[currentStep].isActive {
-//                play(track.name)
-//            }
-//        }
-//    }
-    
-    // REMOVED because GameLogic handles it already
-//    func play(_ name: String) {
-//        print("Playing \(name)")
-//    }
     
     func toggle(trackIndex: Int, stepIndex: Int) {
         guard tracks.indices.contains(trackIndex),
@@ -104,6 +89,7 @@ class RhythmEngine: ObservableObject {
     
     func generateRandomBPM() -> Double {
         Double.random(in: RhythmConfig.minBPM...RhythmConfig.maxBPM)
+        
     }
 }
 

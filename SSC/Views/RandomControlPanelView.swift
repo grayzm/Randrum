@@ -11,27 +11,26 @@ struct RandomControlPanelView: View {
     @EnvironmentObject var game: GameLogic
     
     var body: some View {
-        HStack {
+        VStack {
             Button {
-                if game.gameState == .listening {
-                    game.pausePlayback()
-                } else {
-                    game.startListening()
-                }
+                game.toggleRandomPlayback()
             } label: {
                 RoundedRectangle(cornerRadius: 10)
-                    .frame(width: 50, height: 50)
+                    .frame(width: 120, height: 50)
                     .foregroundColor(.white)
                     .font(.largeTitle)
                     .padding()
                     .shadow(radius: 10)
-                    .overlay(Image(systemName: "play.fill"))
+                    .overlay(
+                        Image(systemName: game.gameState == .listening
+                             ? "pause.fill" : "play.fill")
+                    )
                 }
             Button {
-                game.startListening()
+                game.nextRound()
             } label: {
                 RoundedRectangle(cornerRadius: 10)
-                    .frame(width: 150, height: 50)
+                    .frame(width: 120, height: 50)
                     .foregroundColor(.white)
                     .font(.largeTitle)
                     .padding()

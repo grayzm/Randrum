@@ -39,7 +39,21 @@ class GameLogic: ObservableObject {
     @Published var randomPattern: DrumPattern
     @Published var userPattern: DrumPattern
     
-    let engine = RhythmEngine()
+    private func triggerSounds() {
+        let pattern = gameState == .recreating ? userPattern : randomPattern
+        let step = engine.currentStep
+        guard step >= 0 else { return }
+        
+        for part in DrumParts.allCases {
+            if pattern.steps(for: part)[step].isActive {
+                AudioManager.shared.play(part)
+            }
+        }
+        
+        print("triggerSounds(at step \(step)) GameLogic")
+    }
+    
+    @Published var engine = RhythmEngine()
     
 //    @Published var isPlayingUser: Bool = false
 //    @Published var revealPattern: Bool = false
@@ -66,11 +80,11 @@ class GameLogic: ObservableObject {
 //        self.currentPattern = pattern
         
         // $: binds data. Used with property wrappers (like @State, @Binding, @ObservedObject, etc.) to access their projected value, which is typically a Binding. This creates a two-way connection to the underlying data, allowing views to both read and write the value.
-        engine.$stepPulse
+        engine.$currentStep
         // sink: creates a subscriber???? and immediately requests unlimited value.
-            .sink { [weak self] step in
-                guard let self else { return }
-                self.handleStepTick(step: self.engine.currentStep)
+            .sink { [weak self] _ in
+                self?.objectWillChange.send()
+                self?.triggerSounds()
             } // &: allows a function to modify the original value of a variable, rather than just working on a local copy of the value.
             .store(in: &cancellables) // retain the subscription
         
@@ -87,6 +101,23 @@ class GameLogic: ObservableObject {
 //        engine.load(pattern: currentPattern)
         
         print("newGame() GameLogic")
+    }
+    
+    func toggleRandomPlayback() {
+        if gameState == .listening {
+            stopPlayback()
+        } else {
+            startListening()
+        }
+        
+        print("toggleRandomPlayback() GameLogic")
+    }
+    
+    func stopPlayback() {
+        engine.stop()
+        gameState = .idle
+        
+        print("stopPlayback() GameLogic")
     }
     
     // for randomPattern play button
@@ -129,6 +160,8 @@ class GameLogic: ObservableObject {
             let interval = tapTimes[i].timeIntervalSince(tapTimes[i - 1])
             // add the calculated interval to the intervals array
             intervals.append(interval)
+            
+            print("calculateBPM() GameLogic")
         }
         
         // check intervals should contain value, else don't run the code
@@ -224,29 +257,43 @@ class GameLogic: ObservableObject {
         print("pausePlayback() GameLogic")
     }
     
-    func handleStepTick(step: Int) {
-        
-        // pattern maybe isPlayingUser. If it is: pattern = userPattern, if not: pattern = randomPattern
-        let pattern = gameState == .listening ? userPattern : randomPattern
-        
-        if pattern.hiHat[step].isActive {
-            // play hiHat
-            AudioManager.shared.play(.hiHat)
-            print("HiHat")
-        }
-        if pattern.snare[step].isActive {
-            // play snare
-            AudioManager.shared.play(.snare)
-            print("Snare")
-        }
-        if pattern.kick[step].isActive {
-            // play kick
-            AudioManager.shared.play(.kick)
-            print("Kick")
+    // new handleStepTick() after adding GameState
+    func handleStepTick() {
+        switch gameState {
+        case .listening:
+            syncPatternToEngine(randomPattern)
+        case .recreating:
+            syncPatternToEngine(userPattern)
+        default:
+            break
         }
         
-        print("handleStepTick(\(step)) GameLogic")
+        print("handleStepTick() GameLogic")
     }
+    
+//    func handleStepTick(step: Int) {
+//        
+//        // pattern maybe isPlayingUser. If it is: pattern = userPattern, if not: pattern = randomPattern
+//        let pattern = gameState == .listening ? randomPattern : userPattern
+//        
+//        if pattern.hiHat[step].isActive {
+//            // play hiHat
+//            AudioManager.shared.play(.hiHat)
+//            print("HiHat")
+//        }
+//        if pattern.snare[step].isActive {
+//            // play snare
+//            AudioManager.shared.play(.snare)
+//            print("Snare")
+//        }
+//        if pattern.kick[step].isActive {
+//            // play kick
+//            AudioManager.shared.play(.kick)
+//            print("Kick")
+//        }
+//        
+//        print("handleStepTick(\(step)) GameLogic")
+//    }
     
     // ------------ CHECKING ------------
     struct CheckResult {
@@ -259,7 +306,7 @@ class GameLogic: ObservableObject {
     
     // at this moment in time, which drums should exists????? what??
     private func expectedParts(at step: Int) -> [DrumParts] {
-        let pattern = gameState == .listening ? userPattern : randomPattern
+        let pattern = gameState == .listening ? randomPattern : userPattern
         var parts: [DrumParts] = []
         
         if pattern.hiHat[step].isActive { parts.append(.hiHat) }
@@ -300,21 +347,29 @@ class GameLogic: ObservableObject {
         gameState = .listening
         syncPatternToEngine(randomPattern)
         engine.start(bpm: randomPattern.bpm)
+        
+        print("startListening() GameLogic")
     }
     
     // Workspace editable
     func startRecreating() {
         gameState = .recreating
         syncPatternToEngine(userPattern)
+        
+        print("stratRecreating() GameLogic")
     }
     
     func startChecking() {
         gameState = .checking
         checkUserPattern()
+        
+        print("startChecking() GameLogic")
     }
     
     func nextRound() {
         newGame()
         gameState = .idle
+        
+        print("nextRound() GameLogic")
     }
 }

@@ -19,22 +19,23 @@ struct ContentView: View {
                 .font(.largeTitle.bold())
             HStack(spacing: 30) {
                 RandomPatternView()
-                    .frame(width: 1000, height: 250)
+                
+                RandomControlPanelView()
 
-                VStack(spacing: 30) {
-                    ForEach(0..<3) { _ in
-                        Circle()
-                            .fill(Color.buttonDefault)
-                            .frame(height: 70)
-                    }
-                }
+//                VStack(spacing: 30) {
+//                    ForEach(0..<3) { _ in
+//                        Circle()
+//                            .fill(Color.buttonDefault)
+//                            .frame(height: 70)
+//                    }
+//                }
             }
             WorkspaceControlPanelView()
                 .frame(height: 100)
                 WorkspaceView()
                     .frame(height: 280)
         }
-        .padding()
+        .padding(.horizontal, 40)
     }
 }
 

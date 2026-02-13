@@ -27,6 +27,9 @@ struct DrumRowView: View {
     
     let part: DrumParts
     let beats: [BeatSlot]
+    let currentStep: Int
+    
+    var scale: CGFloat?
     
     private var isEditable: Bool {
         game.gameState == .recreating
@@ -45,11 +48,10 @@ struct DrumRowView: View {
         HStack(spacing: 10) {
             ForEach(0..<beats.count, id: \.self) { index in
                 let isActive = beats[index].isActive
-                let isCurrent = index == game.engine.currentStep
                 
                 BeatButtonView(
                     isActive: isActive,
-                    isCurrentStep: isCurrent,
+                    isCurrentStep: index == currentStep,
                     action: {
                         if isEditable {
                             game.toggleUserBeat(part: part, index: index)
@@ -57,6 +59,7 @@ struct DrumRowView: View {
                     }
                 )
             }
+            .frame(width: 60 * (self.scale != nil ? self.scale! : 1), height: 60 * (self.scale != nil ? self.scale! : 1))
         }
     }
 }
@@ -66,6 +69,7 @@ struct DrumRowView: View {
     DrumRowView(
         part: .hiHat,
         beats: game.randomPattern.hiHat,
+        currentStep: game.engine.currentStep
     )
         .environmentObject(game)
 }

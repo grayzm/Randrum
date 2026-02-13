@@ -45,11 +45,11 @@ struct BeatButtonView: View {
                 // main pad
                 RoundedRectangle(cornerRadius: 5)
                     .fill(isActive ? Color("pressed") : Color ("default"))
-                    .overlay(
-                        isCurrentStep
-                        ? RoundedRectangle(cornerRadius: 5).stroke(Color.white, lineWidth: 2)
-                        : nil
-                    )
+//                    .overlay(
+//                        isCurrentStep
+//                        ? RoundedRectangle(cornerRadius: 5).stroke(Color.white, lineWidth: 2)
+//                        : nil
+//                    )
             }
         }
         .animation(.easeInOut(duration: 0.18), value: game.engine.stepPulse)

@@ -20,13 +20,21 @@ class AudioManager {
     }
     
     private func load(_ part: DrumParts, file: String) {
-        guard let url = Bundle.main.url(forResource: file, withExtension: "wav") else { return }
+        guard let url = Bundle.main.url(forResource: file, withExtension: "wav") else {
+            print("Missing file:", file)
+            return
+        }
+        
+        print("Loaded:", file)
+        
         players[part] = try? AVAudioPlayer(contentsOf: url)
         players[part]?.prepareToPlay()
     }
     
     func play(_ part: DrumParts) {
-        players[part]?.currentTime = 0
-        players[part]?.play()
+        guard let player = players[part] else { return }
+        player.stop()
+        player.currentTime = 0
+        player.play()
     }
 }

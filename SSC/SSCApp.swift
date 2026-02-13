@@ -12,6 +12,7 @@ struct SSCApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(GameLogic())
         }
     }
 }

@@ -18,6 +18,20 @@ func chance(_ probability: Double) -> Bool {
     Double.random(in: 0...1) < probability
 }
 
+func subdivisionWeight(step: Int,
+                       beat: Double,
+                       e: Double,
+                       and: Double,
+                       a: Double) -> Double {
+    switch step % 4 {
+    case 0: return beat
+    case 1: return e
+    case 3: return and
+    case 2: return a
+    default: return 0
+    }
+}
+
 struct PatternFactory {
     static func generateRandomPattern() -> DrumPattern {
         let hiHatMode = HiHatPattern.allCases.randomElement()!
@@ -78,7 +92,13 @@ func generateHiHat(part: HiHatPattern) -> [BeatSlot] {
         }
     case .random16:
         for i in 0..<16 {
-            let weight = (i % 4 == 0) ? 0.9 : 0.5
+            let weight = subdivisionWeight(
+                step: i,
+                beat: 0.85,
+                e: 0.08,
+                and: 0.65,
+                a: 0.05
+            )
             slots[i].isActive = chance(weight)
         }
     case .random8:
@@ -103,7 +123,14 @@ func generateSnare(part: SnarePattern) -> [BeatSlot] {
     switch part {
     case .and8:
         for i in [1,3,5,7,9,11,13,15] {
-            slots[i].isActive = chance(0.6)
+            let weight = subdivisionWeight(
+                step: i,
+                beat: 0.2,
+                e: 0.02,
+                and: 0.4,
+                a: 0.01
+                )
+            slots[i].isActive = chance(weight)
         }
     case .and4:
         for i in [2,6,10,14] {
@@ -139,8 +166,15 @@ func generateKick(part: KickPattern) -> [BeatSlot] {
     
     switch part {
     case .and8:
-        for i in [1,3,5,7,9,11,13,15] {
-            slots[i].isActive = chance(0.5)
+        for i in 0..<16 {
+            let weight = subdivisionWeight(
+                step: i,
+                beat: 0.6,
+                e: 0.03,
+                and: 0.25,
+                a: 0.03
+                )
+            slots[i].isActive = chance(weight)
         }
     case .and4:
         for i in [2,6,10,14] {
@@ -207,6 +241,14 @@ func grooveBalance(
     for i in 0..<16 {
         if hiHat[i].isActive && snare[i].isActive && !kick[i].isActive {
             if chance(0.5) {
+                hiHat[i].isActive = false
+            }
+        }
+        if i % 4 != 0 &&
+            hiHat[i].isActive &&
+            snare[i].isActive &&
+            kick[i].isActive {
+            if chance(0.7) {
                 hiHat[i].isActive = false
             }
         }
