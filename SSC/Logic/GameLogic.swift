@@ -316,7 +316,7 @@ class GameLogic: ObservableObject {
         return parts
     }
     
-    func checkUserPattern() {
+    func checkUserPattern() -> CheckResult {
         gameState = .checking
         
         // BPM check (with tolerance)
@@ -340,6 +340,7 @@ class GameLogic: ObservableObject {
             isCorrect: isCorrect
         )
         gameState = .result
+        return lastCheckResult!
     }
 // ---------------  GAME STATE FUNCTIONS ---------------
     // Workspace button disabled
@@ -361,7 +362,7 @@ class GameLogic: ObservableObject {
     
     func startChecking() {
         gameState = .checking
-        checkUserPattern()
+        _ = checkUserPattern()
         
         print("startChecking() GameLogic")
     }

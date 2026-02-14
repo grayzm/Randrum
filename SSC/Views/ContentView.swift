@@ -14,26 +14,26 @@ struct ContentView: View {
     @EnvironmentObject var game: GameLogic
     
     var body: some View {
-        VStack(spacing: 30) {
+        VStack {
             Text("Randrum")
                 .font(.largeTitle.bold())
+            
             HStack(spacing: 30) {
                 RandomPatternView()
                 
                 RandomControlPanelView()
-
-//                VStack(spacing: 30) {
-//                    ForEach(0..<3) { _ in
-//                        Circle()
-//                            .fill(Color.buttonDefault)
-//                            .frame(height: 70)
-//                    }
-//                }
             }
-            WorkspaceControlPanelView()
-                .frame(height: 100)
+            Spacer()
+            
+            HStack{
+                Text("Workspace")
+                    .font(.largeTitle.bold())
+                Spacer()
+                WorkspaceControlPanelView()
+                MetronomeTapperView()
+                
+            }
                 WorkspaceView()
-                    .frame(height: 280)
         }
         .padding(.horizontal, 40)
     }

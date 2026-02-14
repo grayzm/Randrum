@@ -12,8 +12,8 @@ internal import Combine
 
 // has to be outside RhythmEngine
 struct RhythmConfig {
-    static let minBPM: Double = 80
-    static let maxBPM: Double = 160
+    static let minBPM: Double = 60
+    static let maxBPM: Double = 130
 }
 
 class RhythmEngine: ObservableObject {

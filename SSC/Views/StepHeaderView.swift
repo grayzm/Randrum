@@ -19,7 +19,7 @@ struct StepHeaderView: View {
             ForEach(0..<totalSteps, id: \.self) { step in
                 label(for: step)
                     .font(.title.bold())
-                    .frame(width: 60)
+                    .frame(width: 56)
                     .opacity(step == currentStep ? 1 : 0.4)
             }
         }

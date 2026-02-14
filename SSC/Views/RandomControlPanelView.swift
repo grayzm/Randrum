@@ -19,7 +19,7 @@ struct RandomControlPanelView: View {
                     .frame(width: 120, height: 50)
                     .foregroundColor(.white)
                     .font(.largeTitle)
-                    .padding()
+                    .padding(5)
                     .shadow(radius: 10)
                     .overlay(
                         Image(systemName: game.gameState == .listening
@@ -33,10 +33,26 @@ struct RandomControlPanelView: View {
                     .frame(width: 120, height: 50)
                     .foregroundColor(.white)
                     .font(.largeTitle)
-                    .padding()
+                    .padding(5)
                     .shadow(radius: 10)
-                    .overlay(Text("Randrumize"))
+                    .overlay(Text("Randrumize")
+                        .font(.headline)
+                    )
             }
+            Button {
+                game.startChecking()
+            } label: {
+                RoundedRectangle(cornerRadius: 10)
+                    .frame(width: 120, height: 50)
+                    .foregroundColor(.white)
+                    .font(.largeTitle)
+                    .padding(5)
+                    .shadow(radius: 10)
+                    .overlay(Text("Check")
+                        .font(.headline)
+                    )
+            }
+
         }
     }
 }

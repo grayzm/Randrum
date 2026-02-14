@@ -22,17 +22,17 @@ struct WorkspaceControlPanelView: View {
     
     var body: some View {
         HStack {
-            Button {
-                game.registerTap()
-            } label: {
-                RoundedRectangle(cornerRadius: 10)
-                    .frame(width: 100, height: 50)
-                    .foregroundColor(.white)
-                    .font(.largeTitle)
-                    .padding()
-                    .shadow(radius: 10)
-                    .overlay(Image(systemName: "metronome.fill"))
-            }
+//            Button {
+//                game.registerTap()
+//            } label: {
+//                RoundedRectangle(cornerRadius: 10)
+//                    .frame(width: 100, height: 50)
+//                    .foregroundColor(.white)
+//                    .font(.largeTitle)
+//                    .padding()
+//                    .shadow(radius: 10)
+//                    .overlay(Image(systemName: "metronome.fill"))
+//            }
             Button {
                 if game.gameState == .recreating {
                     game.pausePlayback()
@@ -41,27 +41,25 @@ struct WorkspaceControlPanelView: View {
                 }
             } label: {
                 RoundedRectangle(cornerRadius: 10)
-                    .frame(width: 50, height: 50)
+                    .frame(width: 120, height: 50)
                     .foregroundColor(.white)
                     .font(.largeTitle)
-                    .padding()
+                    .padding(.horizontal)
                     .shadow(radius: 10)
-                    .overlay(Image(systemName: "play.fill"))
+                    .overlay(Image(systemName: game.gameState == .recreating ? "pause.fill" : "play.fill"))
                 }
-            Button {
-                game.startChecking()
-            } label: {
-                RoundedRectangle(cornerRadius: 10)
-                    .frame(width: 100, height: 50)
-                    .foregroundColor(.white)
-                    .font(.largeTitle)
-                    .padding()
-                    .shadow(radius: 10)
-                    .overlay(
-                        Image(systemName:
-                                game.gameState == .recreating ? "pause.fill" : "checkmark.fill")
-                    )
-            }
+//            Button {
+//                game.startChecking()
+//            } label: {
+//                RoundedRectangle(cornerRadius: 10)
+//                    .frame(width: 100, height: 50)
+//                    .foregroundColor(.white)
+//                    .font(.largeTitle)
+//                    .padding(.horizontal)
+//                    .shadow(radius: 10)
+//                    .overlay(Text("Check")
+//                        .font(.headline))
+//            }
         }
     }
 }

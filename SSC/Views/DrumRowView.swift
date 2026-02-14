@@ -28,6 +28,7 @@ struct DrumRowView: View {
     let part: DrumParts
     let beats: [BeatSlot]
     let currentStep: Int
+    let showGlow: Bool
     
     var scale: CGFloat?
     
@@ -51,7 +52,7 @@ struct DrumRowView: View {
                 
                 BeatButtonView(
                     isActive: isActive,
-                    isCurrentStep: index == currentStep,
+                    isCurrentStep: showGlow && index == currentStep,
                     action: {
                         if isEditable {
                             game.toggleUserBeat(part: part, index: index)
@@ -59,7 +60,7 @@ struct DrumRowView: View {
                     }
                 )
             }
-            .frame(width: 60 * (self.scale != nil ? self.scale! : 1), height: 60 * (self.scale != nil ? self.scale! : 1))
+            .frame(width: 56 * (self.scale != nil ? self.scale! : 1), height: 56 * (self.scale != nil ? self.scale! : 1))
         }
     }
 }
@@ -69,7 +70,8 @@ struct DrumRowView: View {
     DrumRowView(
         part: .hiHat,
         beats: game.randomPattern.hiHat,
-        currentStep: game.engine.currentStep
+        currentStep: game.engine.currentStep,
+        showGlow: true
     )
         .environmentObject(game)
 }
