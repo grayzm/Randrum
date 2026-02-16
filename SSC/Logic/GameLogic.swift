@@ -30,6 +30,13 @@ enum GameState {
     case result
 }
 
+enum BeatFeedback {
+    case none
+    case correct
+    case wrong
+    case missed
+}
+
 // ObservableObjects: Your data model class conforms to the ObservableObject protocol, signaling to SwiftUI that it can be watched for changes.
 // class: a class is a blueprint for creating objects and is used to manage shared, mutable state. Unlike struct, it supports inheritence.
 class GameLogic: ObservableObject {
@@ -39,24 +46,7 @@ class GameLogic: ObservableObject {
     @Published var randomPattern: DrumPattern
     @Published var userPattern: DrumPattern
     
-    private func triggerSounds() {
-        let pattern = gameState == .recreating ? userPattern : randomPattern
-        let step = engine.currentStep
-        guard step >= 0 else { return }
-        
-        for part in DrumParts.allCases {
-            if pattern.steps(for: part)[step].isActive {
-                AudioManager.shared.play(part)
-            }
-        }
-        
-        print("triggerSounds(at step \(step)) GameLogic")
-    }
-    
     @Published var engine = RhythmEngine()
-    
-//    @Published var isPlayingUser: Bool = false
-//    @Published var revealPattern: Bool = false
     
     @Published var currentExpectedHits: [DrumParts] = []
     @Published var lastCheckResult: CheckResult? = nil
@@ -69,8 +59,8 @@ class GameLogic: ObservableObject {
     // add storage for taps
     private var tapTimes: [Date] = [] // for registerTap()
     
-    
-//    var currentPattern: DrumPattern
+    private var checkingStartStep: Int?
+        
     
     init() {
         let pattern = PatternFactory.generateRandomPattern()
@@ -91,6 +81,43 @@ class GameLogic: ObservableObject {
         print("init GameLogic")
     }
     
+    private func triggerSounds() {
+        let pattern: DrumPattern
+        if gameState == .listening {
+            pattern = randomPattern
+        } else {
+            pattern = userPattern
+        }
+        
+        let step = engine.currentStep
+        guard step >= 0 else { return }
+        
+        // one loop playback for checking
+        if gameState == .checking || gameState == .result {
+            if checkingStartStep == nil {
+                // first time - record we started
+                checkingStartStep = 0
+            } else if step == 15 {
+                // we're on the last step, stop after playing it
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+                    self?.engine.stop()
+                    self?.checkingStartStep = nil
+                    print("changing gameState to .result")
+                    self?.gameState = .result
+                    print("gameState is now: \(String(describing: self?.gameState))")
+                    print("lastCheckResult exists: \(self?.lastCheckResult != nil)")
+                }
+            }
+        }
+        
+        for part in DrumParts.allCases {
+            if pattern.steps(for: part)[step].isActive {
+                AudioManager.shared.play(part)
+            }
+        }
+        
+        print("triggerSounds(at step \(step)) GameLogic")
+    }
     
     func newGame() {
         let pattern = PatternFactory.generateRandomPattern()
@@ -198,14 +225,25 @@ class GameLogic: ObservableObject {
             gameState = .recreating
         }
         
+        
         switch part {
         case .hiHat:
             userPattern.hiHat[index].isActive.toggle()
+            if userPattern.hiHat[index].isActive {
+                AudioManager.shared.play(part)
+            }
         case .snare:
             userPattern.snare[index].isActive.toggle()
+            if userPattern.snare[index].isActive {
+                AudioManager.shared.play(part)
+            }
         case .kick:
             userPattern.kick[index].isActive.toggle()
+            if userPattern.kick[index].isActive {
+                AudioManager.shared.play(part)
+            }
         }
+        
         syncPatternToEngine(userPattern)
         
         print("toggleUserBeat(\(part), \(index)) GameLogic")
@@ -302,6 +340,10 @@ class GameLogic: ObservableObject {
         var snareCorrect: Bool
         var kickCorrect: Bool
         var isCorrect: Bool
+        
+        var hiHatFeedback: [BeatFeedback]
+        var snareFeedback: [BeatFeedback]
+        var kickFeedback: [BeatFeedback]
     }
     
     // at this moment in time, which drums should exists????? what??
@@ -324,6 +366,19 @@ class GameLogic: ObservableObject {
         // abs:  is a global function that returns the absolute value of a given number. It converts negative numbers into positive numbers, while positive numbers and zero remain unchanged.
         let bpmCorrect = abs(userPattern.bpm - randomPattern.bpm) <= bpmTolerance
         
+        let hiHatFeedback = generateFeedback(
+            userBeats: userPattern.hiHat,
+            correctBeats: randomPattern.hiHat
+        )
+        let snareFeedback = generateFeedback(
+            userBeats: userPattern.snare,
+            correctBeats: randomPattern.snare
+        )
+        let kickFeedback = generateFeedback(
+            userBeats: userPattern.kick,
+            correctBeats: randomPattern.kick
+        )
+        
         let hiHatCorrect = userPattern.hiHat == randomPattern.hiHat
         let snareCorrect = userPattern.snare == randomPattern.snare
         let kickCorrect = userPattern.kick == randomPattern.kick
@@ -337,12 +392,37 @@ class GameLogic: ObservableObject {
             hiHatCorrect: hiHatCorrect,
             snareCorrect: snareCorrect,
             kickCorrect: kickCorrect,
-            isCorrect: isCorrect
+            isCorrect: isCorrect,
+            hiHatFeedback: hiHatFeedback,
+            snareFeedback: snareFeedback,
+            kickFeedback: kickFeedback
         )
         gameState = .result
         return lastCheckResult!
     }
+    
+    func generateFeedback(userBeats: [BeatSlot], correctBeats: [BeatSlot]) -> [BeatFeedback] {
+        var feedback: [BeatFeedback] = []
+        
+        for i in 0..<16 {
+            let userActive = userBeats[i].isActive
+            let correctActive = correctBeats[i].isActive
+            
+            if userActive && correctActive {
+                feedback.append(.correct)
+            } else if userActive && !correctActive {
+                feedback.append(.wrong)
+            } else if !userActive && correctActive {
+                feedback.append(.missed)
+            } else {
+                feedback.append(.none)
+            }
+        }
+        return feedback
+    }
+    
 // ---------------  GAME STATE FUNCTIONS ---------------
+        
     // Workspace button disabled
     func startListening() {
         gameState = .listening
@@ -356,6 +436,7 @@ class GameLogic: ObservableObject {
     func startRecreating() {
         gameState = .recreating
         syncPatternToEngine(userPattern)
+        engine.start(bpm: userPattern.bpm)
         
         print("stratRecreating() GameLogic")
     }
@@ -363,6 +444,11 @@ class GameLogic: ObservableObject {
     func startChecking() {
         gameState = .checking
         _ = checkUserPattern()
+        gameState = .checking
+        
+        checkingStartStep = nil
+        syncPatternToEngine(userPattern)
+        engine.start(bpm: userPattern.bpm)
         
         print("startChecking() GameLogic")
     }

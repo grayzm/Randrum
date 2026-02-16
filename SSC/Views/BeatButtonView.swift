@@ -18,6 +18,7 @@ struct BeatButtonView: View {
     
     var isActive: Bool
     var isCurrentStep: Bool
+    var feedback: BeatFeedback?
     
     let action: (() -> Void)?
     
@@ -44,16 +45,39 @@ struct BeatButtonView: View {
                 }
                 // main pad
                 RoundedRectangle(cornerRadius: 5)
-                    .fill(isActive ? Color("pressed") : Color ("default"))
-//                    .overlay(
-//                        isCurrentStep
-//                        ? RoundedRectangle(cornerRadius: 5).stroke(Color.white, lineWidth: 2)
-//                        : nil
-//                    )
+                    .fill(buttonColor)
+                    .overlay(
+                        feedback == .missed ?
+                        RoundedRectangle(cornerRadius: 5)
+                            .stroke(Color.white, lineWidth: 2) : nil
+                    )
             }
         }
         .animation(.easeInOut(duration: 0.18), value: game.engine.stepPulse)
-//        .animation(.interpolatingSpring(stiffness: 220, damping: 18), value: isCurrentStep)
+        .animation(.easeInOut(duration: 0.3), value: feedback)
+        .disabled(action == nil)
+    }
+    private var buttonColor: Color {
+        print("computing buttonColor - feedback: \(String(describing: feedback))")
+        if let feedback = feedback {
+            print("Feedback for button: \(feedback)")
+            switch feedback {
+            case .correct:
+                print("-> showing white")
+                return Color.white
+            case .wrong:
+                print("-> showing red")
+                return Color.red.opacity(0.8)
+            case .missed:
+                print("-> showing outline")
+                return Color("default")
+            case .none:
+                print("-> showing none")
+                return Color("default")
+            }
+        }
+        print("No feedback, using default logic")
+        return isActive ? Color("pressed") : Color ("default")
     }
 }
 

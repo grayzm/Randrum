@@ -29,12 +29,9 @@ struct DrumRowView: View {
     let beats: [BeatSlot]
     let currentStep: Int
     let showGlow: Bool
+    let isEditable: Bool
     
-    var scale: CGFloat?
-    
-    private var isEditable: Bool {
-        game.gameState == .recreating
-    }
+    var size: CGFloat?
     
     private var trackIndex: Int {
         switch part {
@@ -44,23 +41,40 @@ struct DrumRowView: View {
         }
     }
     
+    private var feedbackArray: [BeatFeedback]? {
+        print("feedbackArray called - gameState: \(game.gameState)")
+        // only compute feedback when we're actually showing results and not animating
+        guard game.gameState == .result,
+              let result = game.lastCheckResult else {
+            print("returning nil - state: \(game.gameState), has Result: \(game.lastCheckResult != nil)")
+            return nil
+        }
+        print("returning feedback for \(part)")
+        
+        switch part {
+        case .hiHat: return result.hiHatFeedback
+        case .snare: return result.snareFeedback
+        case .kick: return result.kickFeedback
+        }
+    }
+    
     var body: some View {
 //        Text("count: \(beats.count)")
         HStack(spacing: 10) {
             ForEach(0..<beats.count, id: \.self) { index in
                 let isActive = beats[index].isActive
+                let currentFeedback: BeatFeedback? = feedbackArray?[index]
                 
                 BeatButtonView(
                     isActive: isActive,
                     isCurrentStep: showGlow && index == currentStep,
-                    action: {
-                        if isEditable {
-                            game.toggleUserBeat(part: part, index: index)
-                        }
-                    }
+                    feedback: currentFeedback,
+                    action: isEditable ? {
+                        game.toggleUserBeat(part: part, index: index)
+                    } : nil
                 )
+                .frame(width: size, height: size)
             }
-            .frame(width: 56 * (self.scale != nil ? self.scale! : 1), height: 56 * (self.scale != nil ? self.scale! : 1))
         }
     }
 }
@@ -71,7 +85,9 @@ struct DrumRowView: View {
         part: .hiHat,
         beats: game.randomPattern.hiHat,
         currentStep: game.engine.currentStep,
-        showGlow: true
+        showGlow: true,
+        isEditable: true,
+        size: 56
     )
         .environmentObject(game)
 }
