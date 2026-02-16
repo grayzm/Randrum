@@ -56,7 +56,7 @@ struct RandomPatternView: View {
                     DrumRowView(
                         part: .hiHat,
                         beats: game.randomPattern.hiHat,
-                        currentStep: game.engine.currentStep,
+//                        currentStep: game.engine.currentStep,
                         showGlow: game.gameState == .listening,
                         isEditable: false,
                         showsFeedback: false,
@@ -65,7 +65,7 @@ struct RandomPatternView: View {
                     DrumRowView(
                         part: .snare,
                         beats: game.randomPattern.snare,
-                        currentStep: game.engine.currentStep,
+//                        currentStep: game.engine.currentStep,
                         showGlow: game.gameState == .listening,
                         isEditable: false,
                         showsFeedback: false,
@@ -74,7 +74,7 @@ struct RandomPatternView: View {
                     DrumRowView(
                         part: .kick,
                         beats: game.randomPattern.kick,
-                        currentStep: game.engine.currentStep,
+//                        currentStep: game.engine.currentStep,
                         showGlow: game.gameState == .listening,
                         isEditable: false,
                         showsFeedback: false,

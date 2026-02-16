@@ -27,7 +27,7 @@ struct DrumRowView: View {
     
     let part: DrumParts
     let beats: [BeatSlot]
-    let currentStep: Int
+//    let currentStep: Int
     let showGlow: Bool
     let isEditable: Bool
     let showsFeedback: Bool
@@ -43,14 +43,13 @@ struct DrumRowView: View {
     }
     
     private var feedbackArray: [BeatFeedback]? {
-        print("feedbackArray called - gameState: \(game.gameState)")
-        // only compute feedback when we're actually showing results and not animating
-        guard game.gameState == .result,
+        // return feedback during checking and result states
+        guard showsFeedback,
+              (game.gameState == .checking || game.gameState == .result),
               let result = game.lastCheckResult else {
-            print("returning nil - state: \(game.gameState), has Result: \(game.lastCheckResult != nil)")
+
             return nil
         }
-        print("returning feedback for \(part)")
         
         switch part {
         case .hiHat: return result.hiHatFeedback
@@ -60,17 +59,25 @@ struct DrumRowView: View {
     }
     
     var body: some View {
-//        Text("count: \(beats.count)")
         HStack(spacing: 10) {
             ForEach(0..<beats.count, id: \.self) { index in
                 let isActive = beats[index].isActive
-                let currentFeedback: BeatFeedback? =
-                showsFeedback ? feedbackArray?[index] : nil
+                let currentFeedback: BeatFeedback? = {
+                    guard let array = feedbackArray, index < array.count else {
+                        return nil
+                    }
+                    return array[index]
+                }()
+                // during .checking: pass currentStep to pregressively reveal
+                // during .result: pass nil to show all feedback
+                let revealUpTo = game.gameState == .checking ? game.engine.currentStep : nil
                 
                 BeatButtonView(
                     isActive: isActive,
-                    isCurrentStep: showGlow && index == currentStep,
+                    isCurrentStep: showGlow && index == game.engine.currentStep,
                     feedback: currentFeedback,
+                    index: index,
+                    revealUpToStep: revealUpTo,
                     action: isEditable ? {
                         game.toggleUserBeat(part: part, index: index)
                     } : nil
@@ -86,7 +93,7 @@ struct DrumRowView: View {
     DrumRowView(
         part: .hiHat,
         beats: game.randomPattern.hiHat,
-        currentStep: game.engine.currentStep,
+//        currentStep: game.engine.currentStep,
         showGlow: true,
         isEditable: true,
         showsFeedback: true,

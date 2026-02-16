@@ -62,7 +62,7 @@ struct WorkspaceView: View {
                         DrumRowView(
                             part: .hiHat,
                             beats: game.userPattern.hiHat,
-                            currentStep: game.engine.currentStep,
+//                            currentStep: game.engine.currentStep,
                             showGlow: game.gameState == .recreating || game.gameState == .checking || game.gameState == .result,
                             isEditable: true,
                             showsFeedback: true,
@@ -71,7 +71,7 @@ struct WorkspaceView: View {
                         DrumRowView(
                             part: .snare,
                             beats: game.userPattern.snare,
-                            currentStep: game.engine.currentStep,
+//                            currentStep: game.engine.currentStep,
                             showGlow: game.gameState == .recreating || game.gameState == .checking || game.gameState == .result,
                             isEditable: true,
                             showsFeedback: true,
@@ -80,7 +80,7 @@ struct WorkspaceView: View {
                         DrumRowView(
                             part: .kick,
                             beats: game.userPattern.kick,
-                            currentStep: game.engine.currentStep,
+//                            currentStep: game.engine.currentStep,
                             showGlow: game.gameState == .recreating || game.gameState == .checking || game.gameState == .result,
                             isEditable: true,
                             showsFeedback: true,

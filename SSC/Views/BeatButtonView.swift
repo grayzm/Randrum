@@ -19,6 +19,8 @@ struct BeatButtonView: View {
     var isActive: Bool
     var isCurrentStep: Bool
     var feedback: BeatFeedback?
+    var index: Int
+    var revealUpToStep: Int?
     
     let action: (() -> Void)?
     
@@ -47,7 +49,7 @@ struct BeatButtonView: View {
                 RoundedRectangle(cornerRadius: 5)
                     .fill(buttonColor)
                     .overlay(
-                        feedback == .missed ?
+                        shouldShowFeedback && feedback == .missed ?
                         RoundedRectangle(cornerRadius: 5)
                             .stroke(Color.white, lineWidth: 2) : nil
                     )
@@ -57,31 +59,43 @@ struct BeatButtonView: View {
         .animation(.easeInOut(duration: 0.3), value: feedback)
         .disabled(action == nil)
     }
+    
+    private var shouldShowFeedback: Bool {
+        guard feedback != nil else { return false }
+        
+        if let revealUpToStep = revealUpToStep {
+            // during checking: only show if slider has passed this index
+            return index <= revealUpToStep
+        }
+        // after checking (result state): show all feedback
+        return true
+    }
+    
     private var buttonColor: Color {
-        print("computing buttonColor - feedback: \(String(describing: feedback))")
-        if let feedback = feedback {
+        if shouldShowFeedback, let feedback = feedback {
             print("Feedback for button: \(feedback)")
             switch feedback {
             case .correct:
-                print("-> showing white")
                 return Color.white
             case .wrong:
-                print("-> showing red")
                 return Color.red.opacity(0.8)
             case .missed:
-                print("-> showing outline")
                 return Color("default")
             case .none:
-                print("-> showing none")
                 return Color("default")
             }
         }
-        print("No feedback, using default logic")
         return isActive ? Color("pressed") : Color ("default")
     }
 }
 
 #Preview {
-    BeatButtonView(isActive: true, isCurrentStep: true, action: {})
+    BeatButtonView(
+        isActive: true,
+        isCurrentStep: true,
+        feedback: .correct,
+        index: 0,
+        revealUpToStep: 0,
+        action: {})
         .environmentObject(GameLogic())
 }
