@@ -59,6 +59,7 @@ struct RandomPatternView: View {
                         currentStep: game.engine.currentStep,
                         showGlow: game.gameState == .listening,
                         isEditable: false,
+                        showsFeedback: false,
                         size: padSize
                     )
                     DrumRowView(
@@ -67,6 +68,7 @@ struct RandomPatternView: View {
                         currentStep: game.engine.currentStep,
                         showGlow: game.gameState == .listening,
                         isEditable: false,
+                        showsFeedback: false,
                         size: padSize
                     )
                     DrumRowView(
@@ -75,6 +77,7 @@ struct RandomPatternView: View {
                         currentStep: game.engine.currentStep,
                         showGlow: game.gameState == .listening,
                         isEditable: false,
+                        showsFeedback: false,
                         size: padSize
                     )
                 }

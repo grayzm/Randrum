@@ -65,6 +65,7 @@ struct WorkspaceView: View {
                             currentStep: game.engine.currentStep,
                             showGlow: game.gameState == .recreating || game.gameState == .checking || game.gameState == .result,
                             isEditable: true,
+                            showsFeedback: true,
                             size: padSize
                         )
                         DrumRowView(
@@ -73,6 +74,7 @@ struct WorkspaceView: View {
                             currentStep: game.engine.currentStep,
                             showGlow: game.gameState == .recreating || game.gameState == .checking || game.gameState == .result,
                             isEditable: true,
+                            showsFeedback: true,
                             size: padSize
                         )
                         DrumRowView(
@@ -81,6 +83,7 @@ struct WorkspaceView: View {
                             currentStep: game.engine.currentStep,
                             showGlow: game.gameState == .recreating || game.gameState == .checking || game.gameState == .result,
                             isEditable: true,
+                            showsFeedback: true,
                             size: padSize
                         )
                     }

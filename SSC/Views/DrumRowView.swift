@@ -30,6 +30,7 @@ struct DrumRowView: View {
     let currentStep: Int
     let showGlow: Bool
     let isEditable: Bool
+    let showsFeedback: Bool
     
     var size: CGFloat?
     
@@ -63,7 +64,8 @@ struct DrumRowView: View {
         HStack(spacing: 10) {
             ForEach(0..<beats.count, id: \.self) { index in
                 let isActive = beats[index].isActive
-                let currentFeedback: BeatFeedback? = feedbackArray?[index]
+                let currentFeedback: BeatFeedback? =
+                showsFeedback ? feedbackArray?[index] : nil
                 
                 BeatButtonView(
                     isActive: isActive,
@@ -87,6 +89,7 @@ struct DrumRowView: View {
         currentStep: game.engine.currentStep,
         showGlow: true,
         isEditable: true,
+        showsFeedback: true,
         size: 56
     )
         .environmentObject(game)
