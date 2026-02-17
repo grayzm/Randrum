@@ -61,6 +61,7 @@ class GameLogic: ObservableObject {
     
     private var checkingStartStep: Int?
     private var hasCompletedCheckingLoop: Bool = false
+    private var lastPlayedStep: Int = -1
         
     
     init() {
@@ -71,8 +72,8 @@ class GameLogic: ObservableObject {
 //        self.currentPattern = pattern
         
         engine.$currentStep
-            .dropFirst()
-            .removeDuplicates()
+//            .dropFirst()
+//            .removeDuplicates()
         // sink: creates a subscriber???? and immediately requests unlimited value.
             .sink { [weak self] _ in
                 self?.objectWillChange.send()
@@ -88,6 +89,8 @@ class GameLogic: ObservableObject {
     private func triggerSounds() {
         let step = engine.currentStep
         guard step >= 0 else { return }
+        guard step != lastPlayedStep else { return }
+        lastPlayedStep = step
         
         let pattern: DrumPattern
         if gameState == .listening {
@@ -96,34 +99,29 @@ class GameLogic: ObservableObject {
             pattern = userPattern
         }
         
-        // one loop playback for checking
-        if gameState == .checking {
-            if step == 0 {
-                if hasCompletedCheckingLoop {
-                    // We've wrapped back to 0 after completing loop - stop
-                    engine.stop()
-                    hasCompletedCheckingLoop = false
-                    gameState = .result
-                    print("🔴 Completed checking loop, stopping")
-                    return
-                } else {
-                    // First time at step 0
-                    print("🟢 Starting checking at step 0")
-                }
-            } else if step == 15 {
-                // Mark that we've reached the end
-                hasCompletedCheckingLoop = true
-                print("🟠 Reached step 15")
-            }
-        }
-        
         for part in DrumParts.allCases {
             if pattern.steps(for: part)[step].isActive {
                 AudioManager.shared.play(part)
             }
         }
-        
         print("triggerSounds(at step \(step)) GameLogic")
+        
+        // one loop playback for checking
+        if gameState == .checking && step == 15 {
+            gameState = .result
+            engine.stop()
+//            engine.currentStep = 15
+//            hasCompletedCheckingLoop = true
+            print("🟠 Reached step 15")
+        }
+//        if gameState == .checking && step == 0 && hasCompletedCheckingLoop {
+//            hasCompletedCheckingLoop = false
+//            gameState = .result
+//            engine.stop()
+//            engine.currentStep = 0
+//
+//            print("🔴 Completed checking loop, stopping")
+//        }
     }
     
     func newGame() {
@@ -435,6 +433,7 @@ class GameLogic: ObservableObject {
     // Workspace button disabled
     func startListening() {
         gameState = .listening
+        lastPlayedStep = -1
         syncPatternToEngine(randomPattern)
         engine.start(bpm: randomPattern.bpm)
         
@@ -444,6 +443,7 @@ class GameLogic: ObservableObject {
     // Workspace editable
     func startRecreating() {
         gameState = .recreating
+        lastPlayedStep = -1
         syncPatternToEngine(userPattern)
         engine.start(bpm: userPattern.bpm)
         
@@ -453,6 +453,7 @@ class GameLogic: ObservableObject {
     func startChecking() {
         print("🟢 startChecking() called")
         gameState = .checking
+        lastPlayedStep = -1
         _ = checkUserPattern()
 //        gameState = .checking
         

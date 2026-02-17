@@ -20,7 +20,6 @@ struct ContentView: View {
             
             HStack(spacing: 30) {
                 RandomPatternView()
-                
                 RandomControlPanelView()
             }
             Spacer()

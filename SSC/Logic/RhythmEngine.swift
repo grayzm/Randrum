@@ -31,6 +31,10 @@ class RhythmEngine: ObservableObject {
     ]
     @Published var stepPulse: Bool = false
     
+    var isRunning: Bool {
+        return timer != nil
+    }
+    
     private var timer: Timer?
     
     // Double: decimal value
