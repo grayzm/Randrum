@@ -68,7 +68,7 @@ class GameLogic: ObservableObject {
         let pattern = PatternFactory.generateRandomPattern()
         // self: refers to the current INSTANCE of a class, structure, or enumeration
         self.randomPattern = pattern
-        self.userPattern = DrumPattern.empty(bpm: pattern.bpm)
+        self.userPattern = DrumPattern.empty(bpm: 0)
 //        self.currentPattern = pattern
         
         engine.$currentStep
@@ -127,7 +127,7 @@ class GameLogic: ObservableObject {
     func newGame() {
         let pattern = PatternFactory.generateRandomPattern()
         randomPattern = pattern
-        userPattern = DrumPattern.empty(bpm: pattern.bpm)
+        userPattern = DrumPattern.empty(bpm: 0)
 //        currentPattern = pattern
         
 //        engine.load(pattern: currentPattern)
@@ -448,7 +448,10 @@ class GameLogic: ObservableObject {
         gameState = .recreating
         lastPlayedStep = -1
         syncPatternToEngine(userPattern)
-        engine.start(bpm: userPattern.bpm)
+        
+        if userPattern.bpm > 0 {
+            engine.start(bpm: userPattern.bpm)
+        }
         
         print("stratRecreating() GameLogic")
     }
