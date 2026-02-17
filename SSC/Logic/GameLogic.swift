@@ -60,6 +60,7 @@ class GameLogic: ObservableObject {
     private var tapTimes: [Date] = [] // for registerTap()
     
     private var checkingStartStep: Int?
+    private var hasCompletedCheckingLoop: Bool = false
         
     
     init() {
@@ -69,19 +70,25 @@ class GameLogic: ObservableObject {
         self.userPattern = DrumPattern.empty(bpm: pattern.bpm)
 //        self.currentPattern = pattern
         
-        // $: binds data. Used with property wrappers (like @State, @Binding, @ObservedObject, etc.) to access their projected value, which is typically a Binding. This creates a two-way connection to the underlying data, allowing views to both read and write the value.
         engine.$currentStep
+            .dropFirst()
+            .removeDuplicates()
         // sink: creates a subscriber???? and immediately requests unlimited value.
             .sink { [weak self] _ in
                 self?.objectWillChange.send()
                 self?.triggerSounds()
-            } // &: allows a function to modify the original value of a variable, rather than just working on a local copy of the value.
+            } 
             .store(in: &cancellables) // retain the subscription
         
         print("init GameLogic")
     }
     
+//    private var hasSeenStep15: Bool = false
+
     private func triggerSounds() {
+        let step = engine.currentStep
+        guard step >= 0 else { return }
+        
         let pattern: DrumPattern
         if gameState == .listening {
             pattern = randomPattern
@@ -89,24 +96,24 @@ class GameLogic: ObservableObject {
             pattern = userPattern
         }
         
-        let step = engine.currentStep
-        guard step >= 0 else { return }
-        
         // one loop playback for checking
-        if gameState == .checking || gameState == .result {
-            if checkingStartStep == nil {
-                // first time - record we started
-                checkingStartStep = 0
-            } else if step == 15 {
-                // we're on the last step, stop after playing it
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
-                    self?.engine.stop()
-                    self?.checkingStartStep = nil
-                    print("changing gameState to .result")
-                    self?.gameState = .result
-                    print("gameState is now: \(String(describing: self?.gameState))")
-                    print("lastCheckResult exists: \(self?.lastCheckResult != nil)")
+        if gameState == .checking {
+            if step == 0 {
+                if hasCompletedCheckingLoop {
+                    // We've wrapped back to 0 after completing loop - stop
+                    engine.stop()
+                    hasCompletedCheckingLoop = false
+                    gameState = .result
+                    print("🔴 Completed checking loop, stopping")
+                    return
+                } else {
+                    // First time at step 0
+                    print("🟢 Starting checking at step 0")
                 }
+            } else if step == 15 {
+                // Mark that we've reached the end
+                hasCompletedCheckingLoop = true
+                print("🟠 Reached step 15")
             }
         }
         
@@ -348,6 +355,8 @@ class GameLogic: ObservableObject {
     
     // at this moment in time, which drums should exists????? what??
     private func expectedParts(at step: Int) -> [DrumParts] {
+        guard step >= 0 else { return [] }
+        
         let pattern = gameState == .listening ? randomPattern : userPattern
         var parts: [DrumParts] = []
         
@@ -397,7 +406,7 @@ class GameLogic: ObservableObject {
             snareFeedback: snareFeedback,
             kickFeedback: kickFeedback
         )
-        gameState = .result
+//        gameState = .result
         return lastCheckResult!
     }
     
@@ -442,11 +451,13 @@ class GameLogic: ObservableObject {
     }
     
     func startChecking() {
+        print("🟢 startChecking() called")
         gameState = .checking
         _ = checkUserPattern()
-        gameState = .checking
+//        gameState = .checking
         
         checkingStartStep = nil
+        hasCompletedCheckingLoop = false
         syncPatternToEngine(userPattern)
         engine.start(bpm: userPattern.bpm)
         

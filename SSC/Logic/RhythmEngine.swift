@@ -23,7 +23,7 @@ class RhythmEngine: ObservableObject {
         var steps: [BeatSlot]
     }
     
-    @Published var currentStep: Int = 0
+    @Published var currentStep: Int = -1
     @Published var tracks: [DrumTrack] = [
         DrumTrack(name: "HiHat", steps: Array(repeating: BeatSlot(isActive: false), count: 16)),
         DrumTrack(name: "Snare", steps: Array(repeating: BeatSlot(isActive: false), count: 16)),
@@ -35,14 +35,14 @@ class RhythmEngine: ObservableObject {
     
     // Double: decimal value
     func start(bpm: Double) {
+        print("🔵 start() called - currentStep before: \(currentStep)")
         stop()
         
         let interval = 60.0 / bpm / 4.0 // 16th notes
         
-        currentStep = -1 // reset so first tick becomes 0 instead of 1
-        tick()
+        // currentStep is already -1 from stop(), don't set it again
         
-        timer = Timer.scheduledTimer(
+        timer = Timer(
             timeInterval: interval,
             target: self,
             selector: #selector(tick),
@@ -57,6 +57,7 @@ class RhythmEngine: ObservableObject {
     func stop() {
         timer?.invalidate()
         timer = nil
+        currentStep = -1
         
         print("stop() RhythmEngine")
     }
@@ -74,7 +75,7 @@ class RhythmEngine: ObservableObject {
         currentStep = (currentStep + 1) % totalSteps
         stepPulse.toggle()
         
-        print("tick, step: \(currentStep) RhythmEngine")
+        print("🔴 tick, step: \(currentStep) RhythmEngine")
     }
     
     func toggle(trackIndex: Int, stepIndex: Int) {

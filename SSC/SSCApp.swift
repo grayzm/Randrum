@@ -9,10 +9,11 @@ import SwiftUI
 
 @main
 struct SSCApp: App {
+    @StateObject private var game = GameLogic()
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environmentObject(GameLogic())
+                .environmentObject(game)
         }
     }
 }

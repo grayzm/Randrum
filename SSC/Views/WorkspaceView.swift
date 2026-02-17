@@ -31,7 +31,11 @@ struct WorkspaceView: View {
                     .overlay(Image(systemName: "metronome.fill")
                         .font(Font.title)
                         .foregroundColor(.white))
-                StepHeaderView(currentStep: game.gameState == .recreating ? game.engine.currentStep : -1)
+                StepHeaderView(currentStep: (
+                    game.gameState == .recreating ||
+                    game.gameState == .checking ||
+                    game.gameState == .result) &&
+                               game.engine.currentStep >= 0 ? game.engine.currentStep : -1)
             }
             HStack {
                 VStack(spacing: 30) {
@@ -87,7 +91,10 @@ struct WorkspaceView: View {
                             size: padSize
                         )
                     }
-                    if game.gameState == .recreating || game.gameState == .checking || game.gameState == .result {
+                    if (game.gameState == .recreating ||
+                        game.gameState == .checking ||
+                        game.gameState == .result) &&
+                        game.engine.currentStep >= 0 {
                         RoundedRectangle(cornerRadius: 5)
                             .fill(.white.opacity(0.15))
                             .frame(width: padSize, height: 228)

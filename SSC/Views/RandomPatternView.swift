@@ -81,7 +81,8 @@ struct RandomPatternView: View {
                         size: padSize
                     )
                 }
-                if game.gameState == .listening {
+                if game.gameState == .listening &&
+                    game.engine.currentStep >= 0 {
                     RoundedRectangle(cornerRadius: 5)
                         .fill(.white.opacity(0.15))
                         .frame(width: padSize, height: 185)

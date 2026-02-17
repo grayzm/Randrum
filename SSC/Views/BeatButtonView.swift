@@ -73,7 +73,6 @@ struct BeatButtonView: View {
     
     private var buttonColor: Color {
         if shouldShowFeedback, let feedback = feedback {
-            print("Feedback for button: \(feedback)")
             switch feedback {
             case .correct:
                 return Color.white

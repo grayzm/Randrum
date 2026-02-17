@@ -35,3 +35,7 @@
 
 // Button tap (user taps hiHat index 3):
 // WorkspaceView Button Tap -> game.toggleUserBeat(.hiHat, index: 3) -> userPattern.hiHat[3].isActive.toggle() -> @Published triggers UI update -> Button turns blue + sound plays
+
+// $: binds data. Used with property wrappers (like @State, @Binding, @ObservedObject, etc.) to access their projected value, which is typically a Binding. This creates a two-way connection to the underlying data, allowing views to both read and write the value.
+
+// &: allows a function to modify the original value of a variable, rather than just working on a local copy of the value.
