@@ -37,8 +37,6 @@ enum BeatFeedback {
     case missed
 }
 
-// ObservableObjects: Your data model class conforms to the ObservableObject protocol, signaling to SwiftUI that it can be watched for changes.
-// class: a class is a blueprint for creating objects and is used to manage shared, mutable state. Unlike struct, it supports inheritence.
 class GameLogic: ObservableObject {
     
     
@@ -53,8 +51,8 @@ class GameLogic: ObservableObject {
     
     @Published var gameState: GameState = .idle
     @Published var currentStep: Int = 0
+    @Published var hasChecked: Bool = false
     
-    // private var: applies the concept of access control, limiting the visibility and modification of a variable to the scope of its immediate declaration. When paired with SwiftUI property wrappers, private ensures proper data flow and prevents conflicts with SwiftUI's storage management.
     private var cancellables = Set<AnyCancellable>()
     // add storage for taps
     private var tapTimes: [Date] = [] // for registerTap()
@@ -128,6 +126,7 @@ class GameLogic: ObservableObject {
         let pattern = PatternFactory.generateRandomPattern()
         randomPattern = pattern
         userPattern = DrumPattern.empty(bpm: 0)
+        hasChecked = false
 //        currentPattern = pattern
         
 //        engine.load(pattern: currentPattern)
@@ -465,6 +464,7 @@ class GameLogic: ObservableObject {
         
         checkingStartStep = nil
         hasCompletedCheckingLoop = false
+        hasChecked = true
         syncPatternToEngine(userPattern)
         engine.start(bpm: userPattern.bpm)
         

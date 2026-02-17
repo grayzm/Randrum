@@ -25,6 +25,28 @@ struct RandomPatternView: View {
     private let spacing: CGFloat = 10
     private let padSize: CGFloat = 45
     
+    // random flicker state: 3 rows x 16 buttons
+    @State private var flickerState: [[Bool]] = Array(
+        repeating: Array(repeating: false, count: 16),
+        count: 3
+    )
+    @State private var flickerTimer: Timer? = nil
+    
+    // what to actually display per row
+    private func displayBeats(for row: Int, real: [BeatSlot]) -> [BeatSlot] {
+        switch game.gameState {
+        case .checking, .result:
+            return real // reveal actual pattern
+        case .listening:
+            if game.hasChecked {
+                return real // show real pattern after check
+            }
+            return flickerState[row].map { BeatSlot(isActive: $0) }
+        default:
+            return Array(repeating: BeatSlot(isActive: false), count: 16)
+        }
+    }
+    
     var body: some View {
         HStack {
             VStack(spacing: 25) {
@@ -55,8 +77,8 @@ struct RandomPatternView: View {
                 VStack(alignment: .leading, spacing: 25) {
                     DrumRowView(
                         part: .hiHat,
-                        beats: game.randomPattern.hiHat,
-//                        currentStep: game.engine.currentStep,
+                        beats: displayBeats(for: 0, real: game.randomPattern.hiHat),
+                        //                        currentStep: game.engine.currentStep,
                         showGlow: game.gameState == .listening,
                         isEditable: false,
                         showsFeedback: false,
@@ -64,8 +86,8 @@ struct RandomPatternView: View {
                     )
                     DrumRowView(
                         part: .snare,
-                        beats: game.randomPattern.snare,
-//                        currentStep: game.engine.currentStep,
+                        beats: displayBeats(for: 1, real: game.randomPattern.snare),
+                        //                        currentStep: game.engine.currentStep,
                         showGlow: game.gameState == .listening,
                         isEditable: false,
                         showsFeedback: false,
@@ -73,8 +95,8 @@ struct RandomPatternView: View {
                     )
                     DrumRowView(
                         part: .kick,
-                        beats: game.randomPattern.kick,
-//                        currentStep: game.engine.currentStep,
+                        beats: displayBeats(for: 2, real: game.randomPattern.kick),
+                        //                        currentStep: game.engine.currentStep,
                         showGlow: game.gameState == .listening,
                         isEditable: false,
                         showsFeedback: false,
@@ -96,6 +118,47 @@ struct RandomPatternView: View {
                 }
             }
             .frame(maxWidth: .infinity)
+        }
+        .onChange(of: game.gameState) { _, newState in
+            if newState == .listening {
+                if game.hasChecked {
+                    stopFlicker()
+                } else {
+                    startFlicker()
+                }
+            } else if newState == .checking || newState == .result {
+                game.hasChecked = true
+                stopFlicker()
+            } else if newState == .idle {
+                game.hasChecked = false
+                stopFlicker()
+            }
+        }
+    }
+    
+    private func startFlicker() {
+        guard !game.hasChecked else { return }
+        randomizeFlicker()
+        // lower number = more flickering
+        flickerTimer = Timer.scheduledTimer(withTimeInterval: 0.18, repeats: true) { _ in
+            randomizeFlicker()
+        }
+    }
+    
+    private func stopFlicker() {
+        flickerTimer?.invalidate()
+        flickerTimer = nil
+    }
+    
+    private func randomizeFlicker() {
+        for row in 0..<3 {
+            for col in 0..<16 {
+                // how many buttons update each tick (higher number = more chaotic)
+                if Double.random(in: 0...1) < 0.7 {
+                    // how likely a button is on vs off (lower = more sparse)
+                    flickerState[row][col] = Double.random(in: 0...1) < 0.2
+                }
+            }
         }
     }
 }
