@@ -148,6 +148,7 @@ class GameLogic: ObservableObject {
     func stopPlayback() {
         engine.stop()
         gameState = .idle
+        lastPlayedStep = -1
         
         print("stopPlayback() GameLogic")
     }
@@ -226,9 +227,9 @@ class GameLogic: ObservableObject {
     
     // ------------ USER WORKSPACE ------------
     func toggleUserBeat(part: DrumParts, index: Int) {
-        if gameState != .recreating {
-            gameState = .recreating
-        }
+//        if gameState != .recreating {
+//            gameState = .recreating
+//        }
         
         
         switch part {
@@ -295,6 +296,8 @@ class GameLogic: ObservableObject {
     
     func pausePlayback() {
         engine.stop()
+        gameState = .idle
+        lastPlayedStep = -1
 //        isPlayingUser = false
         
         print("pausePlayback() GameLogic")
@@ -468,6 +471,7 @@ class GameLogic: ObservableObject {
     func nextRound() {
         newGame()
         gameState = .idle
+        lastPlayedStep = -1
         
         print("nextRound() GameLogic")
     }

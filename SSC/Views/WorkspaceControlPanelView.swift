@@ -35,7 +35,9 @@ struct WorkspaceControlPanelView: View {
                     .font(.largeTitle)
                     .padding(.horizontal)
                     .shadow(radius: 10)
-                    .overlay(Image(systemName: game.gameState == .recreating ? "pause.fill" : "play.fill"))
+                    .overlay(Image(systemName:
+                                    game.gameState == .recreating &&
+                                   game.engine.isRunning ? "pause.fill" : "play.fill"))
                 }
         }
     }
