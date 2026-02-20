@@ -26,8 +26,8 @@ struct InstructionView: View {
     }
     
     var body: some View {
-        if !game.dialogueMessages.isEmpty && game.currentDialogueIndex < game.dialogueMessages.count {
-            Text(game.dialogueMessages[game.currentDialogueIndex])
+        if !message.isEmpty {
+            Text(message)
                 .font(.custom("DepartureMono-Regular", size: 20))
                 .foregroundStyle(Color("stroke"))
                 .padding(.horizontal, 16)

@@ -86,11 +86,13 @@ class GameLogic: ObservableObject {
             .store(in: &cancellables) // retain the subscription
         
         // set initial dialogue
-        dialogueMessages = [
-            "Press play to play random pattern.",
-            "Press randomize to generate a new random pattern",
-            "Press check to reveal the random pattern"
-        ]
+        randomMessage = "Press play to play random pattern"
+        workspaceMessage = "Recreate the pattern here"
+//        dialogueMessages = [
+//            "Press play to play random pattern.",
+//            "Press randomize to generate a new random pattern",
+//            "Press check to reveal the random pattern"
+//        ]
         
         print("init GameLogic")
     }
@@ -201,6 +203,8 @@ class GameLogic: ObservableObject {
         print("registerTap() GameLogic")
     }
     
+    private var clearMessageWorkItem: DispatchWorkItem?
+    
     func calculateBPM() -> Double? {
         // check taps should be at least 2, else don't run the code
         guard tapTimes.count >= 2 else { return nil }
@@ -211,7 +215,18 @@ class GameLogic: ObservableObject {
             let interval = tapTimes[i].timeIntervalSince(tapTimes[i - 1])
             // add the calculated interval to the intervals array
             intervals.append(interval)
+            
             workspaceMessage = "Calculating your BPM..."
+            
+            // cancel any existing timer
+            clearMessageWorkItem?.cancel()
+            
+            // create new time
+            let workItem = DispatchWorkItem { [weak self] in
+                self?.workspaceMessage = ""
+            }
+            clearMessageWorkItem = workItem
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3.0, execute: workItem)
             
             print("calculateBPM() GameLogic")
         }
@@ -229,6 +244,7 @@ class GameLogic: ObservableObject {
         
         print("calculateBPM() GameLogic")
         
+//        workspaceMessage = "BPM set"
         return bpm
     }
     
@@ -314,14 +330,14 @@ class GameLogic: ObservableObject {
 //        print("playUserPattern() GameLogic")
 //    }
     
-    func pausePlayback() {
-        engine.stop()
-        gameState = .idle
-        lastPlayedStep = -1
-//        isPlayingUser = false
-        
-        print("pausePlayback() GameLogic")
-    }
+//    func pausePlayback() {
+//        engine.stop()
+//        gameState = .idle
+//        lastPlayedStep = -1
+////        isPlayingUser = false
+//        
+//        print("pausePlayback() GameLogic")
+//    }
     
     // new handleStepTick() after adding GameState
     func handleStepTick() {
@@ -393,7 +409,7 @@ class GameLogic: ObservableObject {
         
         // BPM check (with tolerance)
         let bpmTolerance: Double = 2
-        // abs:  is a global function that returns the absolute value of a given number. It converts negative numbers into positive numbers, while positive numbers and zero remain unchanged.
+        
         let bpmCorrect = abs(userPattern.bpm - randomPattern.bpm) <= bpmTolerance
         
         let hiHatFeedback = generateFeedback(
@@ -459,7 +475,7 @@ class GameLogic: ObservableObject {
         lastPlayedStep = -1
         syncPatternToEngine(randomPattern)
         engine.start(bpm: randomPattern.bpm)
-        randomMessage = "Playing random pattern"
+        randomMessage = "Playing random pattern..."
         
         print("startListening() GameLogic")
     }
@@ -472,8 +488,9 @@ class GameLogic: ObservableObject {
         
         if userPattern.bpm > 0 {
             engine.start(bpm: userPattern.bpm)
+//            workspaceMessage = "Playing your pattern..."
         }
-        workspaceMessage = "Playing your pattern"
+        workspaceMessage = "Playing your pattern..."
         
         print("stratRecreating() GameLogic")
     }
@@ -490,7 +507,7 @@ class GameLogic: ObservableObject {
         hasChecked = true
         syncPatternToEngine(userPattern)
         engine.start(bpm: userPattern.bpm)
-        randomMessage = "Random pattern revealed"
+        randomMessage = "Random pattern revealed!"
         
         print("startChecking() GameLogic")
     }

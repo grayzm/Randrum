@@ -23,10 +23,11 @@ struct MetronomeTapperView: View {
         HStack(spacing: 20) {
             HStack() {
                 Text("\(Int(game.userPattern.bpm))")
-                    .font(.system(size: 30).bold())
+                    .font(.custom("DepartureMono-Regular", size: 24))
                     .foregroundStyle(Color("stroke"))
                 Text("BPM")
-                    .font(.subheadline)
+                    .font(.custom("DepartureMono-Regular", size: 20))
+//                    .font(.subheadline)
                     .foregroundStyle(Color("stroke"))
             }
             .frame(width: 120, height: 50)
@@ -42,9 +43,11 @@ struct MetronomeTapperView: View {
                     Image(systemName: "metronome.fill")
                         .font(.system(size: 20))
                     Text("Tap")
-                        .font(.subheadline)
+//                        .font(.title3)
+                        .font(.custom("DepartureMono-Regular", size: 20))
                 }
-                .foregroundStyle(Color("text"))                .frame(width: 120, height: 50)
+                .foregroundStyle(Color("text"))
+                .frame(width: 120, height: 50)
                 .background(
                     RoundedRectangle(cornerRadius: 10)
                         .fill(Color("buttonFill"))

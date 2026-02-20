@@ -15,6 +15,8 @@
 
 // $: binds data. Used with property wrappers (like @State, @Binding, @ObservedObject, etc.) to access their projected value, which is typically a Binding. This creates a two-way connection to the underlying data, allowing views to both read and write the value.
 
+// &: allows a function to modify the original value of a variable, rather than just working on a local copy of the value.
+
 // inout: By default, value types (like Int, Struct, etc.) are copied when passed to a function. inout makes it so the function interacts with the original data. Function Call: When calling a function with an in-out parameter, you must place an ampersand (&) directly before the variable name to explicitly acknowledge that the original value might be modified.
 
 // CaseIterable: a Swift protocol that allows you to access a collection of all the cases within an enumeration (enum).
@@ -24,6 +26,8 @@
 // Identifiable: a Swift protocol that guarantees a type has a unique identifier property, allowing individual instances to be distinguished within collections.
 
 // Equatable: a protocol that allows you to compare two instances of a custom type (like a struct or enum) to determine if they are equal using the == operator.
+
+// abs:  is a global function that returns the absolute value of a given number. It converts negative numbers into positive numbers, while positive numbers and zero remain unchanged.
 
 // -------------------------------------------
 
@@ -35,7 +39,3 @@
 
 // Button tap (user taps hiHat index 3):
 // WorkspaceView Button Tap -> game.toggleUserBeat(.hiHat, index: 3) -> userPattern.hiHat[3].isActive.toggle() -> @Published triggers UI update -> Button turns blue + sound plays
-
-// $: binds data. Used with property wrappers (like @State, @Binding, @ObservedObject, etc.) to access their projected value, which is typically a Binding. This creates a two-way connection to the underlying data, allowing views to both read and write the value.
-
-// &: allows a function to modify the original value of a variable, rather than just working on a local copy of the value.

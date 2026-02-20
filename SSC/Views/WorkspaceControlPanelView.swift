@@ -32,7 +32,7 @@ struct WorkspaceControlPanelView: View {
             MetronomeTapperView()
             Button {
                 if game.gameState == .recreating {
-                    game.pausePlayback()
+                    game.stopPlayback()
                 } else {
                     game.startRecreating()
                 }
