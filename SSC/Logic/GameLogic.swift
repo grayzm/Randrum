@@ -53,6 +53,9 @@ class GameLogic: ObservableObject {
     @Published var currentStep: Int = 0
     @Published var hasChecked: Bool = false
     
+    @Published var dialogueMessages: [String] = []
+    @Published var currentDialogueIndex: Int = 0
+    
     private var cancellables = Set<AnyCancellable>()
     // add storage for taps
     private var tapTimes: [Date] = [] // for registerTap()

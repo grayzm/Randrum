@@ -15,6 +15,7 @@ import SwiftUI
 
 struct BeatButtonView: View {
     @EnvironmentObject var game: GameLogic
+    @Environment(\.colorScheme) var colorScheme
     
     var isActive: Bool
     var isCurrentStep: Bool
@@ -30,24 +31,25 @@ struct BeatButtonView: View {
         } label: {
             ZStack {
                 // glow layer
-                if isCurrentStep {
+                if isCurrentStep && isActive {
                     RoundedRectangle(cornerRadius: 5)
-                        .fill(Color.white.opacity(0.15))
+                        .fill(.white.opacity(colorScheme == .dark ? 0.15 : 0.3))
                         .blur(radius: 8)
                         .scaleEffect(isCurrentStep ? 1.12 : 1)
                         .transition(.opacity)
                 }
-                if isCurrentStep && isActive {
+                if isCurrentStep && isActive && game.gameState == .recreating {
                     RoundedRectangle(cornerRadius: 5)
-                        .stroke(Color.white.opacity(0.6), lineWidth: 2)
-                        .scaleEffect(1.35)
+                        .stroke(Color.white.opacity(colorScheme == .dark ? 0.6 : 1.2), lineWidth: 3)
+                        .scaleEffect(1.5)
                         .opacity(0.8)
-                        .blur(radius: 2)
+                        .blur(radius: 3)
                         .transition(.scale)
                 }
                 // main pad
                 RoundedRectangle(cornerRadius: 5)
                     .fill(buttonColor)
+                    .shadow(color: Color("shadow"), radius: 4, x: 4, y: 4)
                     .overlay(
                         shouldShowFeedback && feedback == .missed ?
                         RoundedRectangle(cornerRadius: 5)
@@ -90,7 +92,7 @@ struct BeatButtonView: View {
 
 #Preview {
     BeatButtonView(
-        isActive: true,
+        isActive: false,
         isCurrentStep: true,
         feedback: .correct,
         index: 0,

@@ -17,6 +17,7 @@ import SwiftUI
 
 struct WorkspaceView: View {
     @EnvironmentObject var game: GameLogic
+    @Environment(\.colorScheme) var colorScheme
     
     private let spacing: CGFloat = 10
     private let padSize: CGFloat = 56
@@ -27,10 +28,12 @@ struct WorkspaceView: View {
                 RoundedRectangle(cornerRadius: 5)
                     .frame(width: 56, height: 56)
                     .foregroundColor(Color.clear)
-                    .padding(.horizontal)
-                    .overlay(Image(systemName: "metronome.fill")
-                        .font(Font.title)
-                        .foregroundColor(.white))
+                    .overlay(
+                        Image(systemName: "metronome.fill")
+                        .font(.largeTitle)
+                        .foregroundStyle(Color("icon"))
+                    )
+                Spacer()
                 StepHeaderView(currentStep: (
                     game.gameState == .recreating ||
                     game.gameState == .checking ||
@@ -42,31 +45,34 @@ struct WorkspaceView: View {
                     RoundedRectangle(cornerRadius: 5)
                         .frame(width: 56, height: 56)
                         .foregroundColor(Color.clear)
-                        .padding(.horizontal)
-                        .overlay(Image(systemName: "music.pages.fill")
-                            .font(Font.largeTitle)
-                            .foregroundColor(.white))
+                        .overlay(
+                            Image(systemName: "music.pages.fill")
+                            .font(.largeTitle)
+                            .foregroundStyle(Color("icon"))
+                        )
                     RoundedRectangle(cornerRadius: 5)
                         .frame(width: 56, height: 56)
                         .foregroundColor(Color.clear)
-                        .padding(.horizontal)
-                        .overlay(Image(systemName: "music.pages.fill")
-                            .font(Font.largeTitle)
-                            .foregroundColor(.white))
+                        .overlay(
+                            Image(systemName: "music.pages.fill")
+                            .font(.largeTitle)
+                            .foregroundStyle(Color("icon"))
+                        )
                     RoundedRectangle(cornerRadius: 5)
                         .frame(width: 56, height: 56)
                         .foregroundColor(Color.clear)
-                        .padding(.horizontal)
-                        .overlay(Image(systemName: "music.pages.fill")
-                            .font(Font.largeTitle)
-                            .foregroundColor(.white))
+                        .overlay(
+                            Image(systemName: "music.pages.fill")
+                            .font(.largeTitle)
+                            .foregroundStyle(Color("icon"))
+                        )
                 }
+                Spacer()
                 ZStack(alignment: .topLeading) {
                     VStack(spacing: 30) {
                         DrumRowView(
                             part: .hiHat,
                             beats: game.userPattern.hiHat,
-//                            currentStep: game.engine.currentStep,
                             showGlow: game.gameState == .recreating || game.gameState == .checking || game.gameState == .result,
                             isEditable: true,
                             showsFeedback: true,
@@ -75,7 +81,6 @@ struct WorkspaceView: View {
                         DrumRowView(
                             part: .snare,
                             beats: game.userPattern.snare,
-//                            currentStep: game.engine.currentStep,
                             showGlow: game.gameState == .recreating || game.gameState == .checking || game.gameState == .result,
                             isEditable: true,
                             showsFeedback: true,
@@ -84,7 +89,6 @@ struct WorkspaceView: View {
                         DrumRowView(
                             part: .kick,
                             beats: game.userPattern.kick,
-//                            currentStep: game.engine.currentStep,
                             showGlow: game.gameState == .recreating || game.gameState == .checking || game.gameState == .result,
                             isEditable: true,
                             showsFeedback: true,
@@ -96,7 +100,7 @@ struct WorkspaceView: View {
                         game.gameState == .result) &&
                         game.engine.currentStep >= 0 {
                         RoundedRectangle(cornerRadius: 5)
-                            .fill(.white.opacity(0.15))
+                            .fill(.white.opacity(colorScheme == .dark ? 0.15 : 0.3))
                             .frame(width: padSize, height: 228)
                             .offset(x: CGFloat(game.engine.currentStep) * (padSize + spacing))
                             .animation(
@@ -116,12 +120,3 @@ struct WorkspaceView: View {
     WorkspaceView()
         .environmentObject(GameLogic())
 }
-//RoundedRectangle(cornerRadius: 5)
-//    .frame(width: 55, height: 55)
-//    .foregroundColor(Color("default"))
-//    .font(.largeTitle)
-//    .padding()
-//    .shadow(radius: 10)
-//    .overlay(Image(systemName: "music.pages.fill")
-//        .font(Font.title)
-//        .foregroundColor(.white))

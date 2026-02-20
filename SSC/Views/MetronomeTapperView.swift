@@ -20,41 +20,42 @@ struct MetronomeTapperView: View {
     @EnvironmentObject var game: GameLogic
     
     var body: some View {
-        HStack(spacing: 40) {
-            VStack(spacing: 5) {
+        HStack(spacing: 20) {
+            HStack() {
                 Text("\(Int(game.userPattern.bpm))")
-                    .font(.system(size: 32).bold())
-                    .foregroundColor(.white)
+                    .font(.system(size: 30).bold())
+                    .foregroundStyle(Color("stroke"))
                 Text("BPM")
-                    .font(.title3)
-                    .foregroundColor(.white.opacity(0.7))
+                    .font(.subheadline)
+                    .foregroundStyle(Color("stroke"))
             }
+            .frame(width: 120, height: 50)
+            .background(
+                RoundedRectangle(cornerRadius: 2)
+                    .fill(Color("screen"))
+            )
+            
             Button {
                 game.registerTap()
             } label: {
-                VStack(spacing: 10) {
+                HStack(spacing: 10) {
                     Image(systemName: "metronome.fill")
-                        .font(.system(size: 24))
+                        .font(.system(size: 20))
                     Text("Tap")
-                        .font(.default)
+                        .font(.subheadline)
                 }
-                .foregroundColor(.white)
-                .frame(width: 75, height: 75)
+                .foregroundStyle(Color("text"))                .frame(width: 120, height: 50)
                 .background(
-                    RoundedRectangle(cornerRadius: 15)
-                        .fill(Color.white.opacity(0.2))
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(Color("buttonFill"))
                 )
                 .overlay(
-                    RoundedRectangle(cornerRadius: 15)
-                        .stroke(Color.white.opacity(0.4), lineWidth: 2)
+                    RoundedRectangle(cornerRadius: 10)
+                        .stroke(Color("stroke").opacity(0.4), lineWidth: 2)
                 )
             }
             .buttonStyle(.plain)
-//            Text("Tap to set tempo")
-//                .font(.caption)
-//                .foregroundColor(.white.opacity(0.5))
         }
-        .padding()
     }
 }
 

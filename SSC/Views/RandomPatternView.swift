@@ -21,6 +21,7 @@ import SwiftUI
 
 struct RandomPatternView: View {
     @EnvironmentObject var game: GameLogic
+    @Environment(\.colorScheme) var colorScheme
     
     private let spacing: CGFloat = 10
     private let padSize: CGFloat = 45
@@ -49,28 +50,31 @@ struct RandomPatternView: View {
     
     var body: some View {
         HStack {
-            VStack(spacing: 25) {
+            VStack(alignment: .center, spacing: 25) {
                 RoundedRectangle(cornerRadius: 5)
                     .frame(width: 45, height: 45)
                     .foregroundColor(Color.clear)
-                    .padding(.horizontal)
-                    .overlay(Image(systemName: "music.pages.fill")
-                        .font(Font.largeTitle)
-                        .foregroundColor(.white))
+                    .overlay(
+                        Image(systemName: "music.pages.fill")
+                        .font(.largeTitle)
+                        .foregroundStyle(Color("icon"))
+                    )
                 RoundedRectangle(cornerRadius: 5)
                     .frame(width: 45, height: 45)
                     .foregroundColor(Color.clear)
-                    .padding(.horizontal)
-                    .overlay(Image(systemName: "music.pages.fill")
-                        .font(Font.largeTitle)
-                        .foregroundColor(.white))
+                    .overlay(
+                        Image(systemName: "music.pages.fill")
+                        .font(.largeTitle)
+                        .foregroundStyle(Color("icon"))
+                    )
                 RoundedRectangle(cornerRadius: 5)
                     .frame(width: 45, height: 45)
                     .foregroundColor(Color.clear)
-                    .padding(.horizontal)
-                    .overlay(Image(systemName: "music.pages.fill")
-                        .font(Font.largeTitle)
-                        .foregroundColor(.white))
+                    .overlay(
+                        Image(systemName: "music.pages.fill")
+                        .font(.largeTitle)
+                        .foregroundStyle(Color("icon"))
+                    )
             }
             
             ZStack(alignment: .topLeading) {
@@ -78,7 +82,6 @@ struct RandomPatternView: View {
                     DrumRowView(
                         part: .hiHat,
                         beats: displayBeats(for: 0, real: game.randomPattern.hiHat),
-                        //                        currentStep: game.engine.currentStep,
                         showGlow: game.gameState == .listening,
                         isEditable: false,
                         showsFeedback: false,
@@ -87,7 +90,6 @@ struct RandomPatternView: View {
                     DrumRowView(
                         part: .snare,
                         beats: displayBeats(for: 1, real: game.randomPattern.snare),
-                        //                        currentStep: game.engine.currentStep,
                         showGlow: game.gameState == .listening,
                         isEditable: false,
                         showsFeedback: false,
@@ -96,7 +98,6 @@ struct RandomPatternView: View {
                     DrumRowView(
                         part: .kick,
                         beats: displayBeats(for: 2, real: game.randomPattern.kick),
-                        //                        currentStep: game.engine.currentStep,
                         showGlow: game.gameState == .listening,
                         isEditable: false,
                         showsFeedback: false,
@@ -104,16 +105,16 @@ struct RandomPatternView: View {
                     )
                 }
                 if game.gameState == .listening &&
-                    game.engine.currentStep >= 0 {
+                    game.engine.currentStep == 0 {
                     RoundedRectangle(cornerRadius: 5)
-                        .fill(.white.opacity(0.15))
+                        .fill(.white.opacity(colorScheme == .dark ? 0.15 : 0.45))
                         .frame(width: padSize, height: 185)
-                        .offset(x: CGFloat(game.engine.currentStep) * (padSize + spacing))
-                        .animation(
-                            game.engine.currentStep == 0
-                            ? nil : .linear(duration: 0.08),
-                            value: game.engine.currentStep
-                        )
+//                        .offset(x: CGFloat(game.engine.currentStep) * (padSize + spacing))
+//                        .animation(
+//                            game.engine.currentStep == 0
+//                            ? nil : .linear(duration: 0.08),
+//                            value: game.engine.currentStep
+//                        )
                         .allowsHitTesting(false)
                 }
             }

@@ -21,7 +21,11 @@ struct WorkspaceControlPanelView: View {
     @EnvironmentObject var game: GameLogic
     
     var body: some View {
-        HStack {
+        HStack(spacing: 20) {
+            RoundedRectangle(cornerRadius: 2)
+                .fill(Color("screen"))
+                .frame(height: 50)
+            MetronomeTapperView()
             Button {
                 if game.gameState == .recreating {
                     game.pausePlayback()
@@ -30,14 +34,17 @@ struct WorkspaceControlPanelView: View {
                 }
             } label: {
                 RoundedRectangle(cornerRadius: 10)
+                    .fill(Color("buttonFill"))
                     .frame(width: 120, height: 50)
-                    .foregroundColor(.white)
-                    .font(.largeTitle)
-                    .padding(.horizontal)
-                    .shadow(radius: 10)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color("stroke").opacity(0.4), lineWidth: 2)
+                    )
+                    .padding(.vertical, 5)
                     .overlay(Image(systemName:
                                     game.gameState == .recreating &&
                                    game.engine.isRunning ? "pause.fill" : "play.fill"))
+                    .foregroundStyle(Color("text"))
                 }
         }
     }

@@ -15,26 +15,51 @@ struct ContentView: View {
     
     var body: some View {
         VStack {
-            Text("Randrum")
-                .font(.largeTitle.bold())
-            
-            HStack(spacing: 30) {
-                RandomPatternView()
-                RandomControlPanelView()
+            VStack(alignment: .leading) {
+                HStack(spacing: 30) {
+                    Text("Randrum")
+                        .font(.custom("DepartureMono-Regular", size: 24))
+//                        .frame(maxWidth: .infinity, alignment: .leading)
+                    Spacer()
+                    RoundedRectangle(cornerRadius: 2)
+                        .fill(Color("screen"))
+                        .frame(height: 50)
+                }
+                    .padding(.bottom)
+                HStack(spacing: 30) {
+                    RandomPatternView()
+                    RandomControlPanelView()
+                }
             }
+            .padding(30)
+            .background(
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(
+                        LinearGradient(colors: [Color("background1"), Color("background2")], startPoint: .top, endPoint: .bottom)
+                    )
+            )
+            
             Spacer()
             
-            HStack{
-                Text("Workspace")
-                    .font(.largeTitle.bold())
-                Spacer()
-                WorkspaceControlPanelView()
-                MetronomeTapperView()
-                
-            }
+            VStack {
+                HStack(spacing: 30) {
+                    Text("Workspace")
+                        .font(.custom("DepartureMono-Regular", size: 24))
+                    Spacer()
+//                    MetronomeTapperView()
+                    WorkspaceControlPanelView()
+                }
                 WorkspaceView()
+            }
+            .padding(30)
+            .background(
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(
+                        LinearGradient(colors: [Color("background1"), Color("background2")], startPoint: .top, endPoint: .bottom)
+                    )
+            )
         }
-        .padding(.horizontal, 40)
+        .padding(.horizontal, 10)
     }
 }
 

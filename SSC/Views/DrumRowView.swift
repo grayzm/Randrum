@@ -27,7 +27,6 @@ struct DrumRowView: View {
     
     let part: DrumParts
     let beats: [BeatSlot]
-//    let currentStep: Int
     let showGlow: Bool
     let isEditable: Bool
     let showsFeedback: Bool
@@ -93,7 +92,6 @@ struct DrumRowView: View {
     DrumRowView(
         part: .hiHat,
         beats: game.randomPattern.hiHat,
-//        currentStep: game.engine.currentStep,
         showGlow: true,
         isEditable: true,
         showsFeedback: true,

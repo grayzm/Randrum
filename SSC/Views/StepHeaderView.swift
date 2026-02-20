@@ -40,14 +40,6 @@ struct StepHeaderView: View {
                 .font(Font.system(size: 6))
         default: EmptyView()
         }
-        
-//        if step % 2 == 0 {
-//            let number = (step / 2) % 4 + 1
-//            Text("\(number)")
-//        } else {
-//            Image(systemName: "circle.fill")
-//                .font(Font.system(size: 6))
-//        }
     }
 }
 

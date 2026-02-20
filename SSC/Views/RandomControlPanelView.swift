@@ -16,43 +16,53 @@ struct RandomControlPanelView: View {
                 game.toggleRandomPlayback()
             } label: {
                 RoundedRectangle(cornerRadius: 10)
+                    .fill(Color("buttonFill"))
                     .frame(width: 120, height: 50)
-                    .foregroundColor(.white)
-                    .font(.largeTitle)
-                    .padding(5)
-                    .shadow(radius: 10)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color("stroke").opacity(0.4), lineWidth: 2)
+                    )
+                    .padding(.vertical, 5)
                     .overlay(
                         Image(systemName: game.gameState == .listening
-                             ? "pause.fill" : "play.fill")
+                              ? "pause.fill" : "play.fill")
+                        .foregroundStyle(Color("text"))
                     )
-                }
+            }
+            
+            
             Button {
                 game.nextRound()
             } label: {
                 RoundedRectangle(cornerRadius: 10)
+                    .fill(Color("buttonFill"))
                     .frame(width: 120, height: 50)
-                    .foregroundColor(.white)
-                    .font(.largeTitle)
-                    .padding(5)
-                    .shadow(radius: 10)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color("stroke").opacity(0.4), lineWidth: 2)
+                    )
+                    .padding(.vertical, 5)
                     .overlay(Text("Randrumize")
                         .font(.headline)
+                        .foregroundStyle(Color("text"))
                     )
             }
             Button {
                 game.startChecking()
             } label: {
                 RoundedRectangle(cornerRadius: 10)
+                    .fill(Color("buttonFill"))
                     .frame(width: 120, height: 50)
-                    .foregroundColor(.white)
-                    .font(.largeTitle)
-                    .padding(5)
-                    .shadow(radius: 10)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color("stroke").opacity(0.4), lineWidth: 2)
+                    )
+                    .padding(.vertical, 5)
                     .overlay(Text("Check")
                         .font(.headline)
+                        .foregroundStyle(Color("text"))
                     )
             }
-
         }
     }
 }
