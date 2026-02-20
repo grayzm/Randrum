@@ -21,9 +21,20 @@ struct ContentView: View {
                         .font(.custom("DepartureMono-Regular", size: 24))
 //                        .frame(maxWidth: .infinity, alignment: .leading)
                     Spacer()
-                    RoundedRectangle(cornerRadius: 2)
-                        .fill(Color("screen"))
-                        .frame(height: 50)
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 2)
+                            .fill(Color("screen"))
+                            .frame(height: 50)
+                        InstructionView(messageType: .random)
+                            .padding(.horizontal, 12)
+                    }
+                    Button {
+                        
+                    } label: {
+                        Image(systemName: "questionmark.circle")
+                            .font(.system(size: 32))
+                            .foregroundStyle(Color("text").opacity(0.4))
+                    }
                 }
                     .padding(.bottom)
                 HStack(spacing: 30) {

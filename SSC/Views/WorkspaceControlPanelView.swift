@@ -22,9 +22,13 @@ struct WorkspaceControlPanelView: View {
     
     var body: some View {
         HStack(spacing: 20) {
-            RoundedRectangle(cornerRadius: 2)
-                .fill(Color("screen"))
-                .frame(height: 50)
+            ZStack {
+                RoundedRectangle(cornerRadius: 2)
+                    .fill(Color("screen"))
+                    .frame(height: 50)
+                InstructionView(messageType: .workspace)
+                    .padding(.horizontal, 12)
+            }
             MetronomeTapperView()
             Button {
                 if game.gameState == .recreating {

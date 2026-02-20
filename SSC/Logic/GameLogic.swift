@@ -53,6 +53,9 @@ class GameLogic: ObservableObject {
     @Published var currentStep: Int = 0
     @Published var hasChecked: Bool = false
     
+    @Published var randomMessage: String = ""
+    @Published var workspaceMessage: String = ""
+    
     @Published var dialogueMessages: [String] = []
     @Published var currentDialogueIndex: Int = 0
     
@@ -81,6 +84,13 @@ class GameLogic: ObservableObject {
                 self?.triggerSounds()
             } 
             .store(in: &cancellables) // retain the subscription
+        
+        // set initial dialogue
+        dialogueMessages = [
+            "Press play to play random pattern.",
+            "Press randomize to generate a new random pattern",
+            "Press check to reveal the random pattern"
+        ]
         
         print("init GameLogic")
     }
@@ -130,9 +140,8 @@ class GameLogic: ObservableObject {
         randomPattern = pattern
         userPattern = DrumPattern.empty(bpm: 0)
         hasChecked = false
-//        currentPattern = pattern
         
-//        engine.load(pattern: currentPattern)
+        randomMessage = "New random pattern generated"
         
         print("newGame() GameLogic")
     }
@@ -148,6 +157,12 @@ class GameLogic: ObservableObject {
     }
     
     func stopPlayback() {
+        // set dialogue based on what was playing
+        if gameState == .listening {
+            randomMessage = "Random pattern paused"
+        } else if gameState == .recreating {
+            workspaceMessage = "Your pattern paused"
+        }
         engine.stop()
         gameState = .idle
         lastPlayedStep = -1
@@ -173,6 +188,7 @@ class GameLogic: ObservableObject {
         let now = Date()
         tapTimes.append(now)
         
+        
         // keep only last 6 taps for stability
         if tapTimes.count > 6 {
             tapTimes.removeFirst()
@@ -195,6 +211,7 @@ class GameLogic: ObservableObject {
             let interval = tapTimes[i].timeIntervalSince(tapTimes[i - 1])
             // add the calculated interval to the intervals array
             intervals.append(interval)
+            workspaceMessage = "Calculating your BPM..."
             
             print("calculateBPM() GameLogic")
         }
@@ -219,7 +236,8 @@ class GameLogic: ObservableObject {
         let clamped = min(max(tappedBPM, RhythmConfig.minBPM), RhythmConfig.maxBPM)
         userPattern.bpm = clamped
         
-//        if isPlayingUser {
+//        workspaceMessage = "BPM set"
+        
         if gameState == .recreating {
             engine.start(bpm: clamped)
         }
@@ -441,6 +459,7 @@ class GameLogic: ObservableObject {
         lastPlayedStep = -1
         syncPatternToEngine(randomPattern)
         engine.start(bpm: randomPattern.bpm)
+        randomMessage = "Playing random pattern"
         
         print("startListening() GameLogic")
     }
@@ -454,6 +473,7 @@ class GameLogic: ObservableObject {
         if userPattern.bpm > 0 {
             engine.start(bpm: userPattern.bpm)
         }
+        workspaceMessage = "Playing your pattern"
         
         print("stratRecreating() GameLogic")
     }
@@ -470,6 +490,7 @@ class GameLogic: ObservableObject {
         hasChecked = true
         syncPatternToEngine(userPattern)
         engine.start(bpm: userPattern.bpm)
+        randomMessage = "Random pattern revealed"
         
         print("startChecking() GameLogic")
     }
@@ -480,5 +501,25 @@ class GameLogic: ObservableObject {
         lastPlayedStep = -1
         
         print("nextRound() GameLogic")
+    }
+    
+// --------------- INSTRUCTIONS ---------------
+    
+    func setDialogue(_ messages: [String]) {
+        dialogueMessages = messages
+        currentDialogueIndex = 0
+    }
+    
+    func advanceDialogue() {
+        if currentDialogueIndex < dialogueMessages.count - 1 {
+            currentDialogueIndex += 1
+        } else {
+            clearDialogue()
+        }
+    }
+    
+    func clearDialogue() {
+        dialogueMessages = []
+        currentDialogueIndex = 0
     }
 }
