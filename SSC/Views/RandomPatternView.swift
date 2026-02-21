@@ -109,12 +109,6 @@ struct RandomPatternView: View {
                     RoundedRectangle(cornerRadius: 5)
                         .fill(.white.opacity(colorScheme == .dark ? 0.15 : 0.45))
                         .frame(width: padSize, height: 185)
-//                        .offset(x: CGFloat(game.engine.currentStep) * (padSize + spacing))
-//                        .animation(
-//                            game.engine.currentStep == 0
-//                            ? nil : .linear(duration: 0.08),
-//                            value: game.engine.currentStep
-//                        )
                         .allowsHitTesting(false)
                 }
             }

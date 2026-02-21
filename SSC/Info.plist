@@ -5,6 +5,7 @@
 	<key>UIAppFonts</key>
 	<array>
 		<string>DepartureMono-Regular.otf</string>
+		<string>LTStopwatch-Regular.ttf</string>
 	</array>
 </dict>
 </plist>

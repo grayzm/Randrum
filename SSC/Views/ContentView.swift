@@ -28,13 +28,13 @@ struct ContentView: View {
                         InstructionView(messageType: .random)
                             .padding(.horizontal, 12)
                     }
-                    Button {
-                        
-                    } label: {
-                        Image(systemName: "questionmark.circle")
-                            .font(.system(size: 32))
-                            .foregroundStyle(Color("text").opacity(0.4))
-                    }
+//                    Button {
+//                        
+//                    } label: {
+//                        Image(systemName: "questionmark.circle")
+//                            .font(.system(size: 32))
+//                            .foregroundStyle(Color("text").opacity(0.4))
+//                    }
                 }
                     .padding(.bottom)
                 HStack(spacing: 30) {
