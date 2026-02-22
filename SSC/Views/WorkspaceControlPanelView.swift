@@ -15,7 +15,7 @@
 //}
 
 
-import SwiftUI
+internal import SwiftUI
 
 struct WorkspaceControlPanelView: View {
     @EnvironmentObject var game: GameLogic
@@ -47,7 +47,7 @@ struct WorkspaceControlPanelView: View {
                     .padding(.vertical, 5)
                     .overlay(Image(systemName:
                                     game.gameState == .recreating &&
-                                   game.engine.isRunning ? "pause.fill" : "play.fill"))
+                                   game.engine.isRunning ? "stop.fill" : "play.fill"))
                     .foregroundStyle(Color("text"))
                 }
         }

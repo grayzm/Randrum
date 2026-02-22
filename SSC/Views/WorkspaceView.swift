@@ -13,7 +13,7 @@
 
 // tap -> WorkSpaceView -> GameLogic -> updates userPattern -> UI refreshes
 
-import SwiftUI
+internal import SwiftUI
 
 struct WorkspaceView: View {
     @EnvironmentObject var game: GameLogic
@@ -23,22 +23,12 @@ struct WorkspaceView: View {
     private let padSize: CGFloat = 56
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 30) {
-            HStack {
-                RoundedRectangle(cornerRadius: 5)
-                    .frame(width: 56, height: 56)
-                    .foregroundColor(Color.clear)
-                    .overlay(
-                        Image(systemName: "metronome.fill")
-                        .font(.largeTitle)
-                        .foregroundStyle(Color("icon"))
-                    )
+        VStack(spacing: 30) {
+            HStack(spacing: 30) {
+                Text("Workspace")
+                    .font(.custom("DepartureMono-Regular", size: 24))
                 Spacer()
-                StepHeaderView(currentStep: (
-                    game.gameState == .recreating ||
-                    game.gameState == .checking ||
-                    game.gameState == .result) &&
-                               game.engine.currentStep >= 0 ? game.engine.currentStep : -1)
+                WorkspaceControlPanelView()
             }
             HStack {
                 VStack(spacing: 30) {
@@ -46,69 +36,88 @@ struct WorkspaceView: View {
                         .frame(width: 56, height: 56)
                         .foregroundColor(Color.clear)
                         .overlay(
-                            Image(systemName: "music.pages.fill")
-                            .font(.largeTitle)
-                            .foregroundStyle(Color("icon"))
+                            Image(systemName: "metronome.fill")
+                                .font(.largeTitle)
+                                .foregroundStyle(Color("icon"))
                         )
                     RoundedRectangle(cornerRadius: 5)
                         .frame(width: 56, height: 56)
                         .foregroundColor(Color.clear)
                         .overlay(
                             Image(systemName: "music.pages.fill")
-                            .font(.largeTitle)
-                            .foregroundStyle(Color("icon"))
+                                .font(.largeTitle)
+                                .foregroundStyle(Color("icon"))
                         )
                     RoundedRectangle(cornerRadius: 5)
                         .frame(width: 56, height: 56)
                         .foregroundColor(Color.clear)
                         .overlay(
                             Image(systemName: "music.pages.fill")
-                            .font(.largeTitle)
-                            .foregroundStyle(Color("icon"))
+                                .font(.largeTitle)
+                                .foregroundStyle(Color("icon"))
+                        )
+                    RoundedRectangle(cornerRadius: 5)
+                        .frame(width: 56, height: 56)
+                        .foregroundColor(Color.clear)
+                        .overlay(
+                            Image(systemName: "music.pages.fill")
+                                .font(.largeTitle)
+                                .foregroundStyle(Color("icon"))
                         )
                 }
+                
                 Spacer()
-                ZStack(alignment: .topLeading) {
-                    VStack(spacing: 30) {
-                        DrumRowView(
-                            part: .hiHat,
-                            beats: game.userPattern.hiHat,
-                            showGlow: game.gameState == .recreating || game.gameState == .checking || game.gameState == .result,
-                            isEditable: true,
-                            showsFeedback: true,
-                            size: padSize
-                        )
-                        DrumRowView(
-                            part: .snare,
-                            beats: game.userPattern.snare,
-                            showGlow: game.gameState == .recreating || game.gameState == .checking || game.gameState == .result,
-                            isEditable: true,
-                            showsFeedback: true,
-                            size: padSize
-                        )
-                        DrumRowView(
-                            part: .kick,
-                            beats: game.userPattern.kick,
-                            showGlow: game.gameState == .recreating || game.gameState == .checking || game.gameState == .result,
-                            isEditable: true,
-                            showsFeedback: true,
-                            size: padSize
-                        )
-                    }
-                    if (game.gameState == .recreating ||
+                
+                
+                VStack(spacing: 30) {
+                    StepHeaderView(currentStep: (
+                        game.gameState == .recreating ||
                         game.gameState == .checking ||
                         game.gameState == .result) &&
-                        game.engine.currentStep >= 0 {
-                        RoundedRectangle(cornerRadius: 5)
-                            .fill(.white.opacity(colorScheme == .dark ? 0.15 : 0.3))
-                            .frame(width: padSize, height: 228)
-                            .offset(x: CGFloat(game.engine.currentStep) * (padSize + spacing))
-                            .animation(
-                                game.engine.currentStep == 0
-                                ? nil : .linear(duration: 0.08),
-                                value: game.engine.currentStep
+                                   game.engine.currentStep >= 0 ? game.engine.currentStep : -1)
+                    .frame(height: 56)
+                    ZStack(alignment: .topLeading) {
+                        VStack(spacing: 30) {
+                            DrumRowView(
+                                part: .hiHat,
+                                beats: game.userPattern.hiHat,
+                                showGlow: game.gameState == .recreating || game.gameState == .checking || game.gameState == .result,
+                                isEditable: true,
+                                showsFeedback: true,
+                                size: padSize
                             )
-                            .allowsHitTesting(false)
+                            DrumRowView(
+                                part: .snare,
+                                beats: game.userPattern.snare,
+                                showGlow: game.gameState == .recreating || game.gameState == .checking || game.gameState == .result,
+                                isEditable: true,
+                                showsFeedback: true,
+                                size: padSize
+                            )
+                            DrumRowView(
+                                part: .kick,
+                                beats: game.userPattern.kick,
+                                showGlow: game.gameState == .recreating || game.gameState == .checking || game.gameState == .result,
+                                isEditable: true,
+                                showsFeedback: true,
+                                size: padSize
+                            )
+                        }
+                        if (game.gameState == .recreating ||
+                            game.gameState == .checking ||
+                            game.gameState == .result) &&
+                            game.engine.currentStep >= 0 {
+                            RoundedRectangle(cornerRadius: 5)
+                                .fill(.white.opacity(colorScheme == .dark ? 0.15 : 0.3))
+                                .frame(width: padSize, height: 228)
+                                .offset(x: CGFloat(game.engine.currentStep) * (padSize + spacing))
+                                .animation(
+                                    game.engine.currentStep == 0
+                                    ? nil : .linear(duration: 0.08),
+                                    value: game.engine.currentStep
+                                )
+                                .allowsHitTesting(false)
+                        }
                     }
                 }
             }

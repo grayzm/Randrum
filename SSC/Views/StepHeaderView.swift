@@ -5,7 +5,7 @@
 //  Created by Graciella Michelle Siswoyo on 13/02/26.
 //
 
-import SwiftUI
+internal import SwiftUI
 
 struct StepHeaderView: View {
     @EnvironmentObject var game: GameLogic

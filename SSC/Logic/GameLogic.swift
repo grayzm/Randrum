@@ -39,7 +39,6 @@ enum BeatFeedback {
 
 class GameLogic: ObservableObject {
     
-    
     //@Published: updates UI for any changes within the property
     @Published var randomPattern: DrumPattern
     @Published var userPattern: DrumPattern
@@ -262,12 +261,8 @@ class GameLogic: ObservableObject {
     }
     
     // ------------ USER WORKSPACE ------------
+    
     func toggleUserBeat(part: DrumParts, index: Int) {
-//        if gameState != .recreating {
-//            gameState = .recreating
-//        }
-        
-        
         switch part {
         case .hiHat:
             userPattern.hiHat[index].isActive.toggle()
@@ -378,6 +373,7 @@ class GameLogic: ObservableObject {
 //    }
     
     // ------------ CHECKING ------------
+    
     struct CheckResult {
         var bpmCorrect: Bool
         var hiHatCorrect: Bool

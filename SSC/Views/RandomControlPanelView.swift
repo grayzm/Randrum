@@ -5,7 +5,7 @@
 //  Created by Graciella Michelle Siswoyo on 12/02/26.
 //
 
-import SwiftUI
+internal import SwiftUI
 
 struct RandomControlPanelView: View {
     @EnvironmentObject var game: GameLogic
@@ -25,7 +25,7 @@ struct RandomControlPanelView: View {
                     .padding(.vertical, 5)
                     .overlay(
                         Image(systemName: game.gameState == .listening
-                              ? "pause.fill" : "play.fill")
+                              ? "stop.fill" : "play.fill")
                         .foregroundStyle(Color("text"))
                     )
             }

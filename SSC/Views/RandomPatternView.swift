@@ -17,7 +17,7 @@
 // PatternGridView(pattern: game.randomPattern. isEditable: false)
 // WaveOverlay(opacity: game.revealPattern ? 0 : 1)
 
-import SwiftUI
+internal import SwiftUI
 
 struct RandomPatternView: View {
     @EnvironmentObject var game: GameLogic
@@ -49,84 +49,99 @@ struct RandomPatternView: View {
     }
     
     var body: some View {
-        HStack {
-            VStack(alignment: .center, spacing: 25) {
-                RoundedRectangle(cornerRadius: 5)
-                    .frame(width: 45, height: 45)
-                    .foregroundColor(Color.clear)
-                    .overlay(
-                        Image(systemName: "music.pages.fill")
-                        .font(.largeTitle)
-                        .foregroundStyle(Color("icon"))
-                    )
-                RoundedRectangle(cornerRadius: 5)
-                    .frame(width: 45, height: 45)
-                    .foregroundColor(Color.clear)
-                    .overlay(
-                        Image(systemName: "music.pages.fill")
-                        .font(.largeTitle)
-                        .foregroundStyle(Color("icon"))
-                    )
-                RoundedRectangle(cornerRadius: 5)
-                    .frame(width: 45, height: 45)
-                    .foregroundColor(Color.clear)
-                    .overlay(
-                        Image(systemName: "music.pages.fill")
-                        .font(.largeTitle)
-                        .foregroundStyle(Color("icon"))
-                    )
-            }
-            
-            ZStack(alignment: .topLeading) {
-                VStack(alignment: .leading, spacing: 25) {
-                    DrumRowView(
-                        part: .hiHat,
-                        beats: displayBeats(for: 0, real: game.randomPattern.hiHat),
-                        showGlow: game.gameState == .listening,
-                        isEditable: false,
-                        showsFeedback: false,
-                        size: padSize
-                    )
-                    DrumRowView(
-                        part: .snare,
-                        beats: displayBeats(for: 1, real: game.randomPattern.snare),
-                        showGlow: game.gameState == .listening,
-                        isEditable: false,
-                        showsFeedback: false,
-                        size: padSize
-                    )
-                    DrumRowView(
-                        part: .kick,
-                        beats: displayBeats(for: 2, real: game.randomPattern.kick),
-                        showGlow: game.gameState == .listening,
-                        isEditable: false,
-                        showsFeedback: false,
-                        size: padSize
-                    )
+        VStack(spacing: 30) {
+            HStack(spacing: 30) {
+                Text("Randrum")
+                    .font(.custom("DepartureMono-Regular", size: 24))
+                Spacer()
+                ZStack {
+                    RoundedRectangle(cornerRadius: 2)
+                        .fill(Color("screen"))
+                        .frame(height: 50)
+                    InstructionView(messageType: .random)
+                        .padding(.horizontal, 12)
                 }
-                if game.gameState == .listening &&
-                    game.engine.currentStep == 0 {
+            }
+            HStack {
+                VStack(alignment: .center, spacing: 25) {
                     RoundedRectangle(cornerRadius: 5)
-                        .fill(.white.opacity(colorScheme == .dark ? 0.15 : 0.45))
-                        .frame(width: padSize, height: 185)
-                        .allowsHitTesting(false)
+                        .frame(width: 45, height: 45)
+                        .foregroundColor(Color.clear)
+                        .overlay(
+                            Image(systemName: "music.pages.fill")
+                                .font(.largeTitle)
+                                .foregroundStyle(Color("icon"))
+                        )
+                    RoundedRectangle(cornerRadius: 5)
+                        .frame(width: 45, height: 45)
+                        .foregroundColor(Color.clear)
+                        .overlay(
+                            Image(systemName: "music.pages.fill")
+                                .font(.largeTitle)
+                                .foregroundStyle(Color("icon"))
+                        )
+                    RoundedRectangle(cornerRadius: 5)
+                        .frame(width: 45, height: 45)
+                        .foregroundColor(Color.clear)
+                        .overlay(
+                            Image(systemName: "music.pages.fill")
+                                .font(.largeTitle)
+                                .foregroundStyle(Color("icon"))
+                        )
                 }
+                
+                ZStack(alignment: .topLeading) {
+                    VStack(alignment: .leading, spacing: 25) {
+                        DrumRowView(
+                            part: .hiHat,
+                            beats: displayBeats(for: 0, real: game.randomPattern.hiHat),
+                            showGlow: game.gameState == .listening,
+                            isEditable: false,
+                            showsFeedback: false,
+                            size: padSize
+                        )
+                        DrumRowView(
+                            part: .snare,
+                            beats: displayBeats(for: 1, real: game.randomPattern.snare),
+                            showGlow: game.gameState == .listening,
+                            isEditable: false,
+                            showsFeedback: false,
+                            size: padSize
+                        )
+                        DrumRowView(
+                            part: .kick,
+                            beats: displayBeats(for: 2, real: game.randomPattern.kick),
+                            showGlow: game.gameState == .listening,
+                            isEditable: false,
+                            showsFeedback: false,
+                            size: padSize
+                        )
+                    }
+                    if game.gameState == .listening &&
+                        game.engine.currentStep == 0 {
+                        RoundedRectangle(cornerRadius: 5)
+                            .fill(.white.opacity(colorScheme == .dark ? 0.15 : 0.45))
+                            .frame(width: padSize, height: 185)
+                            .allowsHitTesting(false)
+                    }
+                }
+                .frame(maxWidth: .infinity)
+                RandomControlPanelView()
             }
-            .frame(maxWidth: .infinity)
-        }
-        .onChange(of: game.gameState) { _, newState in
-            if newState == .listening {
-                if game.hasChecked {
+            .onChange(of: game.gameState) { _, newState in
+                if newState == .listening {
+                    if game.hasChecked {
+                        stopFlicker()
+                    } else {
+                        startFlicker()
+                    }
+                } else if newState == .checking || newState == .result {
+                    game.hasChecked = true
                     stopFlicker()
-                } else {
-                    startFlicker()
+                } else if newState == .idle {
+                    game.hasChecked = false
+                    stopFlicker()
                 }
-            } else if newState == .checking || newState == .result {
-                game.hasChecked = true
-                stopFlicker()
-            } else if newState == .idle {
-                game.hasChecked = false
-                stopFlicker()
             }
         }
     }
@@ -157,6 +172,7 @@ struct RandomPatternView: View {
         }
     }
 }
+    
 
 
 #Preview {

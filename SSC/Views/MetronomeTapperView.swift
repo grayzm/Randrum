@@ -14,7 +14,7 @@
 // reads:
 // game.userPattern.bpm
 
-import SwiftUI
+internal import SwiftUI
 
 struct MetronomeTapperView: View {
     @EnvironmentObject var game: GameLogic

@@ -5,7 +5,7 @@
 //  Created by Graciella Michelle Siswoyo on 10/02/26.
 //
 
-import SwiftUI
+internal import SwiftUI
 
 extension Color {
     static var buttonPressed: Color {

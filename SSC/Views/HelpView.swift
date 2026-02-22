@@ -5,7 +5,7 @@
 //  Created by Graciella Michelle Siswoyo on 20/02/26.
 //
 
-import SwiftUI
+internal import SwiftUI
 
 struct HelpView: View {
     var body: some View {

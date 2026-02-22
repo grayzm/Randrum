@@ -11,7 +11,7 @@
 // blue when active
 // highlighted when engine step matches index
 
-import SwiftUI
+internal import SwiftUI
 
 struct BeatButtonView: View {
     @EnvironmentObject var game: GameLogic

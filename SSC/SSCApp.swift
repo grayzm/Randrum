@@ -5,15 +5,20 @@
 //  Created by Graciella Michelle Siswoyo on 08/02/26.
 //
 
-import SwiftUI
+internal import SwiftUI
 
 @main
 struct SSCApp: App {
     @StateObject private var game = GameLogic()
+    @StateObject private var createLogic = CreateLogic()
+    @StateObject private var patternStore = PatternStore()
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            LandingView()
                 .environmentObject(game)
+                .environmentObject(createLogic)
+                .environmentObject(patternStore)
         }
     }
 }

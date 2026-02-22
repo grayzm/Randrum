@@ -20,7 +20,7 @@
 //}
 
 
-import SwiftUI
+internal import SwiftUI
 
 struct DrumRowView: View {
     @EnvironmentObject var game: GameLogic

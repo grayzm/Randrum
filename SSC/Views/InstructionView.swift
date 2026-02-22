@@ -5,7 +5,7 @@
 //  Created by Graciella Michelle Siswoyo on 20/02/26.
 //
 
-import SwiftUI
+internal import SwiftUI
 
 enum MessageType {
     case random

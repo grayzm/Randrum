@@ -5,19 +5,24 @@
 //  Created by Graciella Michelle Siswoyo on 21/02/26.
 //
 
-import SwiftUI
+internal import SwiftUI
 
 struct LandingView: View {
     @EnvironmentObject var game: GameLogic
-    @State var shouldNavigate: Bool = false
+    @EnvironmentObject var createLogic: CreateLogic
+    @EnvironmentObject var patternStore: PatternStore
+    
+    @State var shouldNavigatePractice: Bool = false
+    @State var shouldNavigateCreate: Bool = false
+    
     var body: some View {
         NavigationStack {
             VStack {
                 Text("RANDRUM")
-                    .font(.custom("LTStopWatch-Regular", size: 120))
+                    .font(.custom("DepartureMono-Regular", size: 120))
                 VStack {
                     Button {
-                        shouldNavigate = true
+                        shouldNavigatePractice = true
                     } label: {
                         RoundedRectangle(cornerRadius: 10)
                             .fill(Color("buttonFill"))
@@ -33,13 +38,14 @@ struct LandingView: View {
                             )
                     }
                 }
-                .navigationDestination(isPresented: $shouldNavigate) {
+                .navigationDestination(isPresented: $shouldNavigatePractice) {
                     ContentView()
                         .environmentObject(game)
                 }
                 
                 Button {
-                    
+                    createLogic.newPattern()
+                    shouldNavigateCreate = true
                 } label: {
                     RoundedRectangle(cornerRadius: 10)
                         .fill(Color("buttonFill"))
@@ -53,6 +59,11 @@ struct LandingView: View {
                             .font(.custom("DepartureMono-Regular", size: 20))
                             .foregroundStyle(Color("text"))
                         )
+                }
+                .navigationDestination(isPresented: $shouldNavigateCreate) {
+                    CreateView()
+                        .environmentObject(createLogic)
+                        .environmentObject(patternStore)
                 }
 
                 Button {
@@ -80,4 +91,6 @@ struct LandingView: View {
 #Preview {
     LandingView()
         .environmentObject(GameLogic())
+        .environmentObject(CreateLogic())
+        .environmentObject(PatternStore())
 }
