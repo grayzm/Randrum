@@ -16,83 +16,26 @@ struct CreateView: View {
     @State private var showingSaveAlert = false
     @State private var saveName = ""
     
+    @State private var selectedPattern: SavedPattern?
+    @State private var renameText = ""
+    @State private var isRenaming = false
+    
     var body: some View {
-        VStack(spacing: 30) {
-            // save files section
-            VStack(alignment: .leading, spacing: 20) {
-                Text("Saved Patterns")
-                    .font(.custom("DepartureMono-Regular", size: 24))
-                
-                if patternStore.patterns.isEmpty {
-                    Text("No saved patterns yet")
-                        .font(.custom("DepartureMono-Regular", size: 16))
-                        .foregroundStyle(Color("stroke").opacity(0.6))
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        .padding(.vertical, 10)
-                } else {
-                    ForEach(patternStore.patterns) { saved in
-                        SaveFilesView(
-                            savedPattern: saved,
-                            isPlaying: createLogic.editingPatternId == saved.id && createLogic.isPlaying,
-                            onEdit: {
-                                createLogic.loadPattern(saved)
-                            },
-                            onPlay: {
-                                if createLogic.editingPatternId == saved.id &&
-                                    createLogic.isPlaying {
-                                    createLogic.stopPlayback()
-                                } else {
-                                    createLogic.loadPattern(saved)
-                                    createLogic.startRecreating()
-                                }
-                            },
-                            onDelete: {
-                                // stop playback if we're deleting the pattern being edited
-                                if createLogic.editingPatternId == saved.id {
-                                    createLogic.newPattern()
-                                }
-                                patternStore.delete(id: saved.id)
-                            }
-                        )
-                    }
-                }
-            }
-            .padding(30)
-            .background(
-                RoundedRectangle(cornerRadius: 16)
-                    .fill(
-                        LinearGradient(colors: [Color("background1"), Color("background2")], startPoint: .top, endPoint: .bottom)))
-            
-            // workspace section that uses CreateLogic
+        ZStack {
             VStack(spacing: 30) {
-                HStack(spacing: 30 ) {
-                    Text("Workspace")
-                        .font(.custom("DepartureMono-Regular", size: 24))
-                    Spacer()
-                    CreateControlPanelView(
-                        onSave: {
-                            if createLogic.editingPatternId != nil {
-                                // already has a name - update in place
-                                if let existing = patternStore.patterns.first(where: { $0.id ==
-                                    createLogic.editingPatternId }) {
-                                    createLogic.save(to: patternStore, name: existing.name)
-                                }
-                            } else {
-                                // new pattern - ask for a name
-                                saveName = "Pattern \(patternStore.patterns.count + 1)"
-                                showingSaveAlert = true
-                            }
-                        }
-                    )
-                }
-                CreateWorkspaceGridView()
+                // save files section
+                savedSection
+                workspaceSection
             }
-            .padding(30)
-            .background(
-                RoundedRectangle(cornerRadius: 16)
-                    .fill(
-                        LinearGradient(colors: [Color("background1"), Color("background2")], startPoint: .top, endPoint: .bottom)))
+            if let selectedPattern {
+                finderOverlay(for: selectedPattern)
+//                    .transition(.opacity.combined(with: .scale))
+                    .transition(.opacity)
+                    .zIndex(10)
+            }
         }
+        
+//        .animation(.spring(response: 0.35, dampingFraction: 0.85), value: selectedPattern)
         .alert("Save Pattern", isPresented: $showingSaveAlert) {
             TextField("Pattern name", text: $saveName)
             Button("Save") {
@@ -104,6 +47,142 @@ struct CreateView: View {
         }
     }
 }
+
+extension CreateView {
+    
+    private var savedSection: some View {
+        VStack(alignment: .leading, spacing: 20) {
+            Text("Saved Patterns")
+                .font(.custom("DepartureMono-Regular", size: 24))
+            
+            if patternStore.patterns.isEmpty {
+                Text("No saved patterns yet")
+                    .font(.custom("DepartureMono-Regular", size: 16))
+                    .foregroundStyle(Color("stroke").opacity(0.6))
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 10)
+            } else {
+                let columns = [
+                    GridItem(.adaptive(minimum: 120), spacing: 20)
+                ]
+                LazyVGrid(columns: columns, spacing: 30) {
+                    ForEach(patternStore.patterns) { saved in
+                        FolderView(
+                            savedPattern: saved,
+                            onOpen: {
+                                createLogic.loadPattern(saved)
+                            },
+                            onLongPress: {
+                                renameText = saved.name
+                                isRenaming = false
+                                withAnimation(.spring(response: 0.35, dampingFraction: 0.85)) {
+                                    selectedPattern = saved
+                                }
+                            }
+                        )
+                    }
+                }
+            }
+        }
+        .padding(30)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(
+                    LinearGradient(colors: [Color("background1"), Color("background2")], startPoint: .top, endPoint: .bottom)))
+        
+    }
+}
+
+extension CreateView {
+    
+    private var workspaceSection: some View {
+        VStack(spacing: 30) {
+            HStack(spacing: 30 ) {
+                Text("Workspace")
+                    .font(.custom("DepartureMono-Regular", size: 24))
+                Spacer()
+                CreateControlPanelView(
+                    onSave: {
+                        if createLogic.editingPatternId != nil {
+                            // already has a name - update in place
+                            if let existing = patternStore.patterns.first(where: {
+                                $0.id == createLogic.editingPatternId
+                            }) {
+                                createLogic.save(to: patternStore, name: existing.name)
+                            }
+                        } else {
+                            // new pattern - ask for a name
+                            saveName = "Pattern \(patternStore.patterns.count + 1)"
+                            showingSaveAlert = true
+                        }
+                    }
+                )
+            }
+            CreateWorkspaceGridView()
+        }
+        .padding(30)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(
+                    LinearGradient(colors: [Color("background1"), Color("background2")], startPoint: .top, endPoint: .bottom)))
+        
+    }
+}
+
+extension CreateView {
+    @ViewBuilder
+    private func finderOverlay(for pattern: SavedPattern) -> some View {
+        ZStack {
+            // dim entire screen
+            Color.black.opacity(0.25)
+                .ignoresSafeArea()
+                .onTapGesture {
+                    withAnimation(.easeOut(duration: 0.15)) {
+                        selectedPattern = nil
+                    }
+                }
+            
+            // floating panel
+            VStack(alignment: .leading, spacing: 16) {
+                Text(pattern.name)
+                    .font(.custom("DepartureMono-Regular", size: 20))
+                Divider()
+                HStack {
+                    Text("Created:")
+                    Spacer()
+                    Text(pattern.dateString)
+                }
+                HStack {
+                    Text("BPM:")
+                    Spacer()
+                    Text("\(Int(pattern.bpm))")
+                }
+                Divider()
+                Button("Rename") {
+                    // implement rename flow
+                }
+                Button(role: .destructive) {
+                    if createLogic.editingPatternId == pattern.id {
+                        createLogic.newPattern()
+                    }
+                    patternStore.delete(id: pattern.id)
+                    selectedPattern = nil
+                } label: {
+                    Label("Delete Pattern", systemImage: "trash.fill")
+                }
+            }
+            .transition(.scale.combined(with: .opacity))
+            .padding(20)
+            .frame(width: 280)
+            .background(
+                RoundedRectangle(cornerRadius: 14)
+                    .fill(Color(.systemBackground))
+                    .shadow(radius: 30)
+            )
+        }
+    }
+}
+
 
 // --------------- CREATE WORKSPACE GRID VIEW ---------------
 

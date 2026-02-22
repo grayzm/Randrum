@@ -58,6 +58,13 @@ class PatternStore: ObservableObject {
         print("PatternStore delete(at:)")
     }
     
+    func rename(id: UUID, newName: String) {
+        if let index = patterns.firstIndex(where: { $0.id == id }) {
+            patterns[index].name = newName
+            save()
+        }
+    }
+    
     // --------------- PERSISTENCE ---------------
     
     private func save() {

@@ -12,7 +12,7 @@ import Foundation
 // a codable version of DrumPattern that can be saved to disk.
 // BeatSlot has a UUID which isn't stable for saving, so store only the isActive booleans and recreate BeatSlots on load.
 
-struct SavedPattern: Identifiable, Codable {
+struct SavedPattern: Identifiable, Codable, Equatable {
     var id: UUID = UUID()
     var name: String
     var date: Date
