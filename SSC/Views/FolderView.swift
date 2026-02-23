@@ -46,7 +46,7 @@ struct FolderView: View {
                 onLongPress(frame)
             }
         }
-        .frame(height: 110) // prevents GeometryReader expansion
+        .frame(height: 110, alignment: .topLeading) // prevents GeometryReader expansion
     }
 }
 

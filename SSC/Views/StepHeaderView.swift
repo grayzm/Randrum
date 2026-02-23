@@ -15,11 +15,11 @@ struct StepHeaderView: View {
     private let steps = Array(0..<16)
     
     var body: some View {
-        HStack(spacing: 10) {
+        HStack(spacing: 14) {
             ForEach(0..<totalSteps, id: \.self) { step in
                 label(for: step)
                     .font(.title.bold())
-                    .frame(width: 56)
+                    .frame(width: 50)
                     .opacity(step == currentStep ? 1 : 0.4)
             }
         }

@@ -25,6 +25,7 @@ struct WorkspaceControlPanelView: View {
             ZStack {
                 RoundedRectangle(cornerRadius: 2)
                     .fill(Color("screen"))
+                    .stroke(Color("shadow"), lineWidth: 2)
                     .frame(height: 50)
                 InstructionView(messageType: .workspace)
                     .padding(.horizontal, 12)

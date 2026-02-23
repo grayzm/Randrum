@@ -20,7 +20,6 @@ struct CreateView: View {
     @State private var renamingPattern: SavedPattern?
     @State private var patternToDelete: SavedPattern?
     @State private var renameText: String = ""
-//    @State private var isRenaming = false
     @State private var selectedFrame: CGRect = .zero
     
     @Namespace private var folderNamespace
@@ -131,11 +130,18 @@ extension CreateView {
                         )
                     }
                 }
-//                .padding(.top, 10)
+                    
+                .padding(.vertical, 10)
+                .padding(.horizontal, 10)
             }
+            .background(
+                RoundedRectangle(cornerRadius: 2)
+                    .fill(Color("bnw").opacity(0.3))
+                    .stroke(Color("shadow"), lineWidth: 3)
+                )
         }
-        .padding(30)
-        .frame(maxWidth: .infinity, maxHeight: .infinity) 
+        .padding(24)
+//        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(
             RoundedRectangle(cornerRadius: 16)
                 .fill(
@@ -149,7 +155,7 @@ extension CreateView {
 extension CreateView {
     
     private var workspaceSection: some View {
-        VStack(spacing: 30) {
+        VStack(spacing: 16) {
             HStack(spacing: 30 ) {
                 Text("Workspace")
                     .font(.custom("DepartureMono-Regular", size: 24))
@@ -274,23 +280,39 @@ struct CreateWorkspaceGridView: View {
     @EnvironmentObject var createLogic: CreateLogic
     @Environment(\.colorScheme) var colorScheme
     
-    private let spacing: CGFloat = 10
-    private let padSize: CGFloat = 56
+    private let spacing: CGFloat = 14
+    private let padSize: CGFloat = 50
     
     var body: some View {
         HStack {
-            VStack(spacing: 30) {
+            VStack(spacing: 16) {
                 RoundedRectangle(cornerRadius: 5)
-                    .frame(width: 56, height: 56)
+                    .frame(width: 50, height: 50)
                     .foregroundColor(Color.clear)
-                    .overlay(
-                        Image(systemName: "metronome.fill")
-                            .font(.largeTitle)
-                            .foregroundStyle(Color("icon"))
-                    )
-                ForEach(0..<3) { _ in
+//                        .overlay(
+//                            Image(systemName: "metronome.fill")
+//                                .font(.title)
+//                                .foregroundStyle(Color("icon"))
+//                        )
+                VStack(spacing: 30) {
                     RoundedRectangle(cornerRadius: 5)
-                        .frame(width: 56, height: 56)
+                        .frame(width: 50, height: 50)
+                        .foregroundColor(Color.clear)
+                        .overlay(
+                            Image(systemName: "music.pages.fill")
+                                .font(.largeTitle)
+                                .foregroundStyle(Color("icon"))
+                        )
+                    RoundedRectangle(cornerRadius: 5)
+                        .frame(width: 50, height: 50)
+                        .foregroundColor(Color.clear)
+                        .overlay(
+                            Image(systemName: "music.pages.fill")
+                                .font(.largeTitle)
+                                .foregroundStyle(Color("icon"))
+                        )
+                    RoundedRectangle(cornerRadius: 5)
+                        .frame(width: 50, height: 50)
                         .foregroundColor(Color.clear)
                         .overlay(
                             Image(systemName: "music.pages.fill")
@@ -303,9 +325,9 @@ struct CreateWorkspaceGridView: View {
             Spacer()
             
             
-            VStack(spacing: 30) {
+            VStack(spacing: 16) {
                 CreateStepHeaderView()
-                    .frame(height: 56)
+                    .frame(height: 50)
                 ZStack(alignment: .topLeading) {
                     VStack(spacing: 30) {
                         CreateDrumRowView(part: .hiHat, beats: createLogic.userPattern.hiHat, size: padSize)
@@ -341,7 +363,7 @@ struct CreateDrumRowView: View {
     let size: CGFloat
     
     var body: some View {
-        HStack(spacing: 10) {
+        HStack(spacing: 14) {
             ForEach(0..<beats.count, id: \.self) { index in
                 let isActive = beats[index].isActive
                 
@@ -381,11 +403,11 @@ struct CreateStepHeaderView: View {
     }
     
     var body: some View {
-        HStack(spacing: 10) {
+        HStack(spacing: 14) {
             ForEach(0..<totalSteps, id: \.self) { step in
                 label(for: step)
                     .font(.title.bold())
-                    .frame(width: 56)
+                    .frame(width: 50)
                     .opacity(step == currentStep ? 1 : 0.4)
             }
         }
@@ -420,6 +442,7 @@ struct CreateControlPanelView: View {
             ZStack {
                 RoundedRectangle(cornerRadius: 2)
                     .fill(Color("screen"))
+                    .stroke(Color("shadow"), lineWidth: 2)
                     .frame(height: 50)
                 if !createLogic.workspaceMessage.isEmpty {
                     Text(createLogic.workspaceMessage)
@@ -495,6 +518,7 @@ struct CreateMetronomeTapperView: View {
             .background(
                 RoundedRectangle(cornerRadius: 2)
                     .fill(Color("screen"))
+                    .stroke(Color("shadow"), lineWidth: 2)
             )
             
             Button {

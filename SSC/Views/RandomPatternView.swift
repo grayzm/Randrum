@@ -23,8 +23,8 @@ struct RandomPatternView: View {
     @EnvironmentObject var game: GameLogic
     @Environment(\.colorScheme) var colorScheme
     
-    private let spacing: CGFloat = 10
-    private let padSize: CGFloat = 45
+    private let spacing: CGFloat = 14
+    private let padSize: CGFloat = 42
     
     // random flicker state: 3 rows x 16 buttons
     @State private var flickerState: [[Bool]] = Array(
@@ -57,6 +57,7 @@ struct RandomPatternView: View {
                 ZStack {
                     RoundedRectangle(cornerRadius: 2)
                         .fill(Color("screen"))
+                        .stroke(Color("shadow"), lineWidth: 2)
                         .frame(height: 50)
                     InstructionView(messageType: .random)
                         .padding(.horizontal, 12)
@@ -65,7 +66,7 @@ struct RandomPatternView: View {
             HStack {
                 VStack(spacing: 25) {
                     RoundedRectangle(cornerRadius: 5)
-                        .frame(width: 40, height: 45)
+                        .frame(width: 40, height: 42)
                         .foregroundColor(Color.clear)
                         .overlay(
                             Image(systemName: "music.pages.fill")
@@ -73,7 +74,7 @@ struct RandomPatternView: View {
                                 .foregroundStyle(Color("icon"))
                         )
                     RoundedRectangle(cornerRadius: 5)
-                        .frame(width: 40, height: 45)
+                        .frame(width: 40, height: 42)
                         .foregroundColor(Color.clear)
                         .overlay(
                             Image(systemName: "music.pages.fill")
@@ -81,7 +82,7 @@ struct RandomPatternView: View {
                                 .foregroundStyle(Color("icon"))
                         )
                     RoundedRectangle(cornerRadius: 5)
-                        .frame(width: 40, height: 45)
+                        .frame(width: 40, height: 42)
                         .foregroundColor(Color.clear)
                         .overlay(
                             Image(systemName: "music.pages.fill")

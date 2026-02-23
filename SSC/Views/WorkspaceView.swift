@@ -19,11 +19,11 @@ struct WorkspaceView: View {
     @EnvironmentObject var game: GameLogic
     @Environment(\.colorScheme) var colorScheme
     
-    private let spacing: CGFloat = 10
-    private let padSize: CGFloat = 56
+    private let spacing: CGFloat = 14
+    private let padSize: CGFloat = 50
     
     var body: some View {
-        VStack(spacing: 30) {
+        VStack(spacing: 16) {
             HStack(spacing: 30) {
                 Text("Workspace")
                     .font(.custom("DepartureMono-Regular", size: 24))
@@ -31,51 +31,53 @@ struct WorkspaceView: View {
                 WorkspaceControlPanelView()
             }
             HStack {
-                VStack(spacing: 30) {
+                VStack(spacing: 16) {
                     RoundedRectangle(cornerRadius: 5)
-                        .frame(width: 50, height: 56)
+                        .frame(width: 50, height: 50)
                         .foregroundColor(Color.clear)
-                        .overlay(
-                            Image(systemName: "metronome.fill")
-                                .font(.largeTitle)
-                                .foregroundStyle(Color("icon"))
-                        )
-                    RoundedRectangle(cornerRadius: 5)
-                        .frame(width: 50, height: 56)
-                        .foregroundColor(Color.clear)
-                        .overlay(
-                            Image(systemName: "music.pages.fill")
-                                .font(.largeTitle)
-                                .foregroundStyle(Color("icon"))
-                        )
-                    RoundedRectangle(cornerRadius: 5)
-                        .frame(width: 50, height: 56)
-                        .foregroundColor(Color.clear)
-                        .overlay(
-                            Image(systemName: "music.pages.fill")
-                                .font(.largeTitle)
-                                .foregroundStyle(Color("icon"))
-                        )
-                    RoundedRectangle(cornerRadius: 5)
-                        .frame(width: 50, height: 56)
-                        .foregroundColor(Color.clear)
-                        .overlay(
-                            Image(systemName: "music.pages.fill")
-                                .font(.largeTitle)
-                                .foregroundStyle(Color("icon"))
-                        )
+//                        .overlay(
+//                            Image(systemName: "metronome.fill")
+//                                .font(.title)
+//                                .foregroundStyle(Color("icon"))
+//                        )
+                    VStack(spacing: 30) {
+                        RoundedRectangle(cornerRadius: 5)
+                            .frame(width: 50, height: 50)
+                            .foregroundColor(Color.clear)
+                            .overlay(
+                                Image(systemName: "music.pages.fill")
+                                    .font(.largeTitle)
+                                    .foregroundStyle(Color("icon"))
+                            )
+                        RoundedRectangle(cornerRadius: 5)
+                            .frame(width: 50, height: 50)
+                            .foregroundColor(Color.clear)
+                            .overlay(
+                                Image(systemName: "music.pages.fill")
+                                    .font(.largeTitle)
+                                    .foregroundStyle(Color("icon"))
+                            )
+                        RoundedRectangle(cornerRadius: 5)
+                            .frame(width: 50, height: 50)
+                            .foregroundColor(Color.clear)
+                            .overlay(
+                                Image(systemName: "music.pages.fill")
+                                    .font(.largeTitle)
+                                    .foregroundStyle(Color("icon"))
+                            )
+                    }
                 }
                 
                 Spacer()
                 
                 
-                VStack(spacing: 30) {
+                VStack(spacing: 16) {
                     StepHeaderView(currentStep: (
                         game.gameState == .recreating ||
                         game.gameState == .checking ||
                         game.gameState == .result) &&
                                    game.engine.currentStep >= 0 ? game.engine.currentStep : -1)
-                    .frame(height: 56)
+                    .frame(height: 50)
                     ZStack(alignment: .topLeading) {
                         VStack(spacing: 30) {
                             DrumRowView(

@@ -58,7 +58,7 @@ struct DrumRowView: View {
     }
     
     var body: some View {
-        HStack(spacing: 10) {
+        HStack(spacing: 14) {
             ForEach(0..<beats.count, id: \.self) { index in
                 let isActive = beats[index].isActive
                 let currentFeedback: BeatFeedback? = {

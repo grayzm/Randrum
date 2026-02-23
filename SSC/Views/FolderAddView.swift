@@ -29,6 +29,8 @@ struct FolderAddView: View {
         .onTapGesture {
             action()
         }
+        .frame(height: 110, alignment: .topLeading)
+
     }
 }
 

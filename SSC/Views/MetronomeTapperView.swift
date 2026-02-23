@@ -34,6 +34,7 @@ struct MetronomeTapperView: View {
             .background(
                 RoundedRectangle(cornerRadius: 2)
                     .fill(Color("screen"))
+                    .stroke(Color("shadow"), lineWidth: 2)
             )
             
             Button {
