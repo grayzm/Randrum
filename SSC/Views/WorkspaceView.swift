@@ -33,7 +33,7 @@ struct WorkspaceView: View {
             HStack {
                 VStack(spacing: 30) {
                     RoundedRectangle(cornerRadius: 5)
-                        .frame(width: 56, height: 56)
+                        .frame(width: 50, height: 56)
                         .foregroundColor(Color.clear)
                         .overlay(
                             Image(systemName: "metronome.fill")
@@ -41,7 +41,7 @@ struct WorkspaceView: View {
                                 .foregroundStyle(Color("icon"))
                         )
                     RoundedRectangle(cornerRadius: 5)
-                        .frame(width: 56, height: 56)
+                        .frame(width: 50, height: 56)
                         .foregroundColor(Color.clear)
                         .overlay(
                             Image(systemName: "music.pages.fill")
@@ -49,7 +49,7 @@ struct WorkspaceView: View {
                                 .foregroundStyle(Color("icon"))
                         )
                     RoundedRectangle(cornerRadius: 5)
-                        .frame(width: 56, height: 56)
+                        .frame(width: 50, height: 56)
                         .foregroundColor(Color.clear)
                         .overlay(
                             Image(systemName: "music.pages.fill")
@@ -57,7 +57,7 @@ struct WorkspaceView: View {
                                 .foregroundStyle(Color("icon"))
                         )
                     RoundedRectangle(cornerRadius: 5)
-                        .frame(width: 56, height: 56)
+                        .frame(width: 50, height: 56)
                         .foregroundColor(Color.clear)
                         .overlay(
                             Image(systemName: "music.pages.fill")

@@ -19,6 +19,7 @@ class CreateLogic: ObservableObject {
     @Published var userPattern: DrumPattern
     @Published var engine = RhythmEngine()
     @Published var workspaceMessage: String = "Create your own pattern!"
+    @Published var hasUnsavedChanges: Bool = false
     
     // create mode only has two states: idle or playing
     var isPlaying: Bool { engine.isRunning }
@@ -27,6 +28,7 @@ class CreateLogic: ObservableObject {
     private var tapTimes: [Date] = []
     private var lastPlayedStep: Int = -1
     private var clearMessageWorkItem: DispatchWorkItem?
+    private var originalPattern: DrumPattern?
     
     // if we're editing an existing save, keep its id so we can update in place.
     var editingPatternId: UUID? = nil
@@ -48,6 +50,7 @@ class CreateLogic: ObservableObject {
     
     func loadPattern(_ saved: SavedPattern) {
         editingPatternId = saved.id
+        hasUnsavedChanges = false
         userPattern = saved.toDrumPattern()
         workspaceMessage = "Editing: \(saved.name)"
         
@@ -62,8 +65,9 @@ class CreateLogic: ObservableObject {
     // reset to a blank pattern
     func newPattern() {
         editingPatternId = nil
+        hasUnsavedChanges = false
         userPattern = DrumPattern.empty(bpm: 0)
-        workspaceMessage = "Tap beats to create your pattern"
+        workspaceMessage = "Create your own pattern!"
         
         if isPlaying {
             stopPlayback()
@@ -96,6 +100,8 @@ class CreateLogic: ObservableObject {
             workspaceMessage = "Pattern saved."
         }
         
+        hasUnsavedChanges = false
+        
         clearMessageWorkItem?.cancel()
         let workItem = DispatchWorkItem { [weak self] in
             self?.workspaceMessage = ""
@@ -126,6 +132,7 @@ class CreateLogic: ObservableObject {
                 AudioManager.shared.play(part)
             }
         }
+        hasUnsavedChanges = true
         syncPatternToEngine()
         print("CreateLogic toggelUserBeat(\(part), \(index))")
     }
@@ -152,6 +159,8 @@ class CreateLogic: ObservableObject {
         userPattern.bpm = clamped
         
         workspaceMessage = "Calculating your BPM..."
+        
+        hasUnsavedChanges = true
         
         clearMessageWorkItem?.cancel()
         let workItem = DispatchWorkItem { [weak self] in

@@ -46,7 +46,7 @@ struct SavedPattern: Identifiable, Codable, Equatable {
     // formated date string for display
     var dateString: String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "dd/MM/yyyy"
+        formatter.dateFormat = "dd / MM / yyyy"
         return formatter.string(from: date)
     }
 }

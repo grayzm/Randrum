@@ -17,25 +17,35 @@ struct CreateView: View {
     @State private var saveName = ""
     
     @State private var selectedPattern: SavedPattern?
-    @State private var renameText = ""
-    @State private var isRenaming = false
+    @State private var renamingPattern: SavedPattern?
+    @State private var patternToDelete: SavedPattern?
+    @State private var renameText: String = ""
+//    @State private var isRenaming = false
+    @State private var selectedFrame: CGRect = .zero
+    
+    @Namespace private var folderNamespace
     
     var body: some View {
-        ZStack {
-            VStack(spacing: 30) {
-                // save files section
-                savedSection
-                workspaceSection
-            }
-            if let selectedPattern {
-                finderOverlay(for: selectedPattern)
-//                    .transition(.opacity.combined(with: .scale))
-                    .transition(.opacity)
-                    .zIndex(10)
+        GeometryReader { rootGeo in
+            ZStack {
+                VStack {
+                    savedSection
+                    Spacer()
+                    workspaceSection
+                }
+                .padding(10)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                
+                if let selectedPattern {
+                    floatingPanel(
+                        for: selectedPattern,
+                        in: rootGeo.size
+                    )
+                        .zIndex(999)
+                }
             }
         }
         
-//        .animation(.spring(response: 0.35, dampingFraction: 0.85), value: selectedPattern)
         .alert("Save Pattern", isPresented: $showingSaveAlert) {
             TextField("Pattern name", text: $saveName)
             Button("Save") {
@@ -44,6 +54,51 @@ struct CreateView: View {
             Button("Cancel", role: .cancel) {}
         } message: {
             Text("Give your pattern a name")
+        }
+        
+        .alert("Delete Pattern?",
+               isPresented: Binding(
+                get: { patternToDelete != nil },
+                set: { if !$0 { patternToDelete = nil } }
+               ),
+               presenting: patternToDelete
+        ) { pattern in
+            Button("Delete", role: .destructive) {
+                if createLogic.editingPatternId == pattern.id {
+                    createLogic.newPattern()
+                }
+                patternStore.delete(id: pattern.id)
+                selectedPattern = nil
+                patternToDelete = nil
+            }
+            Button("Cancel", role: .cancel) {
+                patternToDelete = nil
+            }
+        } message: { pattern in
+            Text("Are you sure you want to delete \"\(pattern.name)\"?")
+        }
+        
+        .alert("Rename Pattern",
+               isPresented: Binding(
+                get: { renamingPattern != nil },
+                set: { if !$0 { renamingPattern = nil } }
+            )
+        ){
+            TextField("New name", text: $renameText)
+                .onChange(of: renameText) {
+                    renameText = String(renameText.prefix(24))
+                }
+            Button("Save") {
+                guard !renameText.trimmingCharacters(in: .whitespaces).isEmpty else { return }
+                if let pattern = renamingPattern {
+                    patternStore.rename(id: pattern.id, newName: renameText)
+                }
+                renamingPattern = nil
+                selectedPattern = nil
+            }
+            Button("Cancel", role: .cancel) {
+                renamingPattern = nil
+            }
         }
     }
 }
@@ -55,40 +110,38 @@ extension CreateView {
             Text("Saved Patterns")
                 .font(.custom("DepartureMono-Regular", size: 24))
             
-            if patternStore.patterns.isEmpty {
-                Text("No saved patterns yet")
-                    .font(.custom("DepartureMono-Regular", size: 16))
-                    .foregroundStyle(Color("stroke").opacity(0.6))
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 10)
-            } else {
-                let columns = [
+            ScrollView {
+                LazyVGrid(columns: [
                     GridItem(.adaptive(minimum: 120), spacing: 20)
-                ]
-                LazyVGrid(columns: columns, spacing: 30) {
+                    ], spacing: 30) {
+                        FolderAddView {
+                            createLogic.newPattern()
+                        }
                     ForEach(patternStore.patterns) { saved in
                         FolderView(
                             savedPattern: saved,
+                            namespace: folderNamespace,
                             onOpen: {
                                 createLogic.loadPattern(saved)
                             },
-                            onLongPress: {
-                                renameText = saved.name
-                                isRenaming = false
-                                withAnimation(.spring(response: 0.35, dampingFraction: 0.85)) {
-                                    selectedPattern = saved
-                                }
+                            onLongPress: { frame in
+                                selectedPattern = saved
+                                selectedFrame = frame
                             }
                         )
                     }
                 }
+//                .padding(.top, 10)
             }
         }
         .padding(30)
+        .frame(maxWidth: .infinity, maxHeight: .infinity) 
         .background(
             RoundedRectangle(cornerRadius: 16)
                 .fill(
-                    LinearGradient(colors: [Color("background1"), Color("background2")], startPoint: .top, endPoint: .bottom)))
+                    LinearGradient(colors: [Color("background1"), Color("background2")],
+                                   startPoint: .top,
+                                   endPoint: .bottom)))
         
     }
 }
@@ -102,6 +155,7 @@ extension CreateView {
                     .font(.custom("DepartureMono-Regular", size: 24))
                 Spacer()
                 CreateControlPanelView(
+                    isSaveEnabled: createLogic.hasUnsavedChanges,
                     onSave: {
                         if createLogic.editingPatternId != nil {
                             // already has a name - update in place
@@ -131,58 +185,88 @@ extension CreateView {
 
 extension CreateView {
     @ViewBuilder
-    private func finderOverlay(for pattern: SavedPattern) -> some View {
+    private func floatingPanel(
+        for pattern: SavedPattern,
+        in containerSize: CGSize
+    ) -> some View {
+        
+        let screenWidth = containerSize.width
+        let screenHeight = containerSize.height
+        let panelWidth: CGFloat = 260
+        let panelHeight: CGFloat = 260
+        let gap: CGFloat = 6
+        
+        // horizontal clamping
+        let x = min(
+            max(panelWidth / 2 + 20, selectedFrame.midX),
+            screenWidth - panelWidth / 2 - 20
+        )
+        
+        // vertical positioning
+        let spaceBelow = screenHeight - selectedFrame.maxY
+        let showAbove = spaceBelow < panelHeight + 20
+        
+        let y = showAbove
+        ? selectedFrame.minY - panelHeight / 2 - gap
+        : selectedFrame.maxY + panelHeight / 2 + gap
+        
         ZStack {
-            // dim entire screen
-            Color.black.opacity(0.25)
+            // transparent tap catcher
+            Color.black.opacity(0.001)
                 .ignoresSafeArea()
+                .contentShape(Rectangle())
                 .onTapGesture {
-                    withAnimation(.easeOut(duration: 0.15)) {
-                        selectedPattern = nil
-                    }
+                    selectedPattern = nil
                 }
             
             // floating panel
-            VStack(alignment: .leading, spacing: 16) {
-                Text(pattern.name)
-                    .font(.custom("DepartureMono-Regular", size: 20))
-                Divider()
-                HStack {
-                    Text("Created:")
-                    Spacer()
-                    Text(pattern.dateString)
-                }
-                HStack {
-                    Text("BPM:")
-                    Spacer()
-                    Text("\(Int(pattern.bpm))")
-                }
-                Divider()
-                Button("Rename") {
-                    // implement rename flow
-                }
-                Button(role: .destructive) {
-                    if createLogic.editingPatternId == pattern.id {
-                        createLogic.newPattern()
-                    }
-                    patternStore.delete(id: pattern.id)
-                    selectedPattern = nil
-                } label: {
-                    Label("Delete Pattern", systemImage: "trash.fill")
-                }
+            VStack {
+                panelContent(for: pattern)
+                    .frame(width: panelWidth, height: panelHeight)
+                    .background(
+                        RoundedRectangle(cornerRadius: 14)
+                            .fill(Color("bnw").opacity(0.9))
+                            .shadow(radius: 30)
+                    )
+                    .position(x: x, y: y)
+                    .transition(.opacity.combined(with: .move(edge: showAbove ? .bottom : .top)))
+                    .animation(.easeOut(duration: 0.2), value: selectedPattern)
             }
-            .transition(.scale.combined(with: .opacity))
-            .padding(20)
-            .frame(width: 280)
-            .background(
-                RoundedRectangle(cornerRadius: 14)
-                    .fill(Color(.systemBackground))
-                    .shadow(radius: 30)
-            )
         }
     }
+    
+    private func panelContent(for pattern: SavedPattern) -> some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text(pattern.name)
+                .font(.custom("DepartureMono-Regular", size: 20))
+            Divider()
+            HStack {
+                Text("Created:")
+                Spacer()
+                Text(pattern.dateString)
+            }
+            HStack {
+                Text("BPM:")
+                Spacer()
+                Text("\(Int(pattern.bpm))")
+            }
+            Divider()
+            HStack{
+                Button("Rename") {
+                    renamingPattern = pattern
+                    renameText = pattern.name
+                }
+                Spacer()
+                Button(role: .destructive) {
+                    patternToDelete = pattern
+                } label: {
+                    Image(systemName: "trash.fill")
+                }
+            }
+        }
+        .padding(18)
+    } 
 }
-
 
 // --------------- CREATE WORKSPACE GRID VIEW ---------------
 
@@ -327,6 +411,7 @@ struct CreateStepHeaderView: View {
 struct CreateControlPanelView: View {
     @EnvironmentObject var createLogic: CreateLogic
     
+    let isSaveEnabled: Bool
     let onSave: () -> Void
     
     var body: some View {
@@ -382,9 +467,11 @@ struct CreateControlPanelView: View {
                     .overlay(
                         Text("Save")
                             .font(.custom("DepartureMono-Regular", size: 16))
+                            .foregroundStyle(Color("text"))
                     )
-                    .foregroundStyle(Color("text"))
             }
+            .disabled(!isSaveEnabled)
+            .opacity(isSaveEnabled ? 1 : 0.4)
         }
     }
 }

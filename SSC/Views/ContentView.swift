@@ -35,7 +35,7 @@ struct ContentView: View {
                     .fill(
                         LinearGradient(colors: [Color("background1"), Color("background2")], startPoint: .top, endPoint: .bottom)))
         }
-//        .padding(.horizontal, 10)
+        .padding(.horizontal, 10)
     }
 }
 

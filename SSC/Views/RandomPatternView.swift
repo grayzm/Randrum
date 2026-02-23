@@ -50,10 +50,10 @@ struct RandomPatternView: View {
     
     var body: some View {
         VStack(spacing: 30) {
-            HStack(spacing: 30) {
-                Text("Randrum")
-                    .font(.custom("DepartureMono-Regular", size: 24))
-                Spacer()
+//            HStack(spacing: 30) {
+//                Text("Randrum")
+//                    .font(.custom("DepartureMono-Regular", size: 24))
+//                Spacer()
                 ZStack {
                     RoundedRectangle(cornerRadius: 2)
                         .fill(Color("screen"))
@@ -61,11 +61,11 @@ struct RandomPatternView: View {
                     InstructionView(messageType: .random)
                         .padding(.horizontal, 12)
                 }
-            }
+//            }
             HStack {
-                VStack(alignment: .center, spacing: 25) {
+                VStack(spacing: 25) {
                     RoundedRectangle(cornerRadius: 5)
-                        .frame(width: 45, height: 45)
+                        .frame(width: 40, height: 45)
                         .foregroundColor(Color.clear)
                         .overlay(
                             Image(systemName: "music.pages.fill")
@@ -73,7 +73,7 @@ struct RandomPatternView: View {
                                 .foregroundStyle(Color("icon"))
                         )
                     RoundedRectangle(cornerRadius: 5)
-                        .frame(width: 45, height: 45)
+                        .frame(width: 40, height: 45)
                         .foregroundColor(Color.clear)
                         .overlay(
                             Image(systemName: "music.pages.fill")
@@ -81,7 +81,7 @@ struct RandomPatternView: View {
                                 .foregroundStyle(Color("icon"))
                         )
                     RoundedRectangle(cornerRadius: 5)
-                        .frame(width: 45, height: 45)
+                        .frame(width: 40, height: 45)
                         .foregroundColor(Color.clear)
                         .overlay(
                             Image(systemName: "music.pages.fill")
