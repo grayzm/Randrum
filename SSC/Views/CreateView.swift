@@ -107,7 +107,8 @@ extension CreateView {
     private var savedSection: some View {
         VStack(alignment: .leading, spacing: 20) {
             Text("Saved Patterns")
-                .font(.custom("DepartureMono-Regular", size: 24))
+                .font(.title2.weight(.semibold))
+//                .font(.custom("DepartureMono-Regular", size: 24))
             
             ScrollView {
                 LazyVGrid(columns: [
@@ -158,8 +159,9 @@ extension CreateView {
         VStack(spacing: 16) {
             HStack(spacing: 30 ) {
                 Text("Workspace")
-                    .font(.custom("DepartureMono-Regular", size: 24))
-                Spacer()
+                    .font(.title.weight(.semibold))
+//                    .font(.custom("DepartureMono-Regular", size: 24))
+//                Spacer()
                 CreateControlPanelView(
                     isSaveEnabled: createLogic.hasUnsavedChanges,
                     onSave: {
@@ -284,7 +286,7 @@ struct CreateWorkspaceGridView: View {
     private let padSize: CGFloat = 50
     
     var body: some View {
-        HStack {
+        HStack(spacing: 30) {
             VStack(spacing: 16) {
                 RoundedRectangle(cornerRadius: 5)
                     .frame(width: 50, height: 50)
@@ -322,8 +324,7 @@ struct CreateWorkspaceGridView: View {
                 }
             }
             
-            Spacer()
-            
+//            Spacer()
             
             VStack(spacing: 16) {
                 CreateStepHeaderView()
@@ -489,7 +490,8 @@ struct CreateControlPanelView: View {
                     .padding(.vertical, 5)
                     .overlay(
                         Text("Save")
-                            .font(.custom("DepartureMono-Regular", size: 16))
+                            .font(.title3)
+//                            .font(.custom("DepartureMono-Regular", size: 16))
                             .foregroundStyle(Color("text"))
                     )
             }
@@ -528,7 +530,8 @@ struct CreateMetronomeTapperView: View {
                     Image(systemName: "metronome.fill")
                         .font(.system(size: 20))
                     Text("Tap")
-                        .font(.custom("DepartureMono-Regular", size: 20))
+                        .font(.title3)
+//                        .font(.custom("DepartureMono-Regular", size: 20))
                 }
                 .foregroundStyle(Color("text"))
                 .frame(width: 120, height: 50)

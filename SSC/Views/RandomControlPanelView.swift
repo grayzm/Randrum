@@ -43,8 +43,8 @@ struct RandomControlPanelView: View {
                     )
                     .padding(.vertical, 5)
                     .overlay(Text("Randrumize")
-                        .font(.custom("DepartureMono-Regular", size: 16))
-//                        .font(.headline)
+                        .font(.title3)
+//                        .font(.custom("DepartureMono-Regular", size: 16))
                         .foregroundStyle(Color("text"))
                     )
             }
@@ -60,8 +60,8 @@ struct RandomControlPanelView: View {
                     )
                     .padding(.vertical, 5)
                     .overlay(Text("Check")
-                        .font(.custom("DepartureMono-Regular", size: 16))
-//                        .font(.headline)
+                        .font(.title3)
+//                        .font(.custom("DepartureMono-Regular", size: 16))
                         .foregroundStyle(Color("text"))
                     )
             }

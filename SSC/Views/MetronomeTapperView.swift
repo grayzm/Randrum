@@ -44,8 +44,8 @@ struct MetronomeTapperView: View {
                     Image(systemName: "metronome.fill")
                         .font(.system(size: 20))
                     Text("Tap")
-//                        .font(.title3)
-                        .font(.custom("DepartureMono-Regular", size: 20))
+                        .font(.title3)
+//                        .font(.custom("DepartureMono-Regular", size: 20))
                 }
                 .foregroundStyle(Color("text"))
                 .frame(width: 120, height: 50)

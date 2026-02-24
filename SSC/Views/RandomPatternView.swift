@@ -63,7 +63,8 @@ struct RandomPatternView: View {
                         .padding(.horizontal, 12)
                 }
 //            }
-            HStack {
+            HStack(spacing: 30) {
+                // icons
                 VStack(spacing: 25) {
                     RoundedRectangle(cornerRadius: 5)
                         .frame(width: 40, height: 42)
@@ -126,8 +127,9 @@ struct RandomPatternView: View {
                             .allowsHitTesting(false)
                     }
                 }
-                .frame(maxWidth: .infinity)
+//                .frame(maxWidth: .infinity)
                 RandomControlPanelView()
+                    .padding(.leading, 8)
             }
             .onChange(of: game.gameState) { _, newState in
                 if newState == .listening {

@@ -26,11 +26,13 @@ struct WorkspaceView: View {
         VStack(spacing: 16) {
             HStack(spacing: 30) {
                 Text("Workspace")
-                    .font(.custom("DepartureMono-Regular", size: 24))
-                Spacer()
+                    .font(.title.weight(.semibold))
+//                    .font(.custom("DepartureMono-Regular", size: 24))
+//                Spacer()
                 WorkspaceControlPanelView()
             }
-            HStack {
+            HStack(spacing: 30) {
+                // icons
                 VStack(spacing: 16) {
                     RoundedRectangle(cornerRadius: 5)
                         .frame(width: 50, height: 50)
@@ -68,8 +70,7 @@ struct WorkspaceView: View {
                     }
                 }
                 
-                Spacer()
-                
+//                Spacer()
                 
                 VStack(spacing: 16) {
                     StepHeaderView(currentStep: (
