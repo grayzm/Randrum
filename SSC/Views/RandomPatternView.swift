@@ -50,74 +50,70 @@ struct RandomPatternView: View {
     
     var body: some View {
         VStack(spacing: 30) {
-//            HStack(spacing: 30) {
-//                Text("Randrum")
-//                    .font(.custom("DepartureMono-Regular", size: 24))
-//                Spacer()
-                ZStack {
-                    RoundedRectangle(cornerRadius: 2)
-                        .fill(Color("screen"))
-                        .stroke(Color("shadow"), lineWidth: 2)
-                        .frame(height: 50)
-                    InstructionView(messageType: .random)
-                        .padding(.horizontal, 12)
-                }
-//            }
-            HStack(spacing: 30) {
-                // icons
-                VStack(spacing: 25) {
-                    RoundedRectangle(cornerRadius: 5)
-                        .frame(width: 40, height: 42)
-                        .foregroundColor(Color.clear)
-                        .overlay(
-                            Image(systemName: "music.pages.fill")
-                                .font(.largeTitle)
-                                .foregroundStyle(Color("icon"))
-                        )
-                    RoundedRectangle(cornerRadius: 5)
-                        .frame(width: 40, height: 42)
-                        .foregroundColor(Color.clear)
-                        .overlay(
-                            Image(systemName: "music.pages.fill")
-                                .font(.largeTitle)
-                                .foregroundStyle(Color("icon"))
-                        )
-                    RoundedRectangle(cornerRadius: 5)
-                        .frame(width: 40, height: 42)
-                        .foregroundColor(Color.clear)
-                        .overlay(
-                            Image(systemName: "music.pages.fill")
-                                .font(.largeTitle)
-                                .foregroundStyle(Color("icon"))
-                        )
-                }
-                
-                ZStack(alignment: .topLeading) {
-                    VStack(alignment: .leading, spacing: 25) {
+            //            HStack(spacing: 30) {
+            //                Text("Randrum")
+            //                    .font(.custom("DepartureMono-Regular", size: 24))
+            //                Spacer()
+            ZStack {
+                RoundedRectangle(cornerRadius: 2)
+                    .fill(Color("screen"))
+                    .stroke(Color("shadow"), lineWidth: 2)
+                    .frame(height: 50)
+                InstructionView(messageType: .random)
+                    .padding(.horizontal, 12)
+            }
+            //            }
+            HStack(spacing: 20) {
+                Grid(horizontalSpacing: 30, verticalSpacing: 10) {
+                    GridRow {
+                        Image("hihat")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(minWidth: 40, maxHeight: 50)
                         DrumRowView(
                             part: .hiHat,
                             beats: displayBeats(for: 0, real: game.randomPattern.hiHat),
                             showGlow: game.gameState == .listening,
                             isEditable: false,
                             showsFeedback: false,
-                            size: padSize
+                            //                            size: padSize
                         )
+                    }
+                    GridRow {
+                        Image("snare")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(minWidth: 40, maxHeight: 50)
                         DrumRowView(
                             part: .snare,
                             beats: displayBeats(for: 1, real: game.randomPattern.snare),
                             showGlow: game.gameState == .listening,
                             isEditable: false,
                             showsFeedback: false,
-                            size: padSize
+                            //                            size: padSize
                         )
+                    }
+                    GridRow {
+                        Image("kick")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(minWidth: 40, maxHeight: 50)
                         DrumRowView(
                             part: .kick,
                             beats: displayBeats(for: 2, real: game.randomPattern.kick),
                             showGlow: game.gameState == .listening,
                             isEditable: false,
                             showsFeedback: false,
-                            size: padSize
+                            //                            size: padSize
                         )
+                    }
+                }
+                
+                ZStack(alignment: .topLeading) {
+                    VStack(alignment: .leading, spacing: 25) {
+                        
+                        
+                        
                     }
                     if game.gameState == .listening &&
                         game.engine.currentStep == 0 {
@@ -127,7 +123,7 @@ struct RandomPatternView: View {
                             .allowsHitTesting(false)
                     }
                 }
-//                .frame(maxWidth: .infinity)
+                //                .frame(maxWidth: .infinity)
                 RandomControlPanelView()
                     .padding(.leading, 8)
             }

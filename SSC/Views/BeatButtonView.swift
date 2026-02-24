@@ -5,12 +5,6 @@
 //  Created by Graciella Michelle Siswoyo on 10/02/26.
 //
 
-// state comes from:
-// isActive, currentPlaybackSetp
-
-// blue when active
-// highlighted when engine step matches index
-
 internal import SwiftUI
 
 struct BeatButtonView: View {
@@ -40,11 +34,13 @@ struct BeatButtonView: View {
                 }
                 if isCurrentStep && isActive && game.gameState == .recreating {
                     RoundedRectangle(cornerRadius: 5)
-                        .stroke(Color.white.opacity(colorScheme == .dark ? 0.6 : 1.2), lineWidth: 3)
-                        .scaleEffect(1.5)
-                        .opacity(0.8)
+                        .stroke(Color("pressed").opacity(colorScheme == .dark ? 0.6 : 1.2), lineWidth: 4)
+                        .scaleEffect(game.engine.stepPulse ? 1.4 : 1.1)
+                        .opacity(0.9)
+                        .shadow(color: Color("pressed").opacity(0.8), radius: 10)
+                        .animation(.easeOut(duration: 0.2), value: game.engine.stepPulse)
                         .blur(radius: 3)
-                        .transition(.scale)
+//                        .transition(.scale)
                 }
                 // main pad
                 RoundedRectangle(cornerRadius: 5)

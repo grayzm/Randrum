@@ -15,27 +15,27 @@ struct ContentView: View {
     
     var body: some View {
         VStack {
-            VStack {
-                RandomPatternView()
-            }
-            .padding(30)
-            .background(
-                RoundedRectangle(cornerRadius: 16)
-                    .fill(
-                        LinearGradient(colors: [Color("background1"), Color("background2")], startPoint: .top, endPoint: .bottom)))
+            RandomPatternView()
+                .padding(30)
+                .background(
+                    RoundedRectangle(cornerRadius: 16)
+                        .fill(
+                            LinearGradient(colors: [Color("background1"), Color("background2")], startPoint: .top, endPoint: .bottom)
+                        )
+                )
+                .padding()
             
-            Spacer()
             
-            VStack {
-                WorkspaceView()
-            }
-            .padding(30)
-            .background(
-                RoundedRectangle(cornerRadius: 16)
-                    .fill(
-                        LinearGradient(colors: [Color("background1"), Color("background2")], startPoint: .top, endPoint: .bottom)))
+            WorkspaceView()
+                .padding(30)
+                .background(
+                    RoundedRectangle(cornerRadius: 16)
+                        .fill(
+                            LinearGradient(colors: [Color("background1"), Color("background2")], startPoint: .top, endPoint: .bottom)
+                        )
+                )
+                .padding()
         }
-        .padding(.horizontal, 10)
     }
 }
 

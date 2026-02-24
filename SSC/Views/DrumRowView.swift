@@ -5,21 +5,6 @@
 //  Created by Graciella Michelle Siswoyo on 10/02/26.
 //
 
-// HStack
-// ForEach(0..<16)
-// BeatButtonView(...)
-
-// inputs:
-// part: DrumPart
-// beats: [BeatSlot]
-// isEditable: Bool
-
-// Action:
-//if isEditable {
-//    game.toggleUserBeat(part: index:)
-//}
-
-
 internal import SwiftUI
 
 struct DrumRowView: View {
@@ -31,7 +16,7 @@ struct DrumRowView: View {
     let isEditable: Bool
     let showsFeedback: Bool
     
-    var size: CGFloat?
+//    var size: CGFloat?
     
     private var trackIndex: Int {
         switch part {
@@ -58,7 +43,7 @@ struct DrumRowView: View {
     }
     
     var body: some View {
-        HStack(spacing: 14) {
+        HStack {
             ForEach(0..<beats.count, id: \.self) { index in
                 let isActive = beats[index].isActive
                 let currentFeedback: BeatFeedback? = {
@@ -81,7 +66,9 @@ struct DrumRowView: View {
                         game.toggleUserBeat(part: part, index: index)
                     } : nil
                 )
-                .frame(width: size, height: size)
+//                .padding(2)
+                .aspectRatio(1, contentMode: .fit)
+//                .frame(width: size, height: size)
             }
         }
     }
@@ -95,7 +82,7 @@ struct DrumRowView: View {
         showGlow: true,
         isEditable: true,
         showsFeedback: true,
-        size: 56
+//        size: 56
     )
         .environmentObject(game)
 }

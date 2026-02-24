@@ -15,15 +15,25 @@ struct StepHeaderView: View {
     private let steps = Array(0..<16)
     
     var body: some View {
-        HStack(spacing: 14) {
-            ForEach(0..<totalSteps, id: \.self) { step in
-                label(for: step)
-                    .font(.title.bold())
-                    .frame(width: 50)
-                    .opacity(step == currentStep ? 1 : 0.4)
+                HStack {
+//        Grid {
+//            GridRow {
+                ForEach(0..<totalSteps, id: \.self) { step in
+                    Rectangle()
+                        .fill(Color(.white.opacity(0.2)))
+                        .aspectRatio(1, contentMode: .fit)
+                        .overlay(
+                            label(for: step)
+                                .font(.title.bold())
+                                .opacity(step == currentStep ? 1 : 0.4),
+//                            alignment: .bottom
+                        )
+                    //                    .frame(width: 50)
+                }
             }
+//            .gridCellUnsizedAxes(.horizontal)
         }
-    }
+//    }
     
     @ViewBuilder
     private func label(for step: Int) -> some View {
