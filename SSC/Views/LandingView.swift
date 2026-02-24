@@ -14,6 +14,7 @@ struct LandingView: View {
     
     @State var shouldNavigatePractice: Bool = false
     @State var shouldNavigateCreate: Bool = false
+    @State var shouldNavigateHelp: Bool = false
     
     var body: some View {
         NavigationStack {
@@ -67,7 +68,7 @@ struct LandingView: View {
                 }
 
                 Button {
-                    
+                    shouldNavigateHelp = true
                 } label: {
                     RoundedRectangle(cornerRadius: 10)
                         .fill(Color("buttonFill"))
@@ -82,6 +83,9 @@ struct LandingView: View {
                                  //                        .font(.headline)
                             .foregroundStyle(Color("text"))
                         )
+                }
+                .navigationDestination(isPresented: $shouldNavigateHelp) {
+                    HelpView()
                 }
             }
         }
