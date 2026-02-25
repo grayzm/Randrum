@@ -61,7 +61,7 @@ struct RandomPatternView: View {
             }
             //            }
             HStack(spacing: 20) {
-                Grid(horizontalSpacing: 30, verticalSpacing: 10) {
+                Grid(horizontalSpacing: 20, verticalSpacing: 24) {
                     GridRow {
                         Image("hihat")
                             .resizable()
@@ -74,6 +74,8 @@ struct RandomPatternView: View {
                             isEditable: false,
                             showsFeedback: false,
                         )
+                        .padding(.horizontal)
+
                     }
                     GridRow {
                         Image("snare")
@@ -87,6 +89,8 @@ struct RandomPatternView: View {
                             isEditable: false,
                             showsFeedback: false,
                         )
+                        .padding(.horizontal)
+
                     }
                     GridRow {
                         Image("kick")
@@ -100,6 +104,7 @@ struct RandomPatternView: View {
                             isEditable: false,
                             showsFeedback: false,
                         )
+                        .padding(.horizontal)
                     }
                 }
                 .overlayPreferenceValue(StepFramePreferenceKey.self) { values in
@@ -122,7 +127,7 @@ struct RandomPatternView: View {
                 }
                 
                 RandomControlPanelView()
-                    .padding(.leading, 8)
+                    .padding(.leading, 10)
             }
             .onChange(of: game.gameState) { _, newState in
                 if newState == .listening {

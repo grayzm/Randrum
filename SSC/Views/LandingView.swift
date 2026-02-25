@@ -18,12 +18,37 @@ struct LandingView: View {
     
     var body: some View {
         NavigationStack {
-            VStack {
-                Text("RANDRUM")
-                    .font(.custom("DepartureMono-Regular", size: 120))
+            ZStack {
+                ShaderBackground()
                 VStack {
+                    Text("RANDRUM")
+                        .font(.custom("DepartureMono-Regular", size: 120))
+                    VStack {
+                        Button {
+                            shouldNavigatePractice = true
+                        } label: {
+                            RoundedRectangle(cornerRadius: 10)
+                                .fill(Color("buttonFill"))
+                                .frame(width: 160, height: 56)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .stroke(Color("stroke").opacity(0.4), lineWidth: 2)
+                                )
+                                .padding(.vertical, 5)
+                                .overlay(Text("Practice")
+                                    .font(.custom("DepartureMono-Regular", size: 20))
+                                    .foregroundStyle(Color("text"))
+                                )
+                        }
+                    }
+                    .navigationDestination(isPresented: $shouldNavigatePractice) {
+                        ContentView()
+                            .environmentObject(game)
+                    }
+                    
                     Button {
-                        shouldNavigatePractice = true
+                        createLogic.newPattern()
+                        shouldNavigateCreate = true
                     } label: {
                         RoundedRectangle(cornerRadius: 10)
                             .fill(Color("buttonFill"))
@@ -33,61 +58,40 @@ struct LandingView: View {
                                     .stroke(Color("stroke").opacity(0.4), lineWidth: 2)
                             )
                             .padding(.vertical, 5)
-                            .overlay(Text("Practice")
+                            .overlay(Text("Create")
                                 .font(.custom("DepartureMono-Regular", size: 20))
                                 .foregroundStyle(Color("text"))
                             )
                     }
-                }
-                .navigationDestination(isPresented: $shouldNavigatePractice) {
-                    ContentView()
-                        .environmentObject(game)
-                }
-                
-                Button {
-                    createLogic.newPattern()
-                    shouldNavigateCreate = true
-                } label: {
-                    RoundedRectangle(cornerRadius: 10)
-                        .fill(Color("buttonFill"))
-                        .frame(width: 160, height: 56)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 10)
-                                .stroke(Color("stroke").opacity(0.4), lineWidth: 2)
-                        )
-                        .padding(.vertical, 5)
-                        .overlay(Text("Create")
-                            .font(.custom("DepartureMono-Regular", size: 20))
-                            .foregroundStyle(Color("text"))
-                        )
-                }
-                .navigationDestination(isPresented: $shouldNavigateCreate) {
-                    CreateView()
-                        .environmentObject(createLogic)
-                        .environmentObject(patternStore)
-                }
-
-                Button {
-                    shouldNavigateHelp = true
-                } label: {
-                    RoundedRectangle(cornerRadius: 10)
-                        .fill(Color("buttonFill"))
-                        .frame(width: 160, height: 56)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 10)
-                                .stroke(Color("stroke").opacity(0.4), lineWidth: 2)
-                        )
-                        .padding(.vertical, 5)
-                        .overlay(Text("Help")
-                            .font(.custom("DepartureMono-Regular", size: 20))
-                                 //                        .font(.headline)
-                            .foregroundStyle(Color("text"))
-                        )
-                }
-                .navigationDestination(isPresented: $shouldNavigateHelp) {
-                    HelpView()
+                    .navigationDestination(isPresented: $shouldNavigateCreate) {
+                        CreateView()
+                            .environmentObject(createLogic)
+                            .environmentObject(patternStore)
+                    }
+                    
+                    Button {
+                        shouldNavigateHelp = true
+                    } label: {
+                        RoundedRectangle(cornerRadius: 10)
+                            .fill(Color("buttonFill"))
+                            .frame(width: 160, height: 56)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(Color("stroke").opacity(0.4), lineWidth: 2)
+                            )
+                            .padding(.vertical, 5)
+                            .overlay(Text("Help")
+                                .font(.custom("DepartureMono-Regular", size: 20))
+                                     //                        .font(.headline)
+                                .foregroundStyle(Color("text"))
+                            )
+                    }
+                    .navigationDestination(isPresented: $shouldNavigateHelp) {
+                        HelpView()
+                    }
                 }
             }
+            .ignoresSafeArea()
         }
     }
 }

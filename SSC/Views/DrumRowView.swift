@@ -74,6 +74,7 @@ struct DrumRowView: View {
                     [index: anchor]
                 }
             }
+//            .padding(2)
         }
     }
 }

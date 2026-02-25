@@ -282,52 +282,66 @@ struct CreateWorkspaceGridView: View {
     @EnvironmentObject var createLogic: CreateLogic
     @Environment(\.colorScheme) var colorScheme
     
-    private let spacing: CGFloat = 14
-    private let padSize: CGFloat = 50
-    
     var body: some View {
-        HStack(spacing: 30) {
-            VStack(spacing: 16) {
-                RoundedRectangle(cornerRadius: 5)
-                    .frame(width: 50, height: 50)
-                    .foregroundColor(Color.clear)
+        
+        VStack(spacing: 8) {
+            // HEADER GRID
+            Grid(horizontalSpacing: 30) {
+                GridRow {
+                    RoundedRectangle(cornerRadius: 5)
+                        .aspectRatio(1, contentMode: .fit)
+                        .frame(minWidth: 50, maxHeight: 70)
+                        .foregroundColor(Color.clear)
+                    CreateStepHeaderView()
+                }
             }
-            
-//            Spacer()
-            
-            VStack(spacing: 16) {
-                CreateStepHeaderView()
-                    .frame(height: 50)
-                ZStack(alignment: .topLeading) {
-                    VStack(spacing: 30) {
-                        CreateDrumRowView(
-                            part: .hiHat,
-                            beats: createLogic.userPattern.hiHat,
-//                            size: padSize
-                        )
-                        CreateDrumRowView(
-                            part: .snare,
-                            beats: createLogic.userPattern.snare,
-//                            size: padSize
-                        )
-                        CreateDrumRowView(
-                            part: .kick,
-                            beats: createLogic.userPattern.kick,
-//                            size: padSize
-                        )
-                    }
-                    // playhead overlay
-                    if createLogic.isPlaying && createLogic.engine.currentStep >= 0 {
+            // DRUM SECTION
+            Grid(horizontalSpacing: 30, verticalSpacing: 30) {
+                GridRow {
+                    Image("hihat")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(minWidth: 50, maxHeight: 70)
+                    CreateDrumRowView(
+                        part: .hiHat,
+                        beats: createLogic.userPattern.hiHat,
+                    )
+                }
+                GridRow {
+                    Image("snare")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(minWidth: 50, maxHeight: 70)
+                    CreateDrumRowView(
+                        part: .snare,
+                        beats: createLogic.userPattern.snare,
+                    )
+                }
+                GridRow {
+                    Image("kick")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(minWidth: 50, maxHeight: 70)
+                    CreateDrumRowView(
+                        part: .kick,
+                        beats: createLogic.userPattern.kick,
+                    )
+                }
+            }
+            // PLAYHEAD
+            .overlayPreferenceValue(StepFramePreferenceKey.self) { values in
+                GeometryReader { geo in
+                    if createLogic.engine.currentStep >= 0,
+                       let anchor = values[createLogic.engine.currentStep] {
+                        
+                        let frame = geo[anchor]
                         RoundedRectangle(cornerRadius: 5)
-                            .fill(.white.opacity(colorScheme == .dark ? 0.15 : 0.3))
-                            .frame(width: padSize, height: 228)
-                            .offset(x: CGFloat(createLogic.engine.currentStep) * (padSize + spacing))
-                            .animation(
-                                createLogic.engine.currentStep == 0
-                                ? nil : .linear(duration: 0.08),
-                                value: createLogic.engine.currentStep
-                            )
-                            .allowsHitTesting(false)
+                            .fill(Color.white.opacity(0.15))
+                            .frame(width: frame.width, height: geo.size.height)
+                            .offset(x: frame.minX)
+                            .animation(.linear(duration: 0.08),
+                                       value: createLogic.engine.currentStep)
+                            .allowsTightening(false)
                     }
                 }
             }
@@ -371,6 +385,13 @@ struct CreateDrumRowView: View {
                 }
 //                .frame(width: size, height: size)
 //                .animation(.easeInOut(duration: 0.18), value: createLogic.engine.stepPulse)
+                .aspectRatio(1, contentMode: .fit)
+                .anchorPreference(
+                    key: StepFramePreferenceKey.self,
+                    value: .bounds
+                ) { anchor in
+                    [index: anchor]
+                }
             }
         }
     }
@@ -389,12 +410,16 @@ struct CreateStepHeaderView: View {
     }
     
     var body: some View {
-        HStack(spacing: 14) {
+        HStack {
             ForEach(0..<totalSteps, id: \.self) { step in
-                label(for: step)
-                    .font(.title.bold())
-                    .frame(width: 50)
-                    .opacity(step == currentStep ? 1 : 0.4)
+                Rectangle()
+                    .fill(Color.clear)
+                    .aspectRatio(1, contentMode: .fit)
+                    .overlay(
+                        label(for: step)
+                            .font(.title.bold())
+                            .opacity(step == currentStep ? 1 : 0.4),
+                    )
             }
         }
     }
