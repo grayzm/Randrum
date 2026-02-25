@@ -23,9 +23,6 @@ struct RandomPatternView: View {
     @EnvironmentObject var game: GameLogic
     @Environment(\.colorScheme) var colorScheme
     
-    private let spacing: CGFloat = 14
-    private let padSize: CGFloat = 42
-    
     // random flicker state: 3 rows x 16 buttons
     @State private var flickerState: [[Bool]] = Array(
         repeating: Array(repeating: false, count: 16),
@@ -76,7 +73,6 @@ struct RandomPatternView: View {
                             showGlow: game.gameState == .listening,
                             isEditable: false,
                             showsFeedback: false,
-                            //                            size: padSize
                         )
                     }
                     GridRow {
@@ -90,7 +86,6 @@ struct RandomPatternView: View {
                             showGlow: game.gameState == .listening,
                             isEditable: false,
                             showsFeedback: false,
-                            //                            size: padSize
                         )
                     }
                     GridRow {
@@ -104,26 +99,28 @@ struct RandomPatternView: View {
                             showGlow: game.gameState == .listening,
                             isEditable: false,
                             showsFeedback: false,
-                            //                            size: padSize
                         )
                     }
                 }
-                
-                ZStack(alignment: .topLeading) {
-                    VStack(alignment: .leading, spacing: 25) {
-                        
-                        
-                        
-                    }
-                    if game.gameState == .listening &&
-                        game.engine.currentStep == 0 {
-                        RoundedRectangle(cornerRadius: 5)
-                            .fill(.white.opacity(colorScheme == .dark ? 0.15 : 0.45))
-                            .frame(width: padSize, height: 185)
-                            .allowsHitTesting(false)
+                .overlayPreferenceValue(StepFramePreferenceKey.self) { values in
+                    GeometryReader { geo in
+                        if game.gameState == .listening,
+                           game.engine.currentStep == 0,
+                           let anchor = values[game.engine.currentStep] {
+                            
+                            let frame = geo[anchor]
+                            
+                            RoundedRectangle(cornerRadius: 5)
+                                .fill(Color.white.opacity(colorScheme == .dark ? 0.15 : 0.35))
+                                .frame(width: frame.width, height: geo.size.height)
+                                .offset(x: frame.minX)
+                                .animation(.linear(duration: 0.08),
+                                           value: game.engine.currentStep)
+                                .allowsHitTesting(false)
+                        }
                     }
                 }
-                //                .frame(maxWidth: .infinity)
+                
                 RandomControlPanelView()
                     .padding(.leading, 8)
             }
@@ -171,7 +168,6 @@ struct RandomPatternView: View {
         }
     }
 }
-    
 
 
 #Preview {

@@ -20,7 +20,7 @@ struct StepHeaderView: View {
 //            GridRow {
                 ForEach(0..<totalSteps, id: \.self) { step in
                     Rectangle()
-                        .fill(Color(.white.opacity(0.2)))
+                        .fill(Color.clear)
                         .aspectRatio(1, contentMode: .fit)
                         .overlay(
                             label(for: step)

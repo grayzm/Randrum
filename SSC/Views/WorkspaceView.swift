@@ -11,8 +11,6 @@ struct WorkspaceView: View {
     @EnvironmentObject var game: GameLogic
     @Environment(\.colorScheme) var colorScheme
     
-    private let spacing: CGFloat = 14
-    private let padSize: CGFloat = 50
     
     var body: some View {
         VStack(spacing: 16) {
@@ -22,26 +20,24 @@ struct WorkspaceView: View {
                 WorkspaceControlPanelView()
             }
             
-            ZStack {
-                Grid(horizontalSpacing: 30, verticalSpacing: 30) {
-                    
-                    // ----------------- STEP HEADER -----------------
+            VStack(spacing: 8) {
+                // HEADER GRID
+                Grid(horizontalSpacing: 30) {
                     GridRow {
                         RoundedRectangle(cornerRadius: 5)
                             .aspectRatio(1, contentMode: .fit)
                             .frame(minWidth: 50, maxHeight: 70)
-                            .foregroundColor(Color.blue.opacity(0.1))
+                            .foregroundColor(Color.clear)
                         StepHeaderView(currentStep: (
                             game.gameState == .recreating ||
                             game.gameState == .checking ||
                             game.gameState == .result) &&
                                        game.engine.currentStep >= 0 ? game.engine.currentStep : -1)
-                        //                    .frame(height: 50)
                     }
-//                    .padding(.bottom, -10)
-//                    .gridCellUnsizedAxes(.horizontal)
-                    
-                    // ----------------- DRUM PADS -----------------
+                }
+                
+                // DRUM SECTION
+                Grid(horizontalSpacing: 30, verticalSpacing: 30) {
                     GridRow {
                         Image("hihat")
                             .resizable()
@@ -53,10 +49,8 @@ struct WorkspaceView: View {
                             showGlow: game.gameState == .recreating || game.gameState == .checking || game.gameState == .result,
                             isEditable: true,
                             showsFeedback: true,
-                            //                                size: padSize
                         )
                     }
-//                    .gridCellUnsizedAxes(.horizontal)
                     GridRow {
                         Image("snare")
                             .resizable()
@@ -68,10 +62,8 @@ struct WorkspaceView: View {
                             showGlow: game.gameState == .recreating || game.gameState == .checking || game.gameState == .result,
                             isEditable: true,
                             showsFeedback: true,
-                            //                                size: padSize
                         )
                     }
-//                    .gridCellUnsizedAxes(.horizontal)
                     GridRow {
                         Image("kick")
                             .resizable()
@@ -83,30 +75,42 @@ struct WorkspaceView: View {
                             showGlow: game.gameState == .recreating || game.gameState == .checking || game.gameState == .result,
                             isEditable: true,
                             showsFeedback: true,
-                            //                                size: padSize
                         )
                     }
-//                    .gridCellUnsizedAxes(.horizontal)
                 }
-                
-                // ----------------- SLIDER -----------------
-                if (game.gameState == .recreating ||
-                    game.gameState == .checking ||
-                    game.gameState == .result) &&
-                    game.engine.currentStep >= 0 {
-                    RoundedRectangle(cornerRadius: 5)
-                        .fill(.white.opacity(colorScheme == .dark ? 0.15 : 0.3))
-                        .frame(width: padSize, height: 228)
-                        .offset(x: CGFloat(game.engine.currentStep) * (padSize + spacing))
-                        .animation(
-                            game.engine.currentStep == 0
-                            ? nil : .linear(duration: 0.08),
-                            value: game.engine.currentStep
-                        )
-                        .allowsHitTesting(false)
+                // PLAYHEAD
+                .overlayPreferenceValue(StepFramePreferenceKey.self) { values in
+                    GeometryReader { geo in
+                        if (game.gameState == .recreating ||
+                            game.gameState == .checking ||
+                            game.gameState == .result),
+                           game.engine.currentStep >= 0,
+                           let anchor = values[game.engine.currentStep] {
+                            
+                            let frame = geo[anchor]
+                            RoundedRectangle(cornerRadius: 5)
+                                .fill(Color.white.opacity(0.15))
+                                .frame(width: frame.width, height: geo.size.height)
+                                .offset(x: frame.minX)
+                                .animation(.linear(duration: 0.08),
+                                           value: game.engine.currentStep)
+                                .allowsTightening(false)
+                        }
+                    }
                 }
             }
         }
+    }
+}
+
+
+struct StepFramePreferenceKey: PreferenceKey {
+    static var defaultValue: [Int: Anchor<CGRect>] = [:]
+    static func reduce(
+        value: inout [Int: Anchor<CGRect>],
+        nextValue: () -> [Int: Anchor<CGRect>]
+    ) {
+        value.merge(nextValue()) { $1 }
     }
 }
 

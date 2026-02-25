@@ -291,37 +291,6 @@ struct CreateWorkspaceGridView: View {
                 RoundedRectangle(cornerRadius: 5)
                     .frame(width: 50, height: 50)
                     .foregroundColor(Color.clear)
-//                        .overlay(
-//                            Image(systemName: "metronome.fill")
-//                                .font(.title)
-//                                .foregroundStyle(Color("icon"))
-//                        )
-                VStack(spacing: 30) {
-                    RoundedRectangle(cornerRadius: 5)
-                        .frame(width: 50, height: 50)
-                        .foregroundColor(Color.clear)
-                        .overlay(
-                            Image(systemName: "music.pages.fill")
-                                .font(.largeTitle)
-                                .foregroundStyle(Color("icon"))
-                        )
-                    RoundedRectangle(cornerRadius: 5)
-                        .frame(width: 50, height: 50)
-                        .foregroundColor(Color.clear)
-                        .overlay(
-                            Image(systemName: "music.pages.fill")
-                                .font(.largeTitle)
-                                .foregroundStyle(Color("icon"))
-                        )
-                    RoundedRectangle(cornerRadius: 5)
-                        .frame(width: 50, height: 50)
-                        .foregroundColor(Color.clear)
-                        .overlay(
-                            Image(systemName: "music.pages.fill")
-                                .font(.largeTitle)
-                                .foregroundStyle(Color("icon"))
-                        )
-                }
             }
             
 //            Spacer()
@@ -331,9 +300,21 @@ struct CreateWorkspaceGridView: View {
                     .frame(height: 50)
                 ZStack(alignment: .topLeading) {
                     VStack(spacing: 30) {
-                        CreateDrumRowView(part: .hiHat, beats: createLogic.userPattern.hiHat, size: padSize)
-                        CreateDrumRowView(part: .snare, beats: createLogic.userPattern.snare, size: padSize)
-                        CreateDrumRowView(part: .kick, beats: createLogic.userPattern.kick, size: padSize)
+                        CreateDrumRowView(
+                            part: .hiHat,
+                            beats: createLogic.userPattern.hiHat,
+//                            size: padSize
+                        )
+                        CreateDrumRowView(
+                            part: .snare,
+                            beats: createLogic.userPattern.snare,
+//                            size: padSize
+                        )
+                        CreateDrumRowView(
+                            part: .kick,
+                            beats: createLogic.userPattern.kick,
+//                            size: padSize
+                        )
                     }
                     // playhead overlay
                     if createLogic.isPlaying && createLogic.engine.currentStep >= 0 {
@@ -358,13 +339,14 @@ struct CreateWorkspaceGridView: View {
 
 struct CreateDrumRowView: View {
     @EnvironmentObject var createLogic: CreateLogic
+    @Environment(\.colorScheme) var colorScheme
     
     let part: DrumParts
     let beats: [BeatSlot]
-    let size: CGFloat
+//    let size: CGFloat
     
     var body: some View {
-        HStack(spacing: 14) {
+        HStack/*(spacing: 14)*/ {
             ForEach(0..<beats.count, id: \.self) { index in
                 let isActive = beats[index].isActive
                 
@@ -375,17 +357,20 @@ struct CreateDrumRowView: View {
                         // glow when playing
                         if createLogic.isPlaying && index == createLogic.engine.currentStep && isActive {
                             RoundedRectangle(cornerRadius: 5)
-                                .fill(.white.opacity(0.15))
-                                .blur(radius: 8)
-                                .scaleEffect(1.12)
+                                .stroke(Color("pressed").opacity(colorScheme == .dark ? 0.6 : 1.2), lineWidth: 4)
+                                .scaleEffect(createLogic.engine.stepPulse ? 1.4 : 1.1)
+                                .opacity(0.9)
+                                .shadow(color: Color("pressed").opacity(0.8), radius: 10)
+                                .animation(.easeOut(duration: 0.2), value: createLogic.engine.stepPulse)
+                                .blur(radius: 3)
                         }
                         RoundedRectangle(cornerRadius: 5)
                             .fill(isActive ? Color("pressed") : Color("default"))
                             .shadow(color: Color("shadow"), radius: 4, x: 4, y: 4)
                     }
                 }
-                .frame(width: size, height: size)
-                .animation(.easeInOut(duration: 0.18), value: createLogic.engine.stepPulse)
+//                .frame(width: size, height: size)
+//                .animation(.easeInOut(duration: 0.18), value: createLogic.engine.stepPulse)
             }
         }
     }
