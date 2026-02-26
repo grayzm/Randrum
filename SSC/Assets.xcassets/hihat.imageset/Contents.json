@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "tictactriads_icon.jpg",
+      "filename" : "hiHat_icon_white.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
@@ -12,7 +12,7 @@
           "value" : "light"
         }
       ],
-      "filename" : "tictactriads_icon 1.jpg",
+      "filename" : "hiHat_icon_black.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
@@ -23,7 +23,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "tictactriads_icon 2.jpg",
+      "filename" : "hiHat_icon_white 1.png",
       "idiom" : "universal",
       "scale" : "1x"
     },

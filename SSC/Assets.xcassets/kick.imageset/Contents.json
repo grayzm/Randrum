@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "ssc.jpg",
+      "filename" : "kick_icon_white.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
@@ -12,7 +12,7 @@
           "value" : "light"
         }
       ],
-      "filename" : "ssc 1.jpg",
+      "filename" : "kick_icon_black.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
@@ -23,7 +23,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "ssc 2.jpg",
+      "filename" : "kick_icon_white 1.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
