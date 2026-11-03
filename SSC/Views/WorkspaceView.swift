@@ -41,6 +41,7 @@ struct WorkspaceView: View {
                             .scaledToFit()
                             .frame(minWidth: 40, maxHeight: 40)
                         DrumRowView(
+                            beatStyle: .workspace,
                             part: .hiHat,
                             beats: game.userPattern.hiHat,
                             showGlow: game.gameState == .recreating || game.gameState == .checking || game.gameState == .result,
@@ -55,6 +56,7 @@ struct WorkspaceView: View {
                             .scaledToFit()
                             .frame(minWidth: 40, maxHeight: 40)
                         DrumRowView(
+                            beatStyle: .workspace,
                             part: .snare,
                             beats: game.userPattern.snare,
                             showGlow: game.gameState == .recreating || game.gameState == .checking || game.gameState == .result,
@@ -69,6 +71,7 @@ struct WorkspaceView: View {
                             .scaledToFit()
                             .frame(minWidth: 40, maxHeight: 40)
                         DrumRowView(
+                            beatStyle: .workspace,
                             part: .kick,
                             beats: game.userPattern.kick,
                             showGlow: game.gameState == .recreating || game.gameState == .checking || game.gameState == .result,

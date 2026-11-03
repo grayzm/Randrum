@@ -29,7 +29,7 @@ struct ContentView: View {
             VStack {
                 WorkspaceView()
             }
-            .frame(minHeight: 264, maxHeight: .infinity)
+            .frame(minHeight: 264, maxHeight: 320)
             .padding(30)
             .background(
                 RoundedRectangle(cornerRadius: 16)

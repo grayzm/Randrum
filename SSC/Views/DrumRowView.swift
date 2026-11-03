@@ -10,6 +10,7 @@ internal import SwiftUI
 struct DrumRowView: View {
     @EnvironmentObject var game: GameLogic
     
+    var beatStyle: BeatButtonStyle = .workspace
     let part: DrumParts
     let beats: [BeatSlot]
     let showGlow: Bool
@@ -55,6 +56,7 @@ struct DrumRowView: View {
                 let revealUpTo = game.gameState == .checking ? game.engine.currentStep : nil
                 
                 BeatButtonView(
+                    style: beatStyle,
                     isActive: isActive,
                     isCurrentStep: showGlow && index == game.engine.currentStep,
                     feedback: currentFeedback,
@@ -79,6 +81,7 @@ struct DrumRowView: View {
 #Preview {
     let game = GameLogic()
     DrumRowView(
+        beatStyle: .workspace,
         part: .hiHat,
         beats: game.randomPattern.hiHat,
         showGlow: true,

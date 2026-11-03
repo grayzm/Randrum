@@ -18,14 +18,6 @@ struct RandomPatternView: View {
     )
     @State private var flickerTimer: Timer? = nil
     
-    // layout constants
-//    private let controlPanelWidth: CGFloat = 140
-//    private let mainSpacing: CGFloat = 20
-//    private let iconWidth: CGFloat = 50
-//    private let gridSpacing: CGFloat = 16
-//    private let horizontalPadding: CGFloat = 16 * 2
-//    private let verticalSpacing: CGFloat = 20
-    
     // what to actually display per row
     private func displayBeats(for row: Int, real: [BeatSlot]) -> [BeatSlot] {
         switch game.gameState {
@@ -85,7 +77,7 @@ struct RandomPatternView: View {
                                     .stroke(Color("stroke").opacity(0.4), lineWidth: 2)
                             )
                             .overlay(
-                                Image(systemName: "arrow.clockwise")
+                                Image(systemName: "arrow.trianglehead.2.clockwise")
                                     .font(.title3.bold())
                                     .foregroundStyle(Color("text"))
                             )
@@ -101,8 +93,8 @@ struct RandomPatternView: View {
                                     .stroke(Color("stroke").opacity(0.4), lineWidth: 2)
                             )
                             .overlay(
-                                Image(systemName: "checkmark")
-                                    .font(.title3.bold())
+                                Text("Check")
+                                    .font(.subheadline)
                                     .foregroundStyle(Color("text"))
                             )
 
@@ -121,6 +113,7 @@ struct RandomPatternView: View {
                             .frame(minWidth: 40, maxWidth: 40)
                             .aspectRatio(1, contentMode: .fit)
                         DrumRowView(
+                            beatStyle: .randomPattern,
                             part: .hiHat,
                             beats: displayBeats(for: 0, real: game.randomPattern.hiHat),
                             showGlow: game.gameState == .listening,
@@ -136,8 +129,9 @@ struct RandomPatternView: View {
                             .frame(minWidth: 40, maxHeight: 40)
                             .aspectRatio(1, contentMode: .fit)
                         DrumRowView(
+                            beatStyle: .randomPattern,
                             part: .snare,
-                            beats: displayBeats(for: 0, real: game.randomPattern.snare),
+                            beats: displayBeats(for: 1, real: game.randomPattern.snare),
                             showGlow: game.gameState == .listening,
                             isEditable: false,
                             showsFeedback: false,
@@ -151,8 +145,9 @@ struct RandomPatternView: View {
                             .frame(minWidth: 40, maxHeight: 40)
                             .aspectRatio(1, contentMode: .fit)
                         DrumRowView(
+                            beatStyle: .randomPattern,
                             part: .kick,
-                            beats: displayBeats(for: 0, real: game.randomPattern.kick),
+                            beats: displayBeats(for: 2, real: game.randomPattern.kick),
                             showGlow: game.gameState == .listening,
                             isEditable: false,
                             showsFeedback: false,

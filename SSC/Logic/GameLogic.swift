@@ -171,17 +171,6 @@ class GameLogic: ObservableObject {
         print("stopPlayback() GameLogic")
     }
     
-    // for randomPattern play button
-//    func playRandomPattern() {
-//        gameState = .listening
-//        
-//        syncPatternToEngine(randomPattern)
-//        engine.start(bpm: randomPattern.bpm)
-////        isPlayingUser = false
-//        
-//        print("playRandomPattern() GameLogic")
-//    }
-    
     // ------------ METRONOME ------------
     
     // user taps -> store timestamps -> calculate average interval -> convert to BPM -> clamp to 80...160
@@ -316,24 +305,6 @@ class GameLogic: ObservableObject {
         print("syncPatternToEngine() GameLogic")
     }
     
-    // for userPattern play button
-//    func playUserPattern() {
-//        syncPatternToEngine(userPattern)
-//        engine.start(bpm: userPattern.bpm)
-////        isPlayingUser = true
-//        
-//        print("playUserPattern() GameLogic")
-//    }
-    
-//    func pausePlayback() {
-//        engine.stop()
-//        gameState = .idle
-//        lastPlayedStep = -1
-////        isPlayingUser = false
-//        
-//        print("pausePlayback() GameLogic")
-//    }
-    
     // new handleStepTick() after adding GameState
     func handleStepTick() {
         switch gameState {
@@ -347,30 +318,6 @@ class GameLogic: ObservableObject {
         
         print("handleStepTick() GameLogic")
     }
-    
-//    func handleStepTick(step: Int) {
-//        
-//        // pattern maybe isPlayingUser. If it is: pattern = userPattern, if not: pattern = randomPattern
-//        let pattern = gameState == .listening ? randomPattern : userPattern
-//        
-//        if pattern.hiHat[step].isActive {
-//            // play hiHat
-//            AudioManager.shared.play(.hiHat)
-//            print("HiHat")
-//        }
-//        if pattern.snare[step].isActive {
-//            // play snare
-//            AudioManager.shared.play(.snare)
-//            print("Snare")
-//        }
-//        if pattern.kick[step].isActive {
-//            // play kick
-//            AudioManager.shared.play(.kick)
-//            print("Kick")
-//        }
-//        
-//        print("handleStepTick(\(step)) GameLogic")
-//    }
     
     // ------------ CHECKING ------------
     
