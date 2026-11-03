@@ -13,36 +13,33 @@ struct WorkspaceView: View {
     
     
     var body: some View {
-        VStack(spacing: 16) {
-            HStack(spacing: 30) {
+        VStack {
+            HStack(spacing: 20) {
                 Text("Workspace")
-                    .font(.title.weight(.semibold))
+                    .font(.title2.bold())
                 WorkspaceControlPanelView()
             }
-            
-            VStack(spacing: 8) {
-                // HEADER GRID
-                Grid(horizontalSpacing: 30) {
-                    GridRow {
-                        RoundedRectangle(cornerRadius: 5)
-                            .aspectRatio(1, contentMode: .fit)
-                            .frame(minWidth: 50, maxHeight: 70)
-                            .foregroundColor(Color.clear)
-                        StepHeaderView(currentStep: (
-                            game.gameState == .recreating ||
-                            game.gameState == .checking ||
-                            game.gameState == .result) &&
-                                       game.engine.currentStep >= 0 ? game.engine.currentStep : -1)
-                    }
+            VStack {
+                // step header
+                HStack(spacing: 30) {
+                    Rectangle()
+                        .fill(.clear)
+                        .scaledToFit()
+                        .frame(maxWidth: 40, maxHeight: 40)
+                    StepHeaderView(currentStep: (
+                        game.gameState == .recreating ||
+                        game.gameState == .checking ||
+                        game.gameState == .result) &&
+                                   game.engine.currentStep >= 0 ? game.engine.currentStep : -1)
                 }
-                
-                // DRUM SECTION
-                Grid(horizontalSpacing: 30, verticalSpacing: 30) {
-                    GridRow {
+                // --------------- DRUM PADS ---------------
+                VStack(spacing: 16) {
+                    // hihat
+                    HStack(spacing: 30) {
                         Image("hihat")
                             .resizable()
                             .scaledToFit()
-                            .frame(minWidth: 50, maxHeight: 70)
+                            .frame(minWidth: 40, maxHeight: 40)
                         DrumRowView(
                             part: .hiHat,
                             beats: game.userPattern.hiHat,
@@ -51,11 +48,12 @@ struct WorkspaceView: View {
                             showsFeedback: true,
                         )
                     }
-                    GridRow {
+                    // snare
+                    HStack(spacing: 30) {
                         Image("snare")
                             .resizable()
                             .scaledToFit()
-                            .frame(minWidth: 50, maxHeight: 70)
+                            .frame(minWidth: 40, maxHeight: 40)
                         DrumRowView(
                             part: .snare,
                             beats: game.userPattern.snare,
@@ -64,11 +62,12 @@ struct WorkspaceView: View {
                             showsFeedback: true,
                         )
                     }
-                    GridRow {
+                    // kick
+                    HStack(spacing: 30) {
                         Image("kick")
                             .resizable()
                             .scaledToFit()
-                            .frame(minWidth: 50, maxHeight: 70)
+                            .frame(minWidth: 40, maxHeight: 40)
                         DrumRowView(
                             part: .kick,
                             beats: game.userPattern.kick,
@@ -78,6 +77,7 @@ struct WorkspaceView: View {
                         )
                     }
                 }
+                .frame(maxHeight: 264)
                 // PLAYHEAD
                 .overlayPreferenceValue(StepFramePreferenceKey.self) { values in
                     GeometryReader { geo in

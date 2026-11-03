@@ -15,12 +15,6 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
-				Views/DrumRowView.swift,
-				Views/InstructionView.swift,
-				Views/MetronomeTapperView.swift,
-				Views/RandomControlPanelView.swift,
-				Views/StepHeaderView.swift,
-				Views/WorkspaceView.swift,
 			);
 			target = 37F797712F38E2F00063D006 /* SSC */;
 		};

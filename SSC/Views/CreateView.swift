@@ -14,6 +14,8 @@ struct CreateView: View {
     @EnvironmentObject var patternStore: PatternStore
     
     @State private var showingSaveAlert = false
+    @State private var showingSavedConfirmation = false
+    @State private var showingNewPatternAlert = false
     @State private var saveName = ""
     
     @State private var selectedPattern: SavedPattern?
@@ -29,9 +31,10 @@ struct CreateView: View {
             ZStack {
                 VStack {
                     savedSection
-                    Spacer()
+//                    Spacer()
                     workspaceSection
                 }
+                .navigationTitle("Create")
                 .padding(10)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 
@@ -99,6 +102,18 @@ struct CreateView: View {
                 renamingPattern = nil
             }
         }
+        
+        .alert("New Pattern", isPresented: $showingNewPatternAlert) {
+            Button("Ok", role: .cancel) {}
+        } message: {
+            Text("New blank workspace ready. Start creating your new pattern!")
+        }
+        
+        .alert("Pattern Saved!", isPresented: $showingSavedConfirmation) {
+            Button("Ok", role: .cancel) {}
+        } message: {
+            Text("Your pattern has been saved successfully.")
+        }
     }
 }
 
@@ -108,7 +123,6 @@ extension CreateView {
         VStack(alignment: .leading, spacing: 20) {
             Text("Saved Patterns")
                 .font(.title2.weight(.semibold))
-//                .font(.custom("DepartureMono-Regular", size: 24))
             
             ScrollView {
                 LazyVGrid(columns: [
@@ -116,6 +130,7 @@ extension CreateView {
                     ], spacing: 30) {
                         FolderAddView {
                             createLogic.newPattern()
+                            showingNewPatternAlert = true
                         }
                     ForEach(patternStore.patterns) { saved in
                         FolderView(
@@ -131,25 +146,23 @@ extension CreateView {
                         )
                     }
                 }
-                    
-                .padding(.vertical, 10)
-                .padding(.horizontal, 10)
+                .padding(16)
             }
+            .frame(maxHeight: 260)
             .background(
                 RoundedRectangle(cornerRadius: 2)
                     .fill(Color("bnw").opacity(0.3))
                     .stroke(Color("shadow"), lineWidth: 3)
                 )
         }
-        .padding(24)
-//        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding(30)
+        .padding(.bottom, 5)
         .background(
             RoundedRectangle(cornerRadius: 16)
                 .fill(
                     LinearGradient(colors: [Color("background1"), Color("background2")],
                                    startPoint: .top,
                                    endPoint: .bottom)))
-        
     }
 }
 
@@ -160,8 +173,6 @@ extension CreateView {
             HStack(spacing: 30 ) {
                 Text("Workspace")
                     .font(.title.weight(.semibold))
-//                    .font(.custom("DepartureMono-Regular", size: 24))
-//                Spacer()
                 CreateControlPanelView(
                     isSaveEnabled: createLogic.hasUnsavedChanges,
                     onSave: {
@@ -183,11 +194,11 @@ extension CreateView {
             CreateWorkspaceGridView()
         }
         .padding(30)
+        .padding(.top, 5)
         .background(
             RoundedRectangle(cornerRadius: 16)
                 .fill(
                     LinearGradient(colors: [Color("background1"), Color("background2")], startPoint: .top, endPoint: .bottom)))
-        
     }
 }
 
@@ -246,29 +257,38 @@ extension CreateView {
     private func panelContent(for pattern: SavedPattern) -> some View {
         VStack(alignment: .leading, spacing: 16) {
             Text(pattern.name)
-                .font(.custom("DepartureMono-Regular", size: 20))
+//                .font(.custom("DepartureMono-Regular", size: 20))
             Divider()
             HStack {
                 Text("Created:")
+                    .font(.title3)
                 Spacer()
                 Text(pattern.dateString)
+                    .font(.title3)
             }
             HStack {
                 Text("BPM:")
+                    .font(.title3)
                 Spacer()
                 Text("\(Int(pattern.bpm))")
+                    .font(.title3)
             }
             Divider()
             HStack{
-                Button("Rename") {
+                Button {
                     renamingPattern = pattern
                     renameText = pattern.name
+                } label: {
+                    Text("Rename")
+                        .font(.title3)
+                        .foregroundColor(.blue)
                 }
                 Spacer()
                 Button(role: .destructive) {
                     patternToDelete = pattern
                 } label: {
                     Image(systemName: "trash.fill")
+                        .font(.system(size: 20))
                 }
             }
         }
@@ -296,8 +316,40 @@ struct CreateWorkspaceGridView: View {
                 }
             }
             // DRUM SECTION
-            Grid(horizontalSpacing: 30, verticalSpacing: 30) {
-                GridRow {
+//            Grid(horizontalSpacing: 30, verticalSpacing: 30) {
+//                GridRow {
+//                    Image("hihat")
+//                        .resizable()
+//                        .scaledToFit()
+//                        .frame(minWidth: 50, maxHeight: 70)
+//                    CreateDrumRowView(
+//                        part: .hiHat,
+//                        beats: createLogic.userPattern.hiHat,
+//                    )
+//                }
+//                GridRow {
+//                    Image("snare")
+//                        .resizable()
+//                        .scaledToFit()
+//                        .frame(minWidth: 50, maxHeight: 70)
+//                    CreateDrumRowView(
+//                        part: .snare,
+//                        beats: createLogic.userPattern.snare,
+//                    )
+//                }
+//                GridRow {
+//                    Image("kick")
+//                        .resizable()
+//                        .scaledToFit()
+//                        .frame(minWidth: 50, maxHeight: 70)
+//                    CreateDrumRowView(
+//                        part: .kick,
+//                        beats: createLogic.userPattern.kick,
+//                    )
+//                }
+//            }
+            VStack(spacing: 30) {
+                HStack(spacing: 30) {
                     Image("hihat")
                         .resizable()
                         .scaledToFit()
@@ -307,7 +359,7 @@ struct CreateWorkspaceGridView: View {
                         beats: createLogic.userPattern.hiHat,
                     )
                 }
-                GridRow {
+                HStack(spacing: 30) {
                     Image("snare")
                         .resizable()
                         .scaledToFit()
@@ -317,7 +369,7 @@ struct CreateWorkspaceGridView: View {
                         beats: createLogic.userPattern.snare,
                     )
                 }
-                GridRow {
+                HStack(spacing: 30) {
                     Image("kick")
                         .resizable()
                         .scaledToFit()
@@ -383,8 +435,6 @@ struct CreateDrumRowView: View {
                             .shadow(color: Color("shadow"), radius: 4, x: 4, y: 4)
                     }
                 }
-//                .frame(width: size, height: size)
-//                .animation(.easeInOut(duration: 0.18), value: createLogic.engine.stepPulse)
                 .aspectRatio(1, contentMode: .fit)
                 .anchorPreference(
                     key: StepFramePreferenceKey.self,
@@ -410,7 +460,7 @@ struct CreateStepHeaderView: View {
     }
     
     var body: some View {
-        HStack {
+        HStack(spacing: 14) {
             ForEach(0..<totalSteps, id: \.self) { step in
                 Rectangle()
                     .fill(Color.clear)
@@ -454,10 +504,10 @@ struct CreateControlPanelView: View {
                 RoundedRectangle(cornerRadius: 2)
                     .fill(Color("screen"))
                     .stroke(Color("shadow"), lineWidth: 2)
-                    .frame(height: 50)
+                    .frame(maxHeight: 60)
                 if !createLogic.workspaceMessage.isEmpty {
                     Text(createLogic.workspaceMessage)
-                        .font(.custom("DepartureMono-Regular", size: 20))
+                        .font(.custom("DepartureMono-Regular", size: 24))
                         .foregroundStyle(Color("stroke"))
                         .padding(.horizontal, 12)
                 }
@@ -476,7 +526,7 @@ struct CreateControlPanelView: View {
             } label: {
                 RoundedRectangle(cornerRadius: 10)
                     .fill(Color("buttonFill"))
-                    .frame(width: 60, height: 50)
+                    .frame(maxWidth: 60, maxHeight: 60)
                     .overlay(
                         RoundedRectangle(cornerRadius: 10)
                             .stroke(Color("stroke").opacity(0.4), lineWidth: 2)
@@ -484,6 +534,7 @@ struct CreateControlPanelView: View {
                     .padding(.vertical, 5)
                     .overlay(
                         Image(systemName: createLogic.isPlaying ? "stop.fill" : "play.fill")
+                            .font(.system(size: 22))
                     )
                     .foregroundStyle(Color("text"))
             }
@@ -492,7 +543,7 @@ struct CreateControlPanelView: View {
             Button(action: onSave) {
                 RoundedRectangle(cornerRadius: 10)
                     .fill(Color("buttonFill"))
-                    .frame(width: 120, height: 50)
+                    .frame(maxWidth: 120, maxHeight: 60)
                     .overlay(
                         RoundedRectangle(cornerRadius: 10)
                             .stroke(Color("stroke").opacity(0.4), lineWidth: 2)
@@ -500,8 +551,7 @@ struct CreateControlPanelView: View {
                     .padding(.vertical, 5)
                     .overlay(
                         Text("Save")
-                            .font(.title3)
-//                            .font(.custom("DepartureMono-Regular", size: 16))
+                            .font(.title2)
                             .foregroundStyle(Color("text"))
                     )
             }
@@ -526,7 +576,7 @@ struct CreateMetronomeTapperView: View {
                     .font(.custom("DepartureMono-Regular", size: 20))
                     .foregroundStyle(Color("stroke"))
             }
-            .frame(width: 120, height: 50)
+            .frame(maxWidth: 120, maxHeight: 60)
             .background(
                 RoundedRectangle(cornerRadius: 2)
                     .fill(Color("screen"))
@@ -538,13 +588,12 @@ struct CreateMetronomeTapperView: View {
             } label: {
                 HStack(spacing: 10) {
                     Image(systemName: "metronome.fill")
-                        .font(.system(size: 20))
+                        .font(.system(size: 24))
                     Text("Tap")
-                        .font(.title3)
-//                        .font(.custom("DepartureMono-Regular", size: 20))
+                        .font(.title2)
                 }
                 .foregroundStyle(Color("text"))
-                .frame(width: 120, height: 50)
+                .frame(maxWidth: 120, maxHeight: 60)
                 .background(
                     RoundedRectangle(cornerRadius: 10)
                         .fill(Color("buttonFill"))

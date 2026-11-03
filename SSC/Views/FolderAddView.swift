@@ -19,10 +19,10 @@ struct FolderAddView: View {
                     .frame(width: 70, height: 55)
                     .foregroundStyle(Color.gray.opacity(0.5))
                 Image(systemName: "plus")
-                    .font(.title2)
+                    .font(.title)
             }
             Text("Create")
-                .font(.custom("DepartureMono-Regular", size: 18))
+                .font(.custom("DepartureMono-Regular", size: 22))
         }
         .padding()
         .contentShape(Rectangle())

@@ -26,14 +26,14 @@ struct BeatButtonView: View {
             ZStack {
                 // glow layer
                 if isCurrentStep && isActive {
-                    RoundedRectangle(cornerRadius: 5)
+                    RoundedRectangle(cornerRadius: 4)
                         .fill(.white.opacity(colorScheme == .dark ? 0.15 : 0.3))
                         .blur(radius: 8)
                         .scaleEffect(isCurrentStep ? 1.12 : 1)
                         .transition(.opacity)
                 }
                 if isCurrentStep && isActive && game.gameState == .recreating {
-                    RoundedRectangle(cornerRadius: 5)
+                    RoundedRectangle(cornerRadius: 4)
                         .stroke(Color("pressed").opacity(colorScheme == .dark ? 0.6 : 1.2), lineWidth: 4)
                         .scaleEffect(game.engine.stepPulse ? 1.4 : 1.1)
                         .opacity(0.9)
@@ -43,12 +43,13 @@ struct BeatButtonView: View {
 //                        .transition(.scale)
                 }
                 // main pad
-                RoundedRectangle(cornerRadius: 5)
+                RoundedRectangle(cornerRadius: 4)
                     .fill(buttonColor)
-                    .shadow(color: Color("shadow"), radius: 4, x: 4, y: 4)
+                    .shadow(color: Color("shadow"), radius: 1, x: 2, y: 2)
+                    .shadow(color: Color("highlight"), radius: 1, x: -2, y: -2)
                     .overlay(
                         shouldShowFeedback && feedback == .missed ?
-                        RoundedRectangle(cornerRadius: 5)
+                        RoundedRectangle(cornerRadius: 4)
                             .stroke(Color.white, lineWidth: 2) : nil
                     )
             }

@@ -27,16 +27,16 @@ struct LandingView: View {
                         Button {
                             shouldNavigatePractice = true
                         } label: {
-                            RoundedRectangle(cornerRadius: 10)
+                            RoundedRectangle(cornerRadius: 8)
                                 .fill(Color("buttonFill"))
-                                .frame(width: 160, height: 56)
+                                .frame(width: 200, height: 64)
                                 .overlay(
-                                    RoundedRectangle(cornerRadius: 10)
+                                    RoundedRectangle(cornerRadius: 8)
                                         .stroke(Color("stroke").opacity(0.4), lineWidth: 2)
                                 )
-                                .padding(.vertical, 5)
+                                .padding(.vertical, 10)
                                 .overlay(Text("Practice")
-                                    .font(.custom("DepartureMono-Regular", size: 20))
+                                    .font(.title2)
                                     .foregroundStyle(Color("text"))
                                 )
                         }
@@ -50,16 +50,16 @@ struct LandingView: View {
                         createLogic.newPattern()
                         shouldNavigateCreate = true
                     } label: {
-                        RoundedRectangle(cornerRadius: 10)
+                        RoundedRectangle(cornerRadius: 8)
                             .fill(Color("buttonFill"))
-                            .frame(width: 160, height: 56)
+                            .frame(width: 200, height: 64)
                             .overlay(
-                                RoundedRectangle(cornerRadius: 10)
+                                RoundedRectangle(cornerRadius: 8)
                                     .stroke(Color("stroke").opacity(0.4), lineWidth: 2)
                             )
-                            .padding(.vertical, 5)
+                            .padding(.vertical, 10)
                             .overlay(Text("Create")
-                                .font(.custom("DepartureMono-Regular", size: 20))
+                                .font(.title2)
                                 .foregroundStyle(Color("text"))
                             )
                     }
@@ -72,17 +72,16 @@ struct LandingView: View {
                     Button {
                         shouldNavigateHelp = true
                     } label: {
-                        RoundedRectangle(cornerRadius: 10)
+                        RoundedRectangle(cornerRadius: 8)
                             .fill(Color("buttonFill"))
-                            .frame(width: 160, height: 56)
+                            .frame(width: 200, height: 64)
                             .overlay(
-                                RoundedRectangle(cornerRadius: 10)
+                                RoundedRectangle(cornerRadius: 8)
                                     .stroke(Color("stroke").opacity(0.4), lineWidth: 2)
                             )
-                            .padding(.vertical, 5)
+                            .padding(.vertical, 10)
                             .overlay(Text("Help")
-                                .font(.custom("DepartureMono-Regular", size: 20))
-                                     //                        .font(.headline)
+                                .font(.title2)
                                 .foregroundStyle(Color("text"))
                             )
                     }
@@ -91,7 +90,6 @@ struct LandingView: View {
                     }
                 }
             }
-            .ignoresSafeArea()
         }
     }
 }

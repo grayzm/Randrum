@@ -15,27 +15,29 @@ struct ContentView: View {
     
     var body: some View {
         VStack {
-            RandomPatternView()
-                .padding(30)
-                .background(
-                    RoundedRectangle(cornerRadius: 16)
-                        .fill(
-                            LinearGradient(colors: [Color("background1"), Color("background2")], startPoint: .top, endPoint: .bottom)
-                        )
-                )
-                .padding()
+            VStack {
+                RandomPatternView()
+            }
+            .frame(minHeight: 200, maxHeight: 264)
+            .padding(30)
+            .background(
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(
+                        LinearGradient(colors: [Color("background1"), Color("background2")], startPoint: .top, endPoint: .bottom)))
+            .padding(.bottom, 10)
             
-            
-            WorkspaceView()
-                .padding(30)
-                .background(
-                    RoundedRectangle(cornerRadius: 16)
-                        .fill(
-                            LinearGradient(colors: [Color("background1"), Color("background2")], startPoint: .top, endPoint: .bottom)
-                        )
-                )
-                .padding()
+            VStack {
+                WorkspaceView()
+            }
+            .frame(minHeight: 264, maxHeight: .infinity)
+            .padding(30)
+            .background(
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(
+                        LinearGradient(colors: [Color("background1"), Color("background2")], startPoint: .top, endPoint: .bottom)))
         }
+        .navigationBarTitle("Practice")
+        .padding(.horizontal, 10)
     }
 }
 

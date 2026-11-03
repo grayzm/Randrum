@@ -20,17 +20,17 @@ struct MetronomeTapperView: View {
     @EnvironmentObject var game: GameLogic
     
     var body: some View {
-        HStack(spacing: 20) {
+        HStack(spacing: 12) {
             HStack() {
                 Text("\(Int(game.userPattern.bpm))")
-                    .font(.custom("DepartureMono-Regular", size: 24))
+                    .font(.custom("DepartureMono-Regular", size: 20))
                     .foregroundStyle(Color("stroke"))
                 Text("BPM")
-                    .font(.custom("DepartureMono-Regular", size: 20))
+                    .font(.custom("DepartureMono-Regular", size: 16))
 //                    .font(.subheadline)
                     .foregroundStyle(Color("stroke"))
             }
-            .frame(width: 120, height: 50)
+            .frame(maxWidth: 120, maxHeight: 40)
             .background(
                 RoundedRectangle(cornerRadius: 2)
                     .fill(Color("screen"))
@@ -42,19 +42,18 @@ struct MetronomeTapperView: View {
             } label: {
                 HStack(spacing: 10) {
                     Image(systemName: "metronome.fill")
-                        .font(.system(size: 20))
-                    Text("Tap")
                         .font(.title3)
-//                        .font(.custom("DepartureMono-Regular", size: 20))
+                    Text("Tap")
+                        .font(.subheadline)
                 }
                 .foregroundStyle(Color("text"))
-                .frame(width: 120, height: 50)
+                .frame(maxWidth: 96, maxHeight: 40)
                 .background(
-                    RoundedRectangle(cornerRadius: 10)
+                    RoundedRectangle(cornerRadius: 4)
                         .fill(Color("buttonFill"))
                 )
                 .overlay(
-                    RoundedRectangle(cornerRadius: 10)
+                    RoundedRectangle(cornerRadius: 4)
                         .stroke(Color("stroke").opacity(0.4), lineWidth: 2)
                 )
             }

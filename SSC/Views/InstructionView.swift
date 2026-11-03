@@ -28,7 +28,7 @@ struct InstructionView: View {
     var body: some View {
         if !message.isEmpty {
             Text(message)
-                .font(.custom("DepartureMono-Regular", size: 20))
+                .font(.custom("DepartureMono-Regular", size: 16))
                 .foregroundStyle(Color("stroke"))
                 .padding(.horizontal, 16)
                 .padding(.vertical, 8)

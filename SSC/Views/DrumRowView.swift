@@ -16,8 +16,6 @@ struct DrumRowView: View {
     let isEditable: Bool
     let showsFeedback: Bool
     
-//    var size: CGFloat?
-    
     private var trackIndex: Int {
         switch part {
         case .hiHat: return 0
@@ -31,7 +29,7 @@ struct DrumRowView: View {
         guard showsFeedback,
               (game.gameState == .checking || game.gameState == .result),
               let result = game.lastCheckResult else {
-
+            
             return nil
         }
         
@@ -43,7 +41,7 @@ struct DrumRowView: View {
     }
     
     var body: some View {
-        HStack {
+        HStack(spacing: 14) {
             ForEach(0..<beats.count, id: \.self) { index in
                 let isActive = beats[index].isActive
                 let currentFeedback: BeatFeedback? = {
@@ -66,7 +64,7 @@ struct DrumRowView: View {
                         game.toggleUserBeat(part: part, index: index)
                     } : nil
                 )
-                .aspectRatio(1, contentMode: .fit)
+//                .aspectRatio(1, contentMode: .fit)
                 .anchorPreference(
                     key: StepFramePreferenceKey.self,
                     value: .bounds
@@ -74,7 +72,6 @@ struct DrumRowView: View {
                     [index: anchor]
                 }
             }
-//            .padding(2)
         }
     }
 }
@@ -87,7 +84,6 @@ struct DrumRowView: View {
         showGlow: true,
         isEditable: true,
         showsFeedback: true,
-//        size: 56
     )
-        .environmentObject(game)
+    .environmentObject(game)
 }
