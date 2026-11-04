@@ -13,6 +13,7 @@ struct CreateView: View {
     @EnvironmentObject var createLogic: CreateLogic
     @EnvironmentObject var patternStore: PatternStore
     @Environment(\.colorScheme) var colorScheme
+    @Environment(\.dismiss) private var dismiss
     
     @State private var showingSaveAlert = false
     @State private var showingSavedConfirmation = false
@@ -37,12 +38,34 @@ struct CreateView: View {
                     workspaceSection
                     Spacer()
                 }
-//                .navigationTitle("Create")
-                .padding(16)
-//                .padding(.top, 80)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .ignoresSafeArea()
                 
+                VStack {
+                    HStack {
+                        Button {
+                            dismiss()
+                        } label: {
+                            if #available(iOS 26.0, *) {
+                                Image(systemName: "chevron.left")
+                                    .font(.title2)
+                                    .fontWeight(.semibold)
+                                    .foregroundStyle(Color("text"))
+                                    .frame(width: 16, height: 16)
+                                    .padding()
+                                    .glassEffect()
+                            } else {
+                                Image(systemName: "chevron.left")
+                                    .font(.title2)
+                                    .foregroundStyle(Color("text"))
+                                    .frame(width: 16, height: 16)
+                                    .padding()
+                                    .background(.ultraThinMaterial, in: Circle())
+                            }
+                        }
+                        Spacer()
+                    }
+                    Spacer()
+                }
+
                 if let selectedPattern {
                     floatingPanel(
                         for: selectedPattern,
@@ -51,6 +74,11 @@ struct CreateView: View {
                         .zIndex(999)
                 }
             }
+            .padding(16)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .ignoresSafeArea()
+            .navigationBarBackButtonHidden(true)
+            .toolbar(.hidden, for: .navigationBar)
         }
         
         .alert("Save Pattern", isPresented: $showingSaveAlert) {

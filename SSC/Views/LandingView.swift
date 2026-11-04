@@ -27,19 +27,21 @@ struct LandingView: View {
                         Button {
                             shouldNavigatePractice = true
                         } label: {
-                            RoundedRectangle(cornerRadius: 8)
-                                .fill(Color("buttonFill"))
+                            Text("Practice")
+                                .font(.title2)
+                                .foregroundStyle(Color("text"))
                                 .frame(width: 200, height: 64)
-                                .overlay(
+                                .background(
                                     RoundedRectangle(cornerRadius: 8)
-                                        .stroke(Color("stroke").opacity(0.4), lineWidth: 2)
-                                )
-                                .padding(.vertical, 10)
-                                .overlay(Text("Practice")
-                                    .font(.title2)
-                                    .foregroundStyle(Color("text"))
+                                        .fill(Color("buttonFill"))
+                                        .frame(width: 200, height: 64)
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 8)
+                                                .stroke(Color("stroke").opacity(0.4), lineWidth: 2)
+                                        )
                                 )
                         }
+                        .padding(.bottom, 10)
                     }
                     .navigationDestination(isPresented: $shouldNavigatePractice) {
                         ContentView()
