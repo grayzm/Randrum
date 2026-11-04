@@ -39,7 +39,7 @@ struct ContentView: View {
 //        .navigationBarTitle("Practice")
         .padding(16)
         .ignoresSafeArea()
-        .background(.blue)
+//        .background(.blue)
     }
 }
 
