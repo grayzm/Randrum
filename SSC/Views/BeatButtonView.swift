@@ -16,6 +16,8 @@ struct BeatButtonView: View {
     @EnvironmentObject var game: GameLogic
     @Environment(\.colorScheme) var colorScheme
     
+    @State private var isPressed = false
+    
     var style: BeatButtonStyle = .workspace
     var isActive: Bool
     var isCurrentStep: Bool
@@ -52,7 +54,7 @@ struct BeatButtonView: View {
                 switch style {
                     case .randomPattern:
                         RoundedRectangle(cornerRadius: 4)
-                            .fill(Color("screen"))
+                        .fill(Color(colorScheme == .dark ? .black : Color("screen")))
                             .overlay {
                                 if isActive {
                                     RoundedRectangle(cornerRadius: 4)
@@ -60,19 +62,25 @@ struct BeatButtonView: View {
                                 }
                             }
                     case .workspace:
+                    ZStack {
                         RoundedRectangle(cornerRadius: 4)
-                            .fill(buttonColor)
-                            .shadow(color: Color("shadow"), radius: 1, x: 2, y: 2)
-                            .shadow(color: Color("highlight"), radius: 1, x: -2, y: -2)
+                            .shadow(color: Color("shadow"), radius: 1, x: 3, y: 3)
+                        RoundedRectangle(cornerRadius: 4)
+                            .fill(
+                                buttonColor
+                                    .shadow(.inner(color: .white.opacity(colorScheme == .dark ? 0.15 : 0.6), radius: 2, x: 3, y: 4))
+                                    .shadow(.inner(color: .black.opacity(colorScheme == .init(.dark) ? 0.4 : 0.1), radius: 5, x: -3, y: -4))
+                            )
                             .overlay(
                                 shouldShowFeedback && feedback == .missed ?
                                 RoundedRectangle(cornerRadius: 4)
-                                    .stroke(Color.white, lineWidth: 2) : nil
+                                    .strokeBorder(Color.white, lineWidth: 3) : nil
                             )
+                    }
                 }
             }
         }
-        .animation(.easeInOut(duration: 0.18), value: isActive)
+        .animation(.linear(duration: 0.1), value: isActive)
         .animation(.easeInOut(duration: 0.18), value: game.engine.stepPulse)
         .animation(.easeInOut(duration: 0.3), value: feedback)
         .disabled(action == nil)
@@ -93,7 +101,7 @@ struct BeatButtonView: View {
         if shouldShowFeedback, let feedback = feedback {
             switch feedback {
             case .correct:
-                return Color.white
+                return Color(.white)
             case .wrong:
                 return Color.red.opacity(0.8)
             case .missed:

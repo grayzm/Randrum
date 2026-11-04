@@ -12,6 +12,7 @@ internal import SwiftUI
 struct CreateView: View {
     @EnvironmentObject var createLogic: CreateLogic
     @EnvironmentObject var patternStore: PatternStore
+    @Environment(\.colorScheme) var colorScheme
     
     @State private var showingSaveAlert = false
     @State private var showingSavedConfirmation = false
@@ -30,13 +31,17 @@ struct CreateView: View {
         GeometryReader { rootGeo in
             ZStack {
                 VStack {
+                    Spacer()
                     savedSection
-//                    Spacer()
+                        .padding(.bottom, 10)
                     workspaceSection
+                    Spacer()
                 }
-                .navigationTitle("Create")
-                .padding(10)
+//                .navigationTitle("Create")
+                .padding(16)
+//                .padding(.top, 80)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .ignoresSafeArea()
                 
                 if let selectedPattern {
                     floatingPanel(
@@ -118,7 +123,6 @@ struct CreateView: View {
 }
 
 extension CreateView {
-    
     private var savedSection: some View {
         VStack(alignment: .leading, spacing: 20) {
             Text("Saved Patterns")
@@ -126,8 +130,8 @@ extension CreateView {
             
             ScrollView {
                 LazyVGrid(columns: [
-                    GridItem(.adaptive(minimum: 120), spacing: 20)
-                    ], spacing: 30) {
+                    GridItem(.adaptive(minimum: 110))
+                    ], spacing: 16) {
                         FolderAddView {
                             createLogic.newPattern()
                             showingNewPatternAlert = true
@@ -146,14 +150,17 @@ extension CreateView {
                         )
                     }
                 }
-                .padding(16)
+                .padding(10)
             }
-            .frame(maxHeight: 260)
+            .frame(maxHeight: 400)
             .background(
                 RoundedRectangle(cornerRadius: 2)
-                    .fill(Color("bnw").opacity(0.3))
+                    .fill(
+                        Color("screen")
+                            .shadow(.inner(color: .black.opacity(colorScheme == .dark ? 0.7 : 0.3), radius: 4))
+                    )
                     .stroke(Color("shadow"), lineWidth: 3)
-                )
+            )
         }
         .padding(30)
         .padding(.bottom, 5)
@@ -162,17 +169,20 @@ extension CreateView {
                 .fill(
                     LinearGradient(colors: [Color("background1"), Color("background2")],
                                    startPoint: .top,
-                                   endPoint: .bottom)))
+                                   endPoint: .bottom))
+        )
     }
 }
+
+// --------------- WORKSPACE SECTION ---------------
 
 extension CreateView {
     
     private var workspaceSection: some View {
-        VStack(spacing: 16) {
-            HStack(spacing: 30 ) {
-                Text("Workspace")
-                    .font(.title.weight(.semibold))
+        VStack {
+            HStack(spacing: 20 ) {
+                Text("Create")
+                    .font(.title2.weight(.semibold))
                 CreateControlPanelView(
                     isSaveEnabled: createLogic.hasUnsavedChanges,
                     onSave: {
@@ -195,10 +205,12 @@ extension CreateView {
         }
         .padding(30)
         .padding(.top, 5)
+        .frame(minHeight: 264, maxHeight: 440)
         .background(
             RoundedRectangle(cornerRadius: 16)
                 .fill(
-                    LinearGradient(colors: [Color("background1"), Color("background2")], startPoint: .top, endPoint: .bottom)))
+                    LinearGradient(colors: [Color("background1"), Color("background2")], startPoint: .top, endPoint: .bottom))
+        )
     }
 }
 
@@ -304,56 +316,21 @@ struct CreateWorkspaceGridView: View {
     
     var body: some View {
         
-        VStack(spacing: 8) {
+        VStack {
             // HEADER GRID
-            Grid(horizontalSpacing: 30) {
-                GridRow {
-                    RoundedRectangle(cornerRadius: 5)
-                        .aspectRatio(1, contentMode: .fit)
-                        .frame(minWidth: 50, maxHeight: 70)
-                        .foregroundColor(Color.clear)
-                    CreateStepHeaderView()
-                }
+            HStack(spacing: 30) {
+                Rectangle()
+                    .fill(.clear)
+                    .scaledToFit()
+                    .frame(maxWidth: 40, maxHeight: 40)
+                CreateStepHeaderView()
             }
-            // DRUM SECTION
-//            Grid(horizontalSpacing: 30, verticalSpacing: 30) {
-//                GridRow {
-//                    Image("hihat")
-//                        .resizable()
-//                        .scaledToFit()
-//                        .frame(minWidth: 50, maxHeight: 70)
-//                    CreateDrumRowView(
-//                        part: .hiHat,
-//                        beats: createLogic.userPattern.hiHat,
-//                    )
-//                }
-//                GridRow {
-//                    Image("snare")
-//                        .resizable()
-//                        .scaledToFit()
-//                        .frame(minWidth: 50, maxHeight: 70)
-//                    CreateDrumRowView(
-//                        part: .snare,
-//                        beats: createLogic.userPattern.snare,
-//                    )
-//                }
-//                GridRow {
-//                    Image("kick")
-//                        .resizable()
-//                        .scaledToFit()
-//                        .frame(minWidth: 50, maxHeight: 70)
-//                    CreateDrumRowView(
-//                        part: .kick,
-//                        beats: createLogic.userPattern.kick,
-//                    )
-//                }
-//            }
-            VStack(spacing: 30) {
+            VStack(spacing: 16) {
                 HStack(spacing: 30) {
                     Image("hihat")
                         .resizable()
                         .scaledToFit()
-                        .frame(minWidth: 50, maxHeight: 70)
+                        .frame(minWidth: 40, maxHeight: 40)
                     CreateDrumRowView(
                         part: .hiHat,
                         beats: createLogic.userPattern.hiHat,
@@ -363,7 +340,7 @@ struct CreateWorkspaceGridView: View {
                     Image("snare")
                         .resizable()
                         .scaledToFit()
-                        .frame(minWidth: 50, maxHeight: 70)
+                        .frame(minWidth: 40, maxHeight: 40)
                     CreateDrumRowView(
                         part: .snare,
                         beats: createLogic.userPattern.snare,
@@ -373,7 +350,7 @@ struct CreateWorkspaceGridView: View {
                     Image("kick")
                         .resizable()
                         .scaledToFit()
-                        .frame(minWidth: 50, maxHeight: 70)
+                        .frame(minWidth: 40, maxHeight: 40)
                     CreateDrumRowView(
                         part: .kick,
                         beats: createLogic.userPattern.kick,
@@ -409,12 +386,12 @@ struct CreateDrumRowView: View {
     
     let part: DrumParts
     let beats: [BeatSlot]
-//    let size: CGFloat
     
     var body: some View {
-        HStack/*(spacing: 14)*/ {
+        HStack(spacing: 14) {
             ForEach(0..<beats.count, id: \.self) { index in
                 let isActive = beats[index].isActive
+                let padFill: String = isActive ? "pressed" : "default"
                 
                 Button {
                     createLogic.toggleUserBeat(part: part, index: index)
@@ -422,20 +399,27 @@ struct CreateDrumRowView: View {
                     ZStack {
                         // glow when playing
                         if createLogic.isPlaying && index == createLogic.engine.currentStep && isActive {
-                            RoundedRectangle(cornerRadius: 5)
+                            RoundedRectangle(cornerRadius: 4)
                                 .stroke(Color("pressed").opacity(colorScheme == .dark ? 0.6 : 1.2), lineWidth: 4)
                                 .scaleEffect(createLogic.engine.stepPulse ? 1.4 : 1.1)
                                 .opacity(0.9)
                                 .shadow(color: Color("pressed").opacity(0.8), radius: 10)
-                                .animation(.easeOut(duration: 0.2), value: createLogic.engine.stepPulse)
+                                .animation(.easeOut(duration: 0.1), value: createLogic.engine.stepPulse)
                                 .blur(radius: 3)
                         }
-                        RoundedRectangle(cornerRadius: 5)
-                            .fill(isActive ? Color("pressed") : Color("default"))
-                            .shadow(color: Color("shadow"), radius: 4, x: 4, y: 4)
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 4)
+                                .shadow(color: Color("shadow"), radius: 1, x: 3, y: 3)
+                            RoundedRectangle(cornerRadius: 4)
+                                .fill(
+                                    Color(padFill)
+                                        .shadow(.inner(color: .white.opacity(colorScheme == .dark ? 0.15 : 0.6), radius: 2, x: 3, y: 4))
+                                        .shadow(.inner(color: .black.opacity(colorScheme == .init(.dark) ? 0.4 : 0.1), radius: 5, x: -3, y: -4))
+
+                                )
+                        }
                     }
                 }
-                .aspectRatio(1, contentMode: .fit)
                 .anchorPreference(
                     key: StepFramePreferenceKey.self,
                     value: .bounds
@@ -464,10 +448,10 @@ struct CreateStepHeaderView: View {
             ForEach(0..<totalSteps, id: \.self) { step in
                 Rectangle()
                     .fill(Color.clear)
-                    .aspectRatio(1, contentMode: .fit)
+                    .frame(maxHeight: 48)
                     .overlay(
                         label(for: step)
-                            .font(.title.bold())
+                            .font(.title3)
                             .opacity(step == currentStep ? 1 : 0.4),
                     )
             }
@@ -493,22 +477,26 @@ struct CreateStepHeaderView: View {
 
 struct CreateControlPanelView: View {
     @EnvironmentObject var createLogic: CreateLogic
+    @Environment(\.colorScheme) var colorScheme
     
     let isSaveEnabled: Bool
     let onSave: () -> Void
     
     var body: some View {
-        HStack(spacing: 20) {
+        HStack(spacing: 12) {
             // instruction display
             ZStack {
                 RoundedRectangle(cornerRadius: 2)
-                    .fill(Color("screen"))
-                    .stroke(Color("shadow"), lineWidth: 2)
-                    .frame(maxHeight: 60)
+                    .fill(
+                        Color("screen")
+                            .shadow(.inner(color: .black.opacity(colorScheme == .dark ? 0.7 : 0.3), radius: 4))
+                    )
+                    .stroke(Color("shadow"), lineWidth: 1.5)
+                    .frame(maxHeight: 40)
                 if !createLogic.workspaceMessage.isEmpty {
                     Text(createLogic.workspaceMessage)
-                        .font(.custom("DepartureMono-Regular", size: 24))
-                        .foregroundStyle(Color("stroke"))
+                        .font(.custom("DepartureMono-Regular", size: 16))
+                        .foregroundStyle(Color("text"))
                         .padding(.horizontal, 12)
                 }
             }
@@ -524,36 +512,36 @@ struct CreateControlPanelView: View {
                     createLogic.startRecreating()
                 }
             } label: {
-                RoundedRectangle(cornerRadius: 10)
+                RoundedRectangle(cornerRadius: 4)
                     .fill(Color("buttonFill"))
-                    .frame(maxWidth: 60, maxHeight: 60)
+                    .frame(maxWidth: 60, maxHeight: 40)
                     .overlay(
-                        RoundedRectangle(cornerRadius: 10)
+                        RoundedRectangle(cornerRadius: 4)
                             .stroke(Color("stroke").opacity(0.4), lineWidth: 2)
                     )
-                    .padding(.vertical, 5)
                     .overlay(
                         Image(systemName: createLogic.isPlaying ? "stop.fill" : "play.fill")
-                            .font(.system(size: 22))
+                            .font(.title3)
                     )
                     .foregroundStyle(Color("text"))
             }
             
             // save
-            Button(action: onSave) {
-                RoundedRectangle(cornerRadius: 10)
+            Button {
+                onSave()
+            } label: {
+                RoundedRectangle(cornerRadius: 4)
                     .fill(Color("buttonFill"))
-                    .frame(maxWidth: 120, maxHeight: 60)
+                    .frame(maxWidth: 120, maxHeight: 40)
                     .overlay(
-                        RoundedRectangle(cornerRadius: 10)
+                        RoundedRectangle(cornerRadius: 4)
                             .stroke(Color("stroke").opacity(0.4), lineWidth: 2)
                     )
-                    .padding(.vertical, 5)
                     .overlay(
                         Text("Save")
-                            .font(.title2)
-                            .foregroundStyle(Color("text"))
+                            .font(.title3)
                     )
+                    .foregroundStyle(Color("text"))
             }
             .disabled(!isSaveEnabled)
             .opacity(isSaveEnabled ? 1 : 0.4)
@@ -565,22 +553,26 @@ struct CreateControlPanelView: View {
 
 struct CreateMetronomeTapperView: View {
     @EnvironmentObject var createLogic: CreateLogic
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
-        HStack(spacing: 20) {
+        HStack(spacing: 12) {
             HStack {
                 Text("\(Int(createLogic.userPattern.bpm))")
-                    .font(.custom("DepartureMono-Regular", size: 24))
-                    .foregroundStyle(Color("stroke"))
-                Text("BPM")
                     .font(.custom("DepartureMono-Regular", size: 20))
-                    .foregroundStyle(Color("stroke"))
+                    .foregroundStyle(Color("text"))
+                Text("BPM")
+                    .font(.custom("DepartureMono-Regular", size: 16))
+                    .foregroundStyle(Color("text"))
             }
-            .frame(maxWidth: 120, maxHeight: 60)
+            .frame(maxWidth: 120, maxHeight: 40)
             .background(
                 RoundedRectangle(cornerRadius: 2)
-                    .fill(Color("screen"))
-                    .stroke(Color("shadow"), lineWidth: 2)
+                    .fill(
+                        Color("screen")
+                            .shadow(.inner(color: .black.opacity(colorScheme == .dark ? 0.7 : 0.3), radius: 4))
+                    )
+                    .stroke(Color("shadow"), lineWidth: 1.5)
             )
             
             Button {
@@ -588,18 +580,18 @@ struct CreateMetronomeTapperView: View {
             } label: {
                 HStack(spacing: 10) {
                     Image(systemName: "metronome.fill")
-                        .font(.system(size: 24))
+                        .font(.title3)
                     Text("Tap")
-                        .font(.title2)
+                        .font(.subheadline)
                 }
                 .foregroundStyle(Color("text"))
-                .frame(maxWidth: 120, maxHeight: 60)
+                .frame(maxWidth: 96, maxHeight: 40)
                 .background(
-                    RoundedRectangle(cornerRadius: 10)
+                    RoundedRectangle(cornerRadius: 4)
                         .fill(Color("buttonFill"))
                 )
                 .overlay(
-                    RoundedRectangle(cornerRadius: 10)
+                    RoundedRectangle(cornerRadius: 4)
                         .stroke(Color("stroke").opacity(0.4), lineWidth: 2)
                 )
             }

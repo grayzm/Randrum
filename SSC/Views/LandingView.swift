@@ -69,25 +69,25 @@ struct LandingView: View {
                             .environmentObject(patternStore)
                     }
                     
-                    Button {
-                        shouldNavigateHelp = true
-                    } label: {
-                        RoundedRectangle(cornerRadius: 8)
-                            .fill(Color("buttonFill"))
-                            .frame(width: 200, height: 64)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 8)
-                                    .stroke(Color("stroke").opacity(0.4), lineWidth: 2)
-                            )
-                            .padding(.vertical, 10)
-                            .overlay(Text("Help")
-                                .font(.title2)
-                                .foregroundStyle(Color("text"))
-                            )
-                    }
-                    .navigationDestination(isPresented: $shouldNavigateHelp) {
-                        HelpView()
-                    }
+//                    Button {
+//                        shouldNavigateHelp = true
+//                    } label: {
+//                        RoundedRectangle(cornerRadius: 8)
+//                            .fill(Color("buttonFill"))
+//                            .frame(width: 200, height: 64)
+//                            .overlay(
+//                                RoundedRectangle(cornerRadius: 8)
+//                                    .stroke(Color("stroke").opacity(0.4), lineWidth: 2)
+//                            )
+//                            .padding(.vertical, 10)
+//                            .overlay(Text("Help")
+//                                .font(.title2)
+//                                .foregroundStyle(Color("text"))
+//                            )
+//                    }
+//                    .navigationDestination(isPresented: $shouldNavigateHelp) {
+//                        HelpView()
+//                    }
                 }
             }
         }

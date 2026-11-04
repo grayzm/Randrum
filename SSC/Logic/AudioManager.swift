@@ -24,14 +24,6 @@ class AudioManager {
     private init() {
         setupAudioPlayers()
     }
-
-//    private var players: [DrumParts: AVAudioPlayer] = [:]
-//    
-//    init() {
-//        load(.hiHat, file: "hiHat")
-//        load(.snare, file: "snare")
-//        load(.kick, file: "kick")
-//    }
     
     private func setupAudioPlayers() {
         // pool of players for each drum part
@@ -113,23 +105,4 @@ class AudioManager {
         player.play()
         print("Playing sound")
     }
-    
-//    private func load(_ part: DrumParts, file: String) {
-//        guard let url = Bundle.main.url(forResource: file, withExtension: "wav") else {
-//            print("Missing file:", file)
-//            return
-//        }
-//        
-//        print("Loaded:", file)
-//        
-//        players[part] = try? AVAudioPlayer(contentsOf: url)
-//        players[part]?.prepareToPlay()
-//    }
-//    
-//    func play(_ part: DrumParts) {
-//        guard let player = players[part] else { return }
-//        player.stop()
-//        player.currentTime = 0
-//        player.play()
-//    }
 }

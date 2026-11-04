@@ -41,8 +41,11 @@ struct RandomPatternView: View {
 
                 ZStack {
                     RoundedRectangle(cornerRadius: 2)
-                        .fill(Color("screen"))
-                        .stroke(Color("shadow"), lineWidth: 2)
+                        .fill(
+                            Color("screen")
+                                .shadow(.inner(color: .black.opacity(colorScheme == .dark ? 0.7 : 0.3), radius: 4))
+                        )
+                        .stroke(Color("shadow"), lineWidth: 1.5)
                         .frame(height: 40)
                     InstructionView(messageType: .random)
     //                    .padding(.horizontal, 12)

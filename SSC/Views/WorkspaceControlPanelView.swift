@@ -19,13 +19,17 @@ internal import SwiftUI
 
 struct WorkspaceControlPanelView: View {
     @EnvironmentObject var game: GameLogic
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         HStack(spacing: 12) {
             ZStack {
                 RoundedRectangle(cornerRadius: 2)
-                    .fill(Color("screen"))
-                    .stroke(Color("shadow"), lineWidth: 2)
+                    .fill(
+                        Color("screen")
+                            .shadow(.inner(color: .black.opacity(colorScheme == .dark ? 0.7 : 0.3), radius: 4))
+                    )
+                    .stroke(Color("shadow"), lineWidth: 1.5)
                     .frame(maxHeight: 40)
                 InstructionView(messageType: .workspace)
             }

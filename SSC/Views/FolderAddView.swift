@@ -17,12 +17,13 @@ struct FolderAddView: View {
                 RoundedRectangle(cornerRadius: 12)
                     .stroke(style: StrokeStyle(lineWidth: 2, dash: [6]))
                     .frame(width: 70, height: 55)
-                    .foregroundStyle(Color.gray.opacity(0.5))
+//                    .foregroundStyle(Color.gray.opacity(0.5))
+                    .foregroundStyle(Color("text").opacity(0.5))
                 Image(systemName: "plus")
                     .font(.title)
             }
             Text("Create")
-                .font(.custom("DepartureMono-Regular", size: 22))
+                .font(.custom("DepartureMono-Regular", size: 16))
         }
         .padding()
         .contentShape(Rectangle())

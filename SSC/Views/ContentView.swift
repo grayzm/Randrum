@@ -15,29 +15,31 @@ struct ContentView: View {
     
     var body: some View {
         VStack {
-            VStack {
-                RandomPatternView()
-            }
-            .frame(minHeight: 200, maxHeight: 264)
-            .padding(30)
-            .background(
-                RoundedRectangle(cornerRadius: 16)
-                    .fill(
-                        LinearGradient(colors: [Color("background1"), Color("background2")], startPoint: .top, endPoint: .bottom)))
-            .padding(.bottom, 10)
+            Spacer()
+            RandomPatternView()
+                .frame(minHeight: 200, maxHeight: 320)
+                .padding(30)
+                .background(
+                    RoundedRectangle(cornerRadius: 16)
+                        .fill(
+                            LinearGradient(colors: [Color("background1"), Color("background2")], startPoint: .top, endPoint: .bottom)))
+                .padding(.bottom, 10)
             
-            VStack {
-                WorkspaceView()
-            }
-            .frame(minHeight: 264, maxHeight: 320)
-            .padding(30)
-            .background(
-                RoundedRectangle(cornerRadius: 16)
-                    .fill(
-                        LinearGradient(colors: [Color("background1"), Color("background2")], startPoint: .top, endPoint: .bottom)))
+            WorkspaceView()
+                .frame(minHeight: 264, maxHeight: 360)
+                .padding(30)
+                .background(
+                    RoundedRectangle(cornerRadius: 16)
+                        .fill(
+                            LinearGradient(colors: [Color("background1"), Color("background2")], startPoint: .top, endPoint: .bottom))
+                )
+            
+            Spacer()
         }
-        .navigationBarTitle("Practice")
-        .padding(.horizontal, 10)
+//        .navigationBarTitle("Practice")
+        .padding(16)
+        .ignoresSafeArea()
+        .background(.blue)
     }
 }
 

@@ -31,13 +31,11 @@ struct FolderView: View {
                     )
                 
                 Text(savedPattern.name)
-                    .font(.custom("DepartureMono-Regular", size: 18))
+                    .font(.custom("DepartureMono-Regular", size: 16))
                     .lineLimit(2)
             }
             .padding()
             .contentShape(Rectangle())
-//            .scaleEffect(isPressed ? 0.95 : 1)
-//            .animation(.easeInOut(duration: 0.1), value: isPressed)
             .onTapGesture {
                 onOpen()
             }

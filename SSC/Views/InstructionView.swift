@@ -29,7 +29,7 @@ struct InstructionView: View {
         if !message.isEmpty {
             Text(message)
                 .font(.custom("DepartureMono-Regular", size: 16))
-                .foregroundStyle(Color("stroke"))
+                .foregroundStyle(Color("text"))
                 .padding(.horizontal, 16)
                 .padding(.vertical, 8)
                 .transition(.opacity)

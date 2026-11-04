@@ -18,6 +18,7 @@ internal import SwiftUI
 
 struct MetronomeTapperView: View {
     @EnvironmentObject var game: GameLogic
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         HStack(spacing: 12) {
@@ -33,8 +34,11 @@ struct MetronomeTapperView: View {
             .frame(maxWidth: 120, maxHeight: 40)
             .background(
                 RoundedRectangle(cornerRadius: 2)
-                    .fill(Color("screen"))
-                    .stroke(Color("shadow"), lineWidth: 2)
+                    .fill(
+                        Color("screen")
+                            .shadow(.inner(color: .black.opacity(colorScheme == .dark ? 0.7 : 0.3), radius: 4))
+                    )
+                    .stroke(Color("shadow"), lineWidth: 1.5)
             )
             
             Button {

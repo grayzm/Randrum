@@ -66,7 +66,6 @@ struct DrumRowView: View {
                         game.toggleUserBeat(part: part, index: index)
                     } : nil
                 )
-//                .aspectRatio(1, contentMode: .fit)
                 .anchorPreference(
                     key: StepFramePreferenceKey.self,
                     value: .bounds
